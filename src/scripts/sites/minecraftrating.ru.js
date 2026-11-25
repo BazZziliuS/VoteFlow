@@ -1,24 +1,63 @@
+// Форма голосования: на страницах проектов — #form-vote с кнопкой #voteProject (раньше #submitVote),
+// на страницах серверов — #voteForm
+function mrVoteForm() {
+    return document.querySelector('#form-vote, #voteForm')
+}
+
+function mrSubmitButton() {
+    const form = mrVoteForm()
+    return document.querySelector('#voteProject, #submitVote') || form?.querySelector('button[type="submit"], input[type="submit"]') || null
+}
+
+// SmartCaptcha именно формы голосования. На странице есть и скрытая форма входа со своей капчей — её не учитываем
+function mrVoteCaptcha() {
+    const form = mrVoteForm()
+    if (!form) return null
+    return form.querySelector('iframe[src*="smartcaptcha"], iframe[src*="captcha-api.yandex.ru"], .smart-captcha')
+}
+
+let mrSubmitted = false
+
+function mrSubmit() {
+    if (mrSubmitted) return true
+    const button = mrSubmitButton()
+    if (!button) return false
+    mrSubmitted = true
+    console.log('[minecraftrating] Нажимаем «Голосовать»:', button.id || button.className)
+    button.click()
+    mrWatchResult()
+    return true
+}
+
+// После капчи отправляем голос, если сайт не отправил его сам
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.captchaPassed === true || message.captchaPassed === 'double') {
-        console.log("[VOTE SCRIPT] Received 'captchaPassed' message. Clicking the final submit button.");
-        
-        // Find the correct submit button based on the project listing type.
-        const project = getProject ? getProject().listing : 'servers'; // Simple check for which button to press
-        let submitButton;
-
-        if (project === 'projects') {
-            submitButton = document.querySelector('#submitVote');
-        } else { // 'servers' listing
-            submitButton = document.querySelector('#voteForm button[type="submit"]');
-        }
-        
-        if (submitButton) {
-            submitButton.click();
-        } else {
-            console.error("[VOTE SCRIPT] Could not find the submit button after captcha was solved.");
-        }
+        setTimeout(() => {
+            if (!mrSubmitted && !mrSubmit()) console.error('[minecraftrating] Не найдена кнопка голосования после капчи')
+        }, 1500)
     }
-});
+})
+
+// Результат может появиться без перезагрузки страницы — ждём его до 30 секунд после нажатия
+function mrWatchResult() {
+    const started = Date.now()
+    const timer = setInterval(() => {
+        const text = [...document.querySelectorAll('#msgBox, div.alert, .swal2-popup, .toast, [role="alert"], .notification, .notify')]
+            .map(e => e.textContent.trim()).filter(Boolean).join(' ')
+        const lower = text.toLowerCase()
+        if (/спасибо за ваш голос|голос (принят|учт[её]н|засчитан)/.test(lower)) {
+            clearInterval(timer)
+            chrome.runtime.sendMessage({successfully: true})
+        } else if (/уже голосовали|сможете проголосовать|следующ\S* голос/.test(lower)) {
+            clearInterval(timer)
+            chrome.runtime.sendMessage({later: parseCooldown(text) || true})
+        } else if (Date.now() - started > 30000) {
+            clearInterval(timer)
+            // Без сообщения — обычно значит, что страница перезагрузилась с результатом и его обработает vote()
+            if (document.contains(mrVoteForm())) chrome.runtime.sendMessage({message: 'minecraftrating.ru не ответил на голос за 30 секунд' + (text ? ': ' + text.slice(0, 200) : '')})
+        }
+    }, 1000)
+}
 
 async function vote(first) {
     // SECTION 1: INITIAL PAGE CHECKS
@@ -58,40 +97,31 @@ async function vote(first) {
     const project = await getProject();
 
     if (first) {
-        const nickInput = document.querySelector('input[name=nick]');
+        const nickInput = mrVoteForm()?.querySelector('input[name=nick]') || document.querySelector('input[name=nick]');
         if (nickInput) {
             nickInput.value = project.nick;
+            nickInput.dispatchEvent(new Event('input', {bubbles: true}));
             console.log(`[VOTE SCRIPT] Nickname '${project.nick}' has been entered.`);
         }
     }
 
-    const smartCaptchaIframe = document.querySelector('iframe[src*="smartcaptcha.yandexcloud.net"], iframe[src*="smartcaptcha.cloud.yandex.ru"], iframe[src*="captcha-api.yandex.ru"]');
+    if (!mrVoteForm()) {
+        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена форма голосования #form-vote'})
+        return
+    }
 
-    if (smartCaptchaIframe) {
-        console.log("[VOTE SCRIPT] Yandex SmartCaptcha detected. Waiting for automatic solver...");
-
-        // The top-level listener is already active and waiting for the 'captchaPassed' message.
-        // We just need the fallback timeout here.
-
-        const manualFallbackTimeout = 30000; // 30 seconds
+    // Видимая SmartCaptcha прямо в форме — ждём её прохождения (captchaclicker пришлёт captchaPassed)
+    if (first && mrVoteCaptcha()) {
+        console.log('[minecraftrating] В форме голосования SmartCaptcha — ждём прохождения')
         setTimeout(() => {
-            if (document.querySelector('div.alert.alert-success, #msgBox')) {
-                return; // Vote completed successfully, no need for fallback.
-            }
+            if (!mrSubmitted && !document.querySelector('div.alert.alert-success, #msgBox')) chrome.runtime.sendMessage({captcha: true})
+        }, 30000)
+        return
+    }
 
-            console.log("[VOTE SCRIPT] Automatic solver timed out. Requesting manual intervention.");
-            chrome.runtime.sendMessage({ captcha: true }); // This triggers the manual notification
-
-        }, manualFallbackTimeout);
-
-    } else {
-        console.log("[VOTE SCRIPT] No captcha detected. Attempting direct form submission.");
-        const submitButton = document.querySelector('#submitVote, button[type=submit]');
-        if (submitButton) {
-            submitButton.click();
-        } else {
-            chrome.runtime.sendMessage({ message: "Could not find a captcha or a vote button on the page." });
-        }
+    // Обычный случай: капча невидимая, её запустит сам сайт по нажатию «Голосовать»
+    if (!mrSubmit()) {
+        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка «Голосовать» (#voteProject)'})
     }
 }
 
