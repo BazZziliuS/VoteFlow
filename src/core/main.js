@@ -34,7 +34,7 @@ async function initializeConfig(background, version) {
 
     // Открываем основную базу данных
     try {
-        db = await idb.openDB('avr', version ? version : 16, {
+        db = await idb.openDB('avr', version ? version : 17, {
             upgrade: (db, oldVersion, newVersion, transaction) => {
                 return runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allProjects, getDomainWithoutSubdomain)
             }

@@ -89,6 +89,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV15(transaction)
     }
 
+    // Миграция v16: снятие блокировки TopCraft после переписанного голосования
+    if (oldVersion <= 16) {
+        await migrateV16(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

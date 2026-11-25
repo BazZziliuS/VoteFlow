@@ -1,4 +1,10 @@
 {
+  "topcraftLogin": {
+    "message": "Sign in to topcraft.club in this browser (via VK or Yandex) — TopCraft does not allow voting without signing in"
+  },
+  "topcraftNoResponse": {
+    "message": "TopCraft did not respond to the vote within 25 seconds. Open the server page and check whether the vote was counted"
+  },
   "badgeErrors": {
     "message": "VoteFlow — projects with errors: $COUNT$",
     "placeholders": {

@@ -1,4 +1,10 @@
 {
+  "topcraftLogin": {
+    "message": "Увійдіть на topcraft.club у цьому браузері (через ВКонтакте або Яндекс) — без входу TopCraft не дає голосувати"
+  },
+  "topcraftNoResponse": {
+    "message": "TopCraft не відповів на голос за 25 секунд. Відкрийте сторінку сервера і перевірте, чи зараховано голос"
+  },
   "badgeErrors": {
     "message": "VoteFlow — проєктів з помилкою: $COUNT$",
     "placeholders": {

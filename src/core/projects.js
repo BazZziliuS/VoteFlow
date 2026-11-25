@@ -4,8 +4,9 @@
 var allProjects = {
     'topcraft.ru': {
         pageURL: (project) => 'https://topcraft.club/servers/' + project.id + '/',
-        voteURL: (project) => 'https://topcraft.club/servers/' + project.id + '/vote/',
-        projectName: (doc) => doc.querySelector('.project-header > h1').textContent,
+        // Голосование — окно #vote на странице сервера, сайт открывает его сам по этому адресу
+        voteURL: (project) => 'https://topcraft.club/servers/' + project.id + '/#vote',
+        projectName: (doc) => doc.querySelector('.project-header h1').textContent,
         exampleURL: () => ['https://topcraft.club/servers/', '10496', '/'],
         URLMain: () => 'topcraft.ru',
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
