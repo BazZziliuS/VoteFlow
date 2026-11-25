@@ -1,4 +1,70 @@
 {
+  "badgeErrors": {
+    "message": "VoteFlow — проектов с ошибкой: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "updateAvailable": {
+    "message": "Доступна версия $VERSION$ — скачать",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportProblem": {
+    "message": "Сообщить о проблеме"
+  },
+  "offerSiteSupported": {
+    "message": "$SITE$ поддерживается",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerOpenProjectPage": {
+    "message": "Откройте страницу своего сервера на этом сайте, чтобы добавить его"
+  },
+  "offerAlreadyAdded": {
+    "message": "Проект $ID$ с $SITE$ уже добавлен",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerOpen": {
+    "message": "Открыть"
+  },
+  "offerAdd": {
+    "message": "Добавить проект $ID$ с $SITE$?",
+    "placeholders": {
+      "id": {
+        "content": "$1"
+      },
+      "site": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerAddSite": {
+    "message": "Добавить $SITE$?",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerAddHint": {
+    "message": "Ссылка подставится в форму, останется указать ник"
+  },
   "popupUpcoming": {
     "message": "Ближайшие голосования"
   },

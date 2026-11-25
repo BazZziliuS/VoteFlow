@@ -1,4 +1,70 @@
 {
+  "badgeErrors": {
+    "message": "VoteFlow — проєктів з помилкою: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "updateAvailable": {
+    "message": "Доступна версія $VERSION$ — завантажити",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportProblem": {
+    "message": "Повідомити про проблему"
+  },
+  "offerSiteSupported": {
+    "message": "$SITE$ підтримується",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerOpenProjectPage": {
+    "message": "Відкрийте сторінку свого сервера на цьому сайті, щоб додати його"
+  },
+  "offerAlreadyAdded": {
+    "message": "Проєкт $ID$ з $SITE$ уже додано",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerOpen": {
+    "message": "Відкрити"
+  },
+  "offerAdd": {
+    "message": "Додати проєкт $ID$ з $SITE$?",
+    "placeholders": {
+      "id": {
+        "content": "$1"
+      },
+      "site": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerAddSite": {
+    "message": "Додати $SITE$?",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerAddHint": {
+    "message": "Посилання підставиться у форму, залишиться вказати нік"
+  },
   "popupUpcoming": {
     "message": "Найближчі голосування"
   },

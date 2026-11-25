@@ -133,3 +133,49 @@ body.popup {
 .popup-foot .btn {
     flex: 1;
 }
+
+.popup .update-banner {
+    margin: 0 16px 12px;
+    font-size: 13px;
+}
+
+/* Предложение добавить проект с открытой страницы */
+.site-offer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 16px 12px;
+    padding: 12px;
+    border-radius: var(--r-card);
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+}
+
+.site-offer[hidden] {
+    display: none;
+}
+
+.site-offer-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.site-offer-title {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.site-offer-hint {
+    color: var(--text-3);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.site-offer-hint:empty {
+    display: none;
+}
+
+.site-offer .btn[hidden] {
+    display: none;
+}

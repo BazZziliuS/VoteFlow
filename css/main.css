@@ -805,6 +805,42 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator,
     display: none;
 }
 
+/* Новая версия на GitHub */
+.update-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 10px 14px;
+    border-radius: var(--r);
+    background: var(--accent-soft);
+    border: 1px solid rgba(74, 149, 242, .25);
+    color: var(--text);
+    font-weight: 500;
+    transition: border-color .15s var(--ease);
+}
+
+.update-banner .i {
+    color: var(--accent);
+}
+
+.update-banner:hover {
+    border-color: var(--accent);
+}
+
+.update-banner[hidden] {
+    display: none;
+}
+
+.report-link {
+    display: inline-block;
+    margin-top: 6px;
+    color: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* ==========================================================================
    Список проектов
    ========================================================================== */

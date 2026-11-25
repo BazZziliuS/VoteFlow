@@ -1,4 +1,70 @@
 {
+  "badgeErrors": {
+    "message": "VoteFlow — projects with errors: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "updateAvailable": {
+    "message": "Version $VERSION$ is available — download",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportProblem": {
+    "message": "Report a problem"
+  },
+  "offerSiteSupported": {
+    "message": "$SITE$ is supported",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerOpenProjectPage": {
+    "message": "Open your server page on this site to add it"
+  },
+  "offerAlreadyAdded": {
+    "message": "Project $ID$ from $SITE$ is already added",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerOpen": {
+    "message": "Open"
+  },
+  "offerAdd": {
+    "message": "Add project $ID$ from $SITE$?",
+    "placeholders": {
+      "id": {
+        "content": "$1"
+      },
+      "site": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerAddSite": {
+    "message": "Add $SITE$?",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerAddHint": {
+    "message": "The link will be filled in, just enter your nickname"
+  },
   "popupUpcoming": {
     "message": "Upcoming votes"
   },

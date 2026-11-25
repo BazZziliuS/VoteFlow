@@ -29,7 +29,8 @@ Key features:
 │   ├── ui/
 │   │   ├── options.html     # Extension settings page (styles: /css/main.css, /css/icons.css)
 │   │   ├── popup.html       # Toolbar popup (popup.js, /css/popup.css): upcoming votes, today stats
-│   │   ├── shared.js        # Shared by options and popup: formatRelative, projectState, isFeaturedProject
+│   │   ├── shared.js        # Shared by options and popup: formatRelative, projectState, isFeaturedProject,
+│   │   │                    # checkForUpdate (GitHub latest release, cached 12h in other/updateCheck), reportIssueUrl
 │   │   │                    # (CenturyMine and SideMC are always listed first — keep this rule)
 │   │   └── options/         # Options page logic as classic scripts sharing one global scope,
 │   │                        # loaded in this order: init, notifications, modals, projects-list,
@@ -315,6 +316,7 @@ Files used in both contexts (like `main.js`):
 
 ## Important Notes
 
+- **Error badge**: `src/utils/browser/badge.js` — `updateErrorBadge(db)` runs from background `updateValue('projects')`, on startup, after delete/import. Change projects through `updateValue` so the badge stays correct
 - **Language**: All user-facing messages should be in Russian (this is a Russian-language extension)
 - **Commit messages**: Write in Russian, be descriptive
 - **Line endings**: Files use CRLF (Windows), git may show warnings

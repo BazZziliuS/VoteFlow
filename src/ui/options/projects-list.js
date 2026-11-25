@@ -501,6 +501,14 @@ async function updateProjectText(project) {
         const accessButton = controlItems.querySelector('.access')
         if (project.error) {
             conventPlainTextToLinks(project.error, errorElement)
+            // Заявка на GitHub с уже заполненными сайтом, ошибкой и версией
+            const report = document.createElement('a')
+            report.className = 'report-link'
+            report.href = reportIssueUrl(project)
+            report.target = '_blank'
+            report.rel = 'noopener'
+            report.textContent = chrome.i18n.getMessage('reportProblem')
+            errorElement.append(document.createElement('br'), report)
             if (project.error.includes('Cannot access contents of the page')) {
                 if (!accessButton) {
                     const button = createProjectAction('shield', chrome.i18n.getMessage('access'))

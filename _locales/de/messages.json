@@ -1,4 +1,70 @@
 {
+  "badgeErrors": {
+    "message": "VoteFlow — Projekte mit Fehlern: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "updateAvailable": {
+    "message": "Version $VERSION$ ist verfügbar — herunterladen",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "reportProblem": {
+    "message": "Problem melden"
+  },
+  "offerSiteSupported": {
+    "message": "$SITE$ wird unterstützt",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerOpenProjectPage": {
+    "message": "Öffnen Sie die Seite Ihres Servers auf dieser Website, um ihn hinzuzufügen"
+  },
+  "offerAlreadyAdded": {
+    "message": "Projekt $ID$ von $SITE$ ist bereits hinzugefügt",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerOpen": {
+    "message": "Öffnen"
+  },
+  "offerAdd": {
+    "message": "Projekt $ID$ von $SITE$ hinzufügen?",
+    "placeholders": {
+      "id": {
+        "content": "$1"
+      },
+      "site": {
+        "content": "$2"
+      }
+    }
+  },
+  "offerAddSite": {
+    "message": "$SITE$ hinzufügen?",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "offerAddHint": {
+    "message": "Der Link wird eingefügt, nur noch den Nicknamen angeben"
+  },
   "popupUpcoming": {
     "message": "Nächste Abstimmungen"
   },

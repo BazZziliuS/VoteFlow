@@ -1,6 +1,81 @@
 // Общие функции интерфейса: страница настроек и попап.
 // Подключается через <script> раньше остальных скриптов интерфейса.
 
+const REPO_URL = 'https://github.com/BazZziliuS/VoteFlow'
+const UPDATE_CHECK_INTERVAL = 12 * 60 * 60 * 1000
+
+/**
+ * Сравнивает версии вида 8.1.0
+ * @returns {number} >0 если a новее b, <0 если старее, 0 если равны
+ */
+function compareVersions(a, b) {
+    const pa = String(a).replace(/^v/, '').split('.').map(Number)
+    const pb = String(b).replace(/^v/, '').split('.').map(Number)
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+        const diff = (pa[i] || 0) - (pb[i] || 0)
+        if (diff) return diff
+    }
+    return 0
+}
+
+/**
+ * Проверяет последний релиз на GitHub не чаще раза в 12 часов (результат кэшируется в БД)
+ * @param {Object} database - открытая БД (idb)
+ * @returns {Promise<{version: string, url: string}|null>} новая версия или null
+ */
+async function checkForUpdate(database) {
+    const current = chrome.runtime.getManifest().version
+    let cache = await database.get('other', 'updateCheck')
+    if (!cache || Date.now() - cache.checkedAt > UPDATE_CHECK_INTERVAL) {
+        try {
+            const response = await fetch('https://api.github.com/repos/BazZziliuS/VoteFlow/releases/latest', {
+                headers: {accept: 'application/vnd.github+json'},
+                credentials: 'omit',
+                signal: AbortSignal.timeout(10000),
+            })
+            if (!response.ok) throw new Error('HTTP ' + response.status)
+            const release = await response.json()
+            cache = {checkedAt: Date.now(), version: String(release.tag_name).replace(/^v/, ''), url: release.html_url}
+            await database.put('other', cache, 'updateCheck')
+        } catch (error) {
+            // Нет сети или лимит GitHub API — попробуем при следующем открытии, используем прошлый результат
+            console.warn('Не удалось проверить обновления:', error.message)
+            if (!cache) return null
+        }
+    }
+    if (cache.version && compareVersions(cache.version, current) > 0) {
+        return {version: cache.version, url: cache.url || REPO_URL + '/releases/latest'}
+    }
+    return null
+}
+
+/**
+ * Ссылка на новую заявку на GitHub с заполненными сайтом, ошибкой и версией.
+ * Ник игрока не передаётся: заявка публичная
+ * @param {Object} project
+ * @returns {string}
+ */
+function reportIssueUrl(project) {
+    const version = chrome.runtime.getManifest().version
+    const title = `${project.rating}: ${String(project.error || 'ошибка голосования').slice(0, 80)}`
+    const body = [
+        `**Сайт:** ${project.rating}`,
+        project.id ? `**Проект (ID):** ${project.id}` : null,
+        project.name ? `**Название:** ${project.name}` : null,
+        `**Версия VoteFlow:** ${version}`,
+        `**Браузер:** ${navigator.userAgent}`,
+        '',
+        '**Ошибка:**',
+        '```',
+        String(project.error || ''),
+        '```',
+        '',
+        '**Что происходило:**',
+        '',
+    ].filter(line => line !== null).join('\n')
+    return `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`
+}
+
 // Проекты, которые всегда показываются первыми в списках (без учёта регистра, пробелов и дефисов)
 const FEATURED_PROJECTS = ['centurymine', 'sidemc']
 

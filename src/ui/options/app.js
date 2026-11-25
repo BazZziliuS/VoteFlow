@@ -50,7 +50,17 @@ window.addEventListener('load', async () => {
     document.getElementById('notAddedAll').removeAttribute('style')
     resolveLoad()
     openFromHash()
+    showUpdateBanner()
 })
+
+async function showUpdateBanner() {
+    const update = await checkForUpdate(db)
+    if (!update) return
+    const banner = document.getElementById('updateBanner')
+    banner.href = update.url
+    banner.querySelector('.update-text').textContent = chrome.i18n.getMessage('updateAvailable', update.version)
+    banner.hidden = false
+}
 
 //Переходы из попапа: #project=<key> — показать проект, #projects — список, #settings — настройки, #add — добавление
 function openFromHash() {
@@ -64,9 +74,24 @@ function openFromHash() {
         document.getElementById('addedTab').click()
     } else if (hash === 'settings') {
         document.getElementById('settingsTab').click()
-    } else if (hash === 'add') {
+    } else if (hash === 'add' || hash.startsWith('add=')) {
+        if (editingProject) resetEdit()
         document.getElementById('addTab').click()
-        document.getElementById('link').focus()
+        // add=<ссылка> приходит из окна расширения, открытого на странице сайта-рейтинга
+        const url = hash.startsWith('add=') ? decodeURIComponent(hash.slice(4)) : ''
+        if (url) {
+            if (document.getElementById('switchAddMode').checked) {
+                document.getElementById('switchAddMode').checked = false
+                document.getElementById('switchAddMode').dispatchEvent(new Event('change'))
+            }
+            const link = document.getElementById('link')
+            link.value = url
+            link.dispatchEvent(new Event('input'))
+        }
+        const nick = document.getElementById('nick')
+        if (url && nick.parentElement.style.display !== 'none') nick.focus()
+        else if (url) document.getElementById('submitAddProject').focus()
+        else document.getElementById('link').focus()
     }
 }
 

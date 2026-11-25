@@ -39,6 +39,7 @@ let silentResponseBody = {}
 // noinspection JSIgnoredPromiseFromCall
 const initializeFunc = initializeConfig(true)
 initializeFunc.finally(() => initializeFunc.done = true)
+initializeFunc.then(() => updateErrorBadge(db))
 
 /**
  * Проверяет необходимость голосования для всех проектов
@@ -443,6 +444,7 @@ async function onRuntimeMessage(request, sender, sendResponse) {
         settings = result.settings
         generalStats = result.generalStats
         todayStats = result.todayStats
+        updateErrorBadge(db)
         return
     } else if (request === 'reloadSettings') {
         settings = await db.get('other', 'settings')
@@ -450,6 +452,7 @@ async function onRuntimeMessage(request, sender, sendResponse) {
     } else if (request.projectDeleted) {
         const result = await handleProjectDeleted(request, openedProjects, db)
         sendResponse(result)
+        updateErrorBadge(db)
         return
     } else if (request.projectRestart) {
         const result = await handleProjectRestart(request, openedProjects, db, settings)
@@ -602,6 +605,8 @@ async function openOptionsPage() {
  */
 async function updateValue(objStore, value) {
     await updateStoreValue(db, objStore, value)
+    // Значок с числом ошибок на иконке расширения
+    if (objStore === 'projects') updateErrorBadge(db)
 }
 
 chrome.runtime.onInstalled.addListener(async function (details) {

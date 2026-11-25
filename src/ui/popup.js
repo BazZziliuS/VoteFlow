@@ -90,10 +90,76 @@ function renderList(projects) {
     document.getElementById('popupEmpty').hidden = projects.length > 0
 }
 
+// Если открыт сайт-рейтинг — предлагаем добавить проект с этой страницы.
+// URL вкладки доступен благодаря activeTab: Chrome выдаёт его только в момент клика по иконке
+async function renderSiteOffer() {
+    const [tab] = await chrome.tabs.query({active: true, currentWindow: true})
+    if (!tab?.url || !/^https?:/.test(tab.url)) return
+
+    let domain, project
+    try {
+        domain = getDomainWithoutSubdomain(tab.url)
+    } catch {
+        return
+    }
+    const funcRating = allProjects[domain]
+    if (!funcRating || domain === 'Custom') return
+    try {
+        project = funcRating.parseURL(new URL(tab.url))
+    } catch {
+        project = {}
+    }
+
+    const offer = document.getElementById('siteOffer')
+    const title = offer.querySelector('.site-offer-title')
+    const hint = offer.querySelector('.site-offer-hint')
+    const button = document.getElementById('siteOfferButton')
+    const hasProject = funcRating.notRequiredId?.() || Boolean(project?.id)
+
+    if (!hasProject) {
+        // Сайт поддерживается, но открыта не страница проекта
+        title.textContent = chrome.i18n.getMessage('offerSiteSupported', domain)
+        hint.textContent = chrome.i18n.getMessage('offerOpenProjectPage')
+        button.hidden = true
+        offer.hidden = false
+        return
+    }
+
+    const existingKey = project?.id != null
+        ? await db.getKeyFromIndex('projects', 'rating, id', [domain, project.id])
+        : undefined
+    if (existingKey != null) {
+        title.textContent = chrome.i18n.getMessage('offerAlreadyAdded', [domain, String(project.id)])
+        hint.textContent = ''
+        button.textContent = chrome.i18n.getMessage('offerOpen')
+        button.classList.remove('btn-primary')
+        button.addEventListener('click', () => openOptions('project=' + existingKey))
+    } else {
+        title.textContent = project?.id
+            ? chrome.i18n.getMessage('offerAdd', [String(project.id), domain])
+            : chrome.i18n.getMessage('offerAddSite', domain)
+        hint.textContent = chrome.i18n.getMessage('offerAddHint')
+        button.textContent = chrome.i18n.getMessage('addButton')
+        button.addEventListener('click', () => openOptions('add=' + encodeURIComponent(tab.url)))
+    }
+    offer.hidden = false
+}
+
+async function renderUpdate() {
+    const update = await checkForUpdate(db)
+    if (!update) return
+    const banner = document.getElementById('updateBanner')
+    banner.href = update.url
+    banner.querySelector('.update-text').textContent = chrome.i18n.getMessage('updateAvailable', update.version)
+    banner.hidden = false
+}
+
 ;(async () => {
     await initializeConfig()
     const projects = await db.getAll('projects')
     document.getElementById('popupLoading').remove()
     renderToday()
     renderList(projects)
+    renderSiteOffer()
+    renderUpdate()
 })()

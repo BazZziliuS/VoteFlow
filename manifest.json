@@ -32,7 +32,8 @@
     "unlimitedStorage",
     "scripting",
     "tabGroups",
-    "idle"
+    "idle",
+    "activeTab"
   ],
   "optional_permissions": [
     "cookies"
