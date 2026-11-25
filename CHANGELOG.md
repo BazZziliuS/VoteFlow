@@ -4,6 +4,19 @@
 
 <!-- Файл собирается командой `npm run changelog` из docs/releases/*.md — правьте заметки там -->
 
+## [9.0.1](https://github.com/BazZziliuS/VoteFlow/releases/tag/v9.0.1) — 2026-11-26
+
+Работа расширения не изменилась: голосование, настройки и данные те же, что в 9.0.0.
+
+### Для участников проекта
+- Правила коммитов (Conventional Commits) и версий (SemVer) — в [CONTRIBUTING.md](https://github.com/BazZziliuS/VoteFlow/blob/refactor/CONTRIBUTING.md)
+- История всех версий — в [CHANGELOG.md](https://github.com/BazZziliuS/VoteFlow/blob/refactor/CHANGELOG.md)
+- Шаблоны задач: «Не голосует на сайте», «Новый сайт», «Идея»
+- Об уязвимостях можно сообщить закрыто — [SECURITY.md](https://github.com/BazZziliuS/VoteFlow/blob/refactor/SECURITY.md)
+
+### Переходите с Auto Vote Rating или VoteFlow 8.x?
+С 9.0 у VoteFlow собственный ID, данные старого расширения нужно перенести вручную: экспорт настроек в старом, удаление старого, импорт в VoteFlow. Подробно — в [заметках к 9.0.0](https://github.com/BazZziliuS/VoteFlow/releases/tag/v9.0.0).
+
 ## [9.0.0](https://github.com/BazZziliuS/VoteFlow/releases/tag/v9.0.0) — 2026-11-26
 
 VoteFlow 9.0 — отдельное расширение со своим ID, вдохновлённое Auto Vote Rating и созданное на основе его кода.

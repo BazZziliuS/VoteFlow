@@ -1,6 +1,6 @@
 {
   "name": "voteflow",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "private": true,
   "description": "VoteFlow — браузерное расширение для автоматического голосования на рейтингах игровых серверов",
   "license": "MIT",
