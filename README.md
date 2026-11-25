@@ -43,6 +43,12 @@
 
 **Обновление:** замените содержимое папки и нажмите «Обновить» на странице расширений — проекты и настройки сохранятся.
 
+> [!IMPORTANT]
+> **Переход с Auto Vote Rating или VoteFlow 8.x.** С версии 9.0 VoteFlow — отдельное расширение со своим ID, поэтому данные старого не подхватываются автоматически:
+> 1. В старом расширении: **Настройки → Экспортировать настройки** (сохранится файл `.json`)
+> 2. Удалите старое расширение — иначе оба будут голосовать одновременно
+> 3. Установите VoteFlow и в нём: **Настройки → Импортировать настройки**, выберите сохранённый файл
+
 ### Браузеры
 
 Нужен браузер на Chromium версии 105 или новее.
@@ -160,7 +166,7 @@ scripts/                    # проверка целостности и дос�
 
 ## Благодарности
 
-VoteFlow продолжает расширение **[Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating)**, автор — **[Serega007](https://github.com/Serega007RU)**. Оригинальный проект больше не поддерживается. Спасибо его участникам: Serega007 (разработка), Qworte (дизайн), bozoweed и всем переводчикам.
+VoteFlow — новое расширение, вдохновлённое **[Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating)** (автор — **[Serega007](https://github.com/Serega007RU)**) и созданное на основе его кода. Оригинальный проект больше не поддерживается. Спасибо его участникам: Serega007 (разработка), Qworte (дизайн), bozoweed и всем переводчикам.
 
 Часть исправлений сайтов и обработка Cloudflare Turnstile перенесены из форка **[JustMordeckai/Auto-Vote-Rating](https://github.com/JustMordeckai/Auto-Vote-Rating)** (MIT).
 
@@ -179,6 +185,6 @@ VoteFlow is a Chromium browser extension (Manifest V3) that votes for your game 
 
 **Install:** download `VoteFlow-<version>.zip` from [Releases](https://github.com/BazZziliuS/VoteFlow/releases/latest), unzip it, enable Developer mode on your browser's extensions page and click "Load unpacked".
 
-VoteFlow continues [Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating) by Serega007. Licensed under [MIT](LICENSE) for VoteFlow code; code inherited from the original remains © Serega007.
+VoteFlow is a new extension inspired by [Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating) by Serega007 and built on its code. Licensed under [MIT](LICENSE) for VoteFlow code; code inherited from the original remains © Serega007.
 
 </details>

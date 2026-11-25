@@ -242,7 +242,7 @@
     "message": "Автор оригинального расширения:"
   },
   "basedOn": {
-    "message": "VoteFlow — продолжение расширения Auto Vote Rating, оригинальный проект:"
+    "message": "VoteFlow — новое расширение, вдохновлённое Auto Vote Rating и созданное на основе его кода. Оригинальный проект:"
   },
   "appName": {
     "message": "VoteFlow"

@@ -627,7 +627,7 @@ chrome.runtime.onInstalled.addListener(async function (details) {
 })
 
 /*
-VoteFlow — продолжение Auto Vote Rating.
+VoteFlow — новое расширение, вдохновлённое Auto Vote Rating и созданное на основе его кода.
 Репозиторий: https://github.com/BazZziliuS/VoteFlow
 Оригинальный проект (Serega007): https://github.com/Serega007RU/Auto-Vote-Rating/
 */

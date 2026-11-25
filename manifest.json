@@ -1,5 +1,5 @@
 {
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlVWvJq5iqtShA8l+gsv52P1PZyWFZ4sS++yguLUl01MwUjpI2swMSi8LukdUMJeeqBdUvXHvtKA1WTeGH2R+LUX4+UXTM2vSqm1qMboGb1A6dbLCYVEStZhl5WiTP9Vocc4vauTWKRN8mPn00TxFym9EoVcdOtSdem4npnyE/CZUW5dfZr3dPqDhrbEPQgrmp0Fr+jcdW8XNhzVXHyXH6lVD5TkuR5rZhkKatw/WrQ2lHn+jU/exZu/J2InTTSdm+jyZ16Z1rt/7rD3nmOrN+aju/NI1+i9ehY3Gio4tk9zmL3HTFiRWOxFYVRVcytECBiEcPRDe2CIY7gNfVn4DDQIDAQAB",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAik7ABwFf8yEWpdaInisQp2cB2x6l2qFAt4b4a68+hOObDzeP7YddUQ3UUE8UPK0jp5D51QGN0AHtFSnQ1phFP5UIV4NbPOeqXeDGo/uF7DT+VmKREEdrV9Evnp0eruE8/6NmRpxqoSzcqpn6pPmUlYYcmmRDbSW31bBC6Bs+h7UpMHPDXYqVfm5G/70pXvYsJflbHm023rrWYR3QQQ+tQs6E0TxEv5dvbo7uN2UhtsvE8BvxzQmaR++N7s93huIAKwU1BZXkCn+1JOskU7Nrf5ehOQT8ZNiEq5ZfAvTRFbtYz98gyVMKqraIc2ArTJe1cVL/nforsUahmdvtU3wrBQIDAQAB",
   "short_name": "VoteFlow",
   "author": "BazZziliuS",
   "background": {
@@ -69,7 +69,7 @@
     }
   ],
   "homepage_url": "https://github.com/BazZziliuS/VoteFlow",
-  "version": "8.3.2",
+  "version": "9.0.0",
   "minimum_chrome_version": "105.0",
   "default_locale": "en"
 }

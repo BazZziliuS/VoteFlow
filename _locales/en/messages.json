@@ -242,7 +242,7 @@
     "message": "Original author:"
   },
   "basedOn": {
-    "message": "VoteFlow is a continuation of the Auto Vote Rating extension, original project:"
+    "message": "VoteFlow is a new extension inspired by Auto Vote Rating and built on its code. Original project:"
   },
   "appName": {
     "message": "VoteFlow",

@@ -248,7 +248,7 @@
     "message": "Автор оригінального розширення:"
   },
   "basedOn": {
-    "message": "VoteFlow — продовження розширення Auto Vote Rating, оригінальний проєкт:"
+    "message": "VoteFlow — нове розширення, натхненне Auto Vote Rating і створене на основі його коду. Оригінальний проєкт:"
   },
   "appName": {
     "message": "VoteFlow"
