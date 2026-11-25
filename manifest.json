@@ -46,6 +46,7 @@
     "https://*.yandexcloud.net/*",
     "https://*.mtcaptcha.com/*",
     "https://*.t.me/*",
+    "https://id.vk.ru/*",
     "https://*.ingest.de.sentry.io/*"
   ],
   "optional_host_permissions": [

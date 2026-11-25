@@ -11,7 +11,7 @@ var allProjects = {
         URLMain: () => 'topcraft.ru',
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 21}),
-        needAdditionalOrigins: () => ['https://*.topcraft.ru/*', '*://*.vk.com/*'],
+        needAdditionalOrigins: () => ['https://*.topcraft.ru/*', '*://*.vk.com/*', '*://*.vk.ru/*'],
         needIsTrusted: () => true
     },
     'topcraft.club': {},
