@@ -92,3 +92,17 @@ test('migrateV16 снимает блокировку v14 только с про�
     // mctop.su по-прежнему заблокирован: его голосование не переписывалось
     assert.equal(tx.store.get(4).time, Infinity)
 })
+
+test('migrateV17 снимает блокировку v14 с проектов McTOP', async () => {
+    const ctx = loadScripts(['src/utils/database/db-migrations/migration-v17.js'], {self: {}})
+    const tx = fakeUpdatableTransaction([
+        {key: 1, rating: 'mctop.su', id: '4888', time: Infinity, error: 'Высокий риск быть заблокированным'},
+        {key: 2, rating: 'mctop.su', id: '5231', time: 1700000000000, error: 'Обычная ошибка'},
+        {key: 3, rating: 'topcraft.club', id: '7411', time: Infinity},
+    ])
+    assert.equal(await ctx.migrateV17(tx), 1)
+    assert.equal(tx.store.get(1).time, null)
+    assert.equal(tx.store.get(1).error, undefined)
+    assert.equal(tx.store.get(2).error, 'Обычная ошибка')
+    assert.equal(tx.store.get(3).time, Infinity)
+})

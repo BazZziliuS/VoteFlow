@@ -94,6 +94,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV16(transaction)
     }
 
+    // Миграция v17: снятие блокировки McTOP после обновления голосования
+    if (oldVersion <= 17) {
+        await migrateV17(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

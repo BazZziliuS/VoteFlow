@@ -35,23 +35,73 @@ async function vote(first) {
         return
     }
 
-    if (first) return
-
     const project = await getProject()
+    const nick = document.querySelector('#voteForm input[name=nick], input[name=nick]')
+    if (nick && project.nick && nick.value !== project.nick) nick.value = project.nick
 
-    document.querySelector('input[name=nick]').value = project.nick
+    // Сначала Yandex SmartCaptcha (галочка в форме): captchaclicker пришлёт captchaPassed и api.js вызовет vote(false).
+    // Если капчу прошли иначе (вручную), голос отправит наблюдатель за токеном smart-token
+    if (first) {
+        mctopWatchCaptchaToken()
+        setTimeout(() => {
+            if (!mctopSubmitted) chrome.runtime.sendMessage({captcha: true})
+        }, 30000)
+        return
+    }
+    mctopSubmit()
+}
+
+let mctopSubmitted = false
+
+function mctopSubmit() {
+    if (mctopSubmitted) return
+    const button = document.querySelector('#voteForm .voteBtn, .voteBtn')
+    if (!button) {
+        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка «Голосовать» (.voteBtn)'})
+        return
+    }
+    mctopSubmitted = true
+    console.log('[mctop] Отправляем голос')
+    const verifyUUID = crypto.randomUUID()
+    window.portIsTrusted.dataset.avrId = verifyUUID
     window.portIsTrusted.dataset.ITtype = 'click'
-    document.querySelector('.voteBtn').dispatchEvent(new CustomEvent('mousedown', {detail: {avrId: verifyUUID, eventName: 'MouseEvent', eventType: 'mousedown', isTrusted: true, detail: 1}}))
-    document.querySelector('.voteBtn').click()
+    button.dispatchEvent(new CustomEvent('mousedown', {detail: {avrId: verifyUUID, eventName: 'MouseEvent', eventType: 'mousedown', isTrusted: true, detail: 1}}))
+    button.click()
     window.portIsTrusted.dataset.ITtype = null
+}
+
+function mctopWatchCaptchaToken() {
+    const timer = setInterval(() => {
+        if (mctopSubmitted) {
+            clearInterval(timer)
+            return
+        }
+        if (document.querySelector('#voteForm input[name="smart-token"]')?.value) {
+            clearInterval(timer)
+            console.log('[mctop] SmartCaptcha пройдена')
+            setTimeout(mctopSubmit, 500)
+        }
+    }, 1000)
+}
+
+// Текст результата: подсказка у кнопки (старая разметка) или, после отправки голоса, открытое окно / сообщение на странице
+function mctopResultText() {
+    const tooltip = document.querySelector('div.tooltip-inner')
+    if (tooltip?.textContent.trim()) return tooltip.textContent.trim()
+    if (!mctopSubmitted) return ''
+    for (const element of document.querySelectorAll('.modal.in .modal-body, .modal.show .modal-body, .modal.in, .modal.show, #voteForm .alert, .alert-success, .alert-danger, .swal2-popup, [role="alert"]')) {
+        if (element.offsetParent !== null && element.textContent.trim()) return element.textContent.trim().replace(/\s+/g, ' ')
+    }
+    return ''
 }
 
 let fixTimer
 const timer = setInterval(()=>{
     try {
         //Ищет надпись в которой написано что вы проголосовали или вы уже голосовали, по этой надписи скрипт завершается
-        if (document.readyState === 'complete' && document.querySelectorAll('div[class=tooltip-inner]').item(0) != null) {
-            const textContent = document.querySelectorAll('div[class=tooltip-inner]').item(0).textContent.toLowerCase()
+        const resultText = document.readyState === 'complete' ? mctopResultText() : ''
+        if (resultText) {
+            const textContent = resultText.toLowerCase()
             if (
                 textContent.includes('уже голосовали')
                 || textContent.includes('уже проголосовали')
@@ -77,11 +127,11 @@ const timer = setInterval(()=>{
                     || textContent === 'ошибка'
                     || textContent.includes('капча временно не работает')
                     || textContent.includes('аккаунт заблокирован')) {
-                chrome.runtime.sendMessage({message: document.querySelectorAll('div[class=tooltip-inner]').item(0).textContent, ignoreReport: true})
+                chrome.runtime.sendMessage({message: resultText, ignoreReport: true})
             } else if (textContent.includes('поставьте галочку в капче') || textContent.includes('обязательное поле')) {
                 return
             } else {
-                chrome.runtime.sendMessage({message: document.querySelectorAll('div[class=tooltip-inner]').item(0).textContent})
+                chrome.runtime.sendMessage({message: resultText})
             }
             clearInterval(timer)
             clearTimeout(fixTimer)

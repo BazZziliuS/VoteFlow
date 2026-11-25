@@ -31,7 +31,7 @@ var allProjects = {
         projectName: (doc) => doc.querySelector('.project-header > h1').textContent,
         exampleURL: () => ['https://mctop.su/servers/', '5231', '/'],
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
-        timeout: () => ({hour: 21}),
+        timeout: () => ({hours: 24}), // «Голосовать можно каждые 24 часа»
         needAdditionalOrigins: () => ['*://*.vk.com/*'],
         needIsTrusted: () => true
     },
