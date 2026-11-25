@@ -112,6 +112,15 @@ window.addEventListener('load', async () => {
     check('время следующего голоса', !!document.querySelector('.project .textNextVote .rel')?.textContent)
     check('счётчик в меню', document.getElementById('navProjectsCount').textContent === '1')
     check('«Как это работает» скрыто при наличии проектов', document.getElementById('welcome').style.display === 'none')
+    // Регрессия: переход к проекту на первом сайте списка, пока список ещё грузится
+    // (автовыбор первого сайта и openProject загружали один список одновременно → null.scrollIntoView)
+    await step('openProject race', async () => {
+        const key = (await db.getAllKeys('projects'))[0]
+        await reloadProjectList()
+        document.getElementById('addTab').click()
+        await onMessage({openProject: key})
+        check('переход к проекту из уведомления показывает карточку', !!document.getElementById('projects' + key)?.classList.contains('highlight'))
+    })
     await step('project stats', () => document.querySelector('.project .projectStats:nth-child(2)').click())
     await sleep(300)
     check('статистика проекта', document.querySelector('#stats td[data-resource="statsSuccessVotes"] + th')?.textContent === '12')

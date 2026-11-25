@@ -421,22 +421,28 @@ async function listSelect(event, tabs) {
     event.currentTarget.className += ' activeList'
 
     const list = document.querySelector('[data-rating-list="' + tabs + '"]')
-    if (list.childElementCount === 0) {//Если список проектов данного рейтинга пустой - заполняем его
-        let div = document.createElement('div')
-        div.setAttribute('data-resource', 'load')
-        div.textContent = chrome.i18n.getMessage('load')
-        list.append(div)
-        const transaction = db.transaction(['projects', 'other'])
-        openedProjects = await transaction.objectStore('other').get('openedProjects')
-        let cursor = await transaction.objectStore('projects').index('rating').openCursor(tabs)
-        while (cursor) {
-            const project = cursor.value
-            addProjectList(project)
-            // noinspection JSVoidFunctionReturnValueUsed
-            cursor = await cursor.continue()
-        }
-        div.remove()
+    // Загрузка списка одна на всех: если её уже начал другой вызов (например, автовыбор первого сайта
+    // одновременно с переходом к проекту из уведомления), дожидаемся её, а не возвращаемся с пустым списком
+    if (!list.loading && list.childElementCount === 0) {
+        list.loading = (async () => {
+            let div = document.createElement('div')
+            div.setAttribute('data-resource', 'load')
+            div.textContent = chrome.i18n.getMessage('load')
+            list.append(div)
+            const transaction = db.transaction(['projects', 'other'])
+            openedProjects = await transaction.objectStore('other').get('openedProjects')
+            let cursor = await transaction.objectStore('projects').index('rating').openCursor(tabs)
+            while (cursor) {
+                const project = cursor.value
+                addProjectList(project)
+                // noinspection JSVoidFunctionReturnValueUsed
+                cursor = await cursor.continue()
+            }
+            div.remove()
+        })()
+        list.loading.finally(() => { list.loading = null })
     }
+    if (list.loading) await list.loading
 }
 
 async function updateProjectText(project) {

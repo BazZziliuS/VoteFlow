@@ -125,10 +125,18 @@ function resetEdit(project) {
     document.getElementById('rating').disabled = false
 
     if (project) {
-        document.getElementById('addedTab').click()
-        document.querySelector('[data-rating-button="' + project.rating + '"]').click()
-        document.getElementById('projects' + project.key).scrollIntoView({block: 'center'})
-        highlight(document.getElementById('projects' + project.key))
+        // После сохранения возвращаемся к проекту: ждём загрузки списка его сайта, затем показываем карточку
+        (async () => {
+            document.getElementById('addedTab').click()
+            const button = document.querySelector('[data-rating-button="' + project.rating + '"]')
+            if (!button) return
+            await listSelect({currentTarget: button}, project.rating)
+            const card = document.getElementById('projects' + project.key)
+            if (card) {
+                card.scrollIntoView({block: 'center'})
+                highlight(card)
+            }
+        })()
     }
 }
 

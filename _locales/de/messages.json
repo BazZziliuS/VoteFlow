@@ -1,6 +1,6 @@
 {
   "topcraftLogin": {
-    "message": "Melden Sie sich in diesem Browser bei topcraft.club an (über VK oder Yandex) — ohne Anmeldung ist keine Abstimmung möglich"
+    "message": "Automatische Anmeldung bei topcraft.club fehlgeschlagen. Melden Sie sich in diesem Browser bei VK oder topcraft.club an — ohne Anmeldung ist keine Abstimmung möglich"
   },
   "topcraftNoResponse": {
     "message": "TopCraft hat innerhalb von 25 Sekunden nicht geantwortet. Öffnen Sie die Serverseite und prüfen Sie, ob die Stimme gezählt wurde"

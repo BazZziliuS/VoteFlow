@@ -189,10 +189,14 @@ async function onMessage(request) {
         document.getElementById('addedTab').click()
         await loaded
         const project = await db.get('projects', request.openProject)
+        // Проект могли удалить, пока висело уведомление
+        if (!project) return
         await listSelect({currentTarget: document.querySelector('[data-rating-button="' + project.rating + '"]')}, project.rating)
-        document.getElementById('projects' + project.key).scrollIntoView({block: 'center'})
+        const card = document.getElementById('projects' + project.key)
+        if (!card) return
+        card.scrollIntoView({block: 'center'})
         highlight(document.getElementById('projects' + project.key))
-        window.history.replaceState(null, null, 'options.html')
+        window.history.replaceState(null, null, location.pathname)
     } else if (request.notification) {
         if (request.notification.type !== 'warn' && request.notification.type !== 'error') request.notification.type = 'hint'
         let onClick

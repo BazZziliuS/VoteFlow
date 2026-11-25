@@ -72,8 +72,23 @@ async function vote(first) {
     }
 
     if (topcraftNeedsLogin()) {
-        console.log(TOPCRAFT_LOG, 'Не выполнен вход в аккаунт')
-        chrome.runtime.sendMessage({message: chrome.i18n.getMessage('topcraftLogin'), ignoreReport: true})
+        // Автовход через VK ID, как было в оригинале: форма входа уводит на VK, где api.js сам подтверждает доступ
+        // (если пользователь вошёл в VK в этом браузере), и TopCraft возвращает на страницу сервера с открытым окном голосования.
+        // Одна попытка на вкладку за 10 минут, чтобы не зациклиться, если вход не удался
+        const tried = Number(sessionStorage.getItem('voteflowTopcraftLogin') || 0)
+        const loginForm = document.querySelector('#loginModal form[action*="/accounts/vk/login/"]')
+        const vkButton = loginForm?.querySelector('button[type="submit"]:not([formaction])')
+        if (loginForm && vkButton && Date.now() - tried > 10 * 60 * 1000) {
+            sessionStorage.setItem('voteflowTopcraftLogin', String(Date.now()))
+            const next = loginForm.querySelector('input[name="next"]')
+            if (next) next.value = location.pathname + location.search + '#vote'
+            console.log(TOPCRAFT_LOG, 'Не выполнен вход — входим через VK ID')
+            loginForm.requestSubmit(vkButton)
+            return
+        }
+        console.log(TOPCRAFT_LOG, 'Не выполнен вход, автовход через VK не удался')
+        // Повтор раз в час, а не каждые 15 минут: без входа результат не изменится
+        chrome.runtime.sendMessage({message: chrome.i18n.getMessage('topcraftLogin'), ignoreReport: true, retryCoolDown: 60 * 60 * 1000})
         return
     }
 
