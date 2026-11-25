@@ -22,10 +22,10 @@ function usesCustomTimeout(project, request, time) {
         return false
     }
 
-    // Проверка lastDayMonth
+    // lastDayMonth: свой таймаут действует только в последний день месяца, в остальные дни — таймаут сайта
     if (project.lastDayMonth) {
-        const tomorrow = new Date(time.getFullYear(), time.getMonth(), time.getDay() + 1)
-        if (tomorrow.getMonth() !== time.getMonth()) {
+        const lastDay = new Date(time.getFullYear(), time.getMonth() + 1, 0).getDate()
+        if (time.getDate() !== lastDay) {
             return false
         }
     }

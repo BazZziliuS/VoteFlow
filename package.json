@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "check": "npm run lint && node scripts/check-manifest.js"
+    "test": "node --test \"tests/*.test.js\"",
+    "test:ui": "node tests/ui/smoke.js",
+    "check": "npm run lint && node scripts/check-manifest.js && npm test"
   },
   "devDependencies": {
     "eslint": "^10.15.0",

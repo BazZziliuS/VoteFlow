@@ -214,9 +214,6 @@ async function humanDragAndDrop(dragElement, dropZone) {
 
 // --- Smoothly moves mouse cursor visually from current pos to (x,y) ---
 async function smoothMouseMovement(x, y, duration = 500) {
-    const currentX = x; // In real use, you'd track last mouse pos — here we assume starting at target
-    const currentY = y; // For simplicity, we skip interpolation since we’re going to drag immediately after
-
     // If you want REAL cursor movement simulation (optional):
     // You can't move the real cursor via JS — but visual hover effects often rely on mousemove events.
     // So we dispatch mousemove from an arbitrary start point → target.

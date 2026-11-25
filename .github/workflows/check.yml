@@ -23,3 +23,11 @@ jobs:
 
       - name: Integrity check (paths, site scripts, locales)
         run: node scripts/check-manifest.js
+
+      - name: Unit tests (site configs, vote time, cooldown parsing)
+        run: npm test
+
+      - name: Options page smoke test (headless Chrome)
+        run: npm run test:ui
+        env:
+          CHROME_PATH: /usr/bin/google-chrome

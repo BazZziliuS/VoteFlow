@@ -17,7 +17,6 @@
     'use strict';
 
     // ---------- tiny utils ----------
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
     function getOrCreateUID() {

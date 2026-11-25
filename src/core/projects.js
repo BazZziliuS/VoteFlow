@@ -1041,7 +1041,7 @@ var allProjects = {
         voteURL: (project) => 'https://minecraft-server.sk/' + project.id + '/vote',
         projectName: (doc) => doc.querySelector('.server.icon').parentElement.innerText.trim(),
         exampleURL: () => ['https://minecraft-server.sk/', 'server-luoend.52', '/vote'],
-        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        parseURL: (url) => ({id: url.pathname.split('/')[1]}),
         timeout: () => ({hours: 24})
     },
     'serveursminecraft.org': {

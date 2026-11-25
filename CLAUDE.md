@@ -315,6 +315,7 @@ Files used in both contexts (like `main.js`):
 - **Language**: All user-facing messages should be in Russian (this is a Russian-language extension)
 - **Commit messages**: Write in Russian, be descriptive
 - **Line endings**: Files use CRLF (Windows), git may show warnings
-- **Checks**: `npm install` once, then `npm run check` — ESLint (`eslint.config.js`, catches undefined globals across classic scripts) plus `scripts/check-manifest.js` (missing importScripts/manifest/options.html paths, site scripts, silent-vote scripts, locale keys). CI runs the same in `.github/workflows/check.yml`. No formatter is configured
+- **Tests**: `npm test` — every site in projects.js (exampleURL → parseURL → pageURL/voteURL round-trip, timeout shape), next-vote time calculator, `parseCooldown`. `npm run test:ui` — options page smoke test in headless Chrome (real scripts, stubbed `chrome.*`, real IndexedDB). Add a test when fixing a bug in this logic
+- **Checks**: `npm install` once, then `npm run check` (lint + integrity + unit tests) — ESLint (`eslint.config.js`, catches undefined globals across classic scripts) plus `scripts/check-manifest.js` (missing importScripts/manifest/options.html paths, site scripts, silent-vote scripts, locale keys). CI runs the same in `.github/workflows/check.yml`. No formatter is configured
 - **Browser compatibility**: Chrome 105.0+, designed for Chromium-based browsers
 - **File structure**: After refactoring, core files are in `src/` subdirectories
