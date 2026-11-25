@@ -90,7 +90,7 @@ async function checkWindow(project) {
 }
 
 /**
- * Группирует вкладку в группу "Auto Vote Rating"
+ * Группирует вкладку в группу "VoteFlow"
  * @async
  * @param {chrome.tabs.Tab} tab - Вкладка для группировки
  * @param {number|null} groupId - ID существующей группы (если есть)
@@ -99,7 +99,7 @@ async function checkWindow(project) {
 async function groupTabIntoAutoVoteGroup(tab, groupId) {
     // С начало ищем группу вкладок
     if (groupId == null) {
-        const groups = await chrome.tabGroups.query({title: 'Auto Vote Rating'})
+        const groups = await chrome.tabGroups.query({title: 'VoteFlow'})
         if (groups.length) groupId = groups[0].id
     }
 
@@ -118,7 +118,7 @@ async function groupTabIntoAutoVoteGroup(tab, groupId) {
     // Если мы не нашли групп или не смогли сгруппировать, создаём новую группу
     try {
         groupId = await tryGroupTabs({tabIds: tab.id}, 0)
-        await chrome.tabGroups.update(groupId, {color: 'blue', title: 'Auto Vote Rating'})
+        await chrome.tabGroups.update(groupId, {color: 'blue', title: 'VoteFlow'})
         return groupId
     } catch (error) {
         if (!error.message.includes('No tab with id') && !error.message.includes('No group with id')) {

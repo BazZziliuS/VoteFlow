@@ -1,4 +1,13 @@
-# Auto Vote Rating Reborn - Chrome Extension - Thanks to Serega007RU original creator of this extension
+# VoteFlow
+
+Browser extension (Chrome / Edge, Manifest V3) that automates voting and claiming daily rewards on game server rating sites.
+
+## Credits
+
+VoteFlow is a continuation of **[Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating)** by **[Serega007](https://github.com/Serega007RU)**, the original author of the extension.
+The original project is no longer maintained, so it is being developed further here under a new name.
+
+Original contributors: Serega007 (developer), Qworte (designer), bozoweed and all translators. Thank you!
 
 # Integrated, free captcha assistance
 - Built‑in detectors and assistance for:
@@ -172,7 +181,7 @@
 
 ## Install the extension from zip archive
 Here is a short guide how to install an unpacked extension on Google Chrome or Chromium-based browsers
-1. [Download](https://github.com/bazzzilius/Auto-Vote-Rating/archive/refs/heads/dev.zip) this repository
+1. [Download](https://github.com/BazZziliuS/VoteFlow/archive/refs/heads/dev.zip) this repository
 2. Unzip the archive to any convenient location
 3. Open the "Extensions" page `chrome://extensions/` in the browser and turn on the "Developer mode"
 

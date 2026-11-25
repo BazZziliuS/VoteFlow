@@ -38,24 +38,24 @@ jobs:
       - name: Package extension
         run: |
           # Создаём временную директорию для сборки
-          mkdir -p build/Auto-Vote-Rating
+          mkdir -p build/VoteFlow
 
           # Копируем все необходимые файлы
-          cp -r src build/Auto-Vote-Rating/
-          cp -r libs build/Auto-Vote-Rating/
-          cp -r images build/Auto-Vote-Rating/
-          cp -r _locales build/Auto-Vote-Rating/
-          cp -r css build/Auto-Vote-Rating/
-          cp -r fonts build/Auto-Vote-Rating/
-          cp manifest.json build/Auto-Vote-Rating/
+          cp -r src build/VoteFlow/
+          cp -r libs build/VoteFlow/
+          cp -r images build/VoteFlow/
+          cp -r _locales build/VoteFlow/
+          cp -r css build/VoteFlow/
+          cp -r fonts build/VoteFlow/
+          cp manifest.json build/VoteFlow/
 
           # Переходим в директорию build и создаём архив
           cd build
-          zip -r Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip Auto-Vote-Rating
+          zip -r VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip VoteFlow
 
           # Показываем содержимое архива для проверки
           echo "Archive contents:"
-          unzip -l Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip | head -20
+          unzip -l VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip | head -20
 
       - name: Install crx3 for CRX packaging
         run: npm install -g crx3
@@ -72,24 +72,24 @@ jobs:
           cd build
 
           # Создаём .crx файл
-          crx3 Auto-Vote-Rating -o Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.crx -p key.pem
+          crx3 VoteFlow -o VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.crx -p key.pem
 
           # Показываем информацию о файлах
           echo "Created packages:"
-          ls -lh Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.*
+          ls -lh VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.*
 
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Auto-Vote-Rating-ZIP-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
-          path: build/Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip
+          name: VoteFlow-ZIP-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
+          path: build/VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip
           retention-days: 90
 
       - name: Upload CRX artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Auto-Vote-Rating-CRX-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
-          path: build/Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.crx
+          name: VoteFlow-CRX-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
+          path: build/VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.crx
           retention-days: 90
 
       - name: Build summary
@@ -98,7 +98,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Extension Version:** ${{ steps.get_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           echo "**Branch:** ${{ steps.get_branch.outputs.branch }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Artifact:** Auto-Vote-Rating-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip" >> $GITHUB_STEP_SUMMARY
+          echo "**Artifact:** VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📦 Installation" >> $GITHUB_STEP_SUMMARY
           echo "1. Download the artifact from this workflow run" >> $GITHUB_STEP_SUMMARY

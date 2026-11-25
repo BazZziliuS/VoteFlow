@@ -1,6 +1,26 @@
 {
+  "confirmDeleteClick": {
+    "message": "Zum Löschen erneut klicken"
+  },
+  "inTime": {
+    "message": "in $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "maintainer": {
+    "message": "Betreuer:"
+  },
+  "originalAuthor": {
+    "message": "Ursprünglicher Autor:"
+  },
+  "basedOn": {
+    "message": "VoteFlow ist eine Fortsetzung der Erweiterung Auto Vote Rating, ursprüngliches Projekt:"
+  },
   "appName": {
-    "message": "Auto Vote Bewertung",
+    "message": "VoteFlow",
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {

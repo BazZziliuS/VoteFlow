@@ -1,6 +1,6 @@
 # Utils - Модульная структура утилит
 
-Директория содержит переиспользуемые модули для расширения Auto Vote Rating.
+Директория содержит переиспользуемые модули для расширения VoteFlow.
 
 > **Важно:** После рефакторинга (2026-02-16) все пути импорта используют **абсолютные пути с префиксом `/`** для корректной работы в Service Worker контексте.
 
@@ -179,7 +179,7 @@ src/utils/
 - `tryCloseTab(tabId, project, attempt)` - Закрывает вкладку с retry
 - `tryGroupTabs(options, attempt)` - Группирует вкладки с retry
 - `checkWindow(project)` - Проверяет наличие окон
-- `groupTabIntoAutoVoteGroup(tab, groupId)` - Группирует вкладку в группу "Auto Vote Rating"
+- `groupTabIntoAutoVoteGroup(tab, groupId)` - Группирует вкладку в группу "VoteFlow"
 
 **Используется в:** background.js
 

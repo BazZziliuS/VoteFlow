@@ -22,12 +22,12 @@
 2. Перейдите в раздел "Actions" на GitHub
 3. Откройте последний workflow run
 4. Скачайте артефакты из раздела "Artifacts":
-   - `Auto-Vote-Rating-ZIP-{version}-{branch}` - для "Load unpacked"
-   - `Auto-Vote-Rating-CRX-{version}-{branch}` - нативный пакет
+   - `VoteFlow-ZIP-{version}-{branch}` - для "Load unpacked"
+   - `VoteFlow-CRX-{version}-{branch}` - нативный пакет
 
 **Форматы артефактов:**
-- ZIP: `Auto-Vote-Rating-7.2.6-dev.zip`
-- CRX: `Auto-Vote-Rating-7.2.6-dev.crx`
+- ZIP: `VoteFlow-7.2.6-dev.zip`
+- CRX: `VoteFlow-7.2.6-dev.crx`
 
 ---
 
@@ -61,9 +61,9 @@ git push origin v7.2.6
 4. Нажмите "Run workflow"
 
 **Формат релиза:**
-- **Название:** `Auto Vote Rating {version}`
+- **Название:** `VoteFlow {version}`
 - **Тег:** `v{version}`
-- **Файл:** `Auto-Vote-Rating-{version}.zip`
+- **Файл:** `VoteFlow-{version}.zip`
 - **Changelog:** Автоматически генерируется из коммитов
 
 ---
@@ -73,7 +73,7 @@ git push origin v7.2.6
 Архив содержит только необходимые для работы расширения файлы:
 
 ```
-Auto-Vote-Rating/
+VoteFlow/
 ├── src/              # Исходный код
 ├── libs/             # Библиотеки (idb, linkedom)
 ├── images/           # Иконки расширения
@@ -104,14 +104,14 @@ Auto-Vote-Rating/
 
 2. **Распакуйте архив:**
    ```bash
-   unzip Auto-Vote-Rating-7.2.6.zip
+   unzip VoteFlow-7.2.6.zip
    ```
 
 3. **Установите в браузер:**
    - Откройте `chrome://extensions/`
    - Включите "Режим разработчика" (Developer mode)
    - Нажмите "Загрузить распакованное расширение" (Load unpacked)
-   - Выберите папку `Auto-Vote-Rating`
+   - Выберите папку `VoteFlow`
 
 ### Вариант 2: Из CRX-пакета
 
@@ -123,17 +123,17 @@ Chrome 73+ **блокирует** прямую установку `.crx` фай�
 **A) Через распаковку ZIP внутри CRX (самый простой):**
 ```bash
 # .crx файл это просто ZIP-архив, можно распаковать
-unzip Auto-Vote-Rating-7.2.6.crx -d Auto-Vote-Rating
+unzip VoteFlow-7.2.6.crx -d VoteFlow
 # Затем установить как "Load unpacked"
 ```
 
 **B) Через командную строку (для тестирования):**
 ```bash
 # Windows
-chrome.exe --load-extension="C:\path\to\Auto-Vote-Rating.crx"
+chrome.exe --load-extension="C:\path\to\VoteFlow.crx"
 
 # Linux/Mac
-google-chrome --load-extension="/path/to/Auto-Vote-Rating.crx"
+google-chrome --load-extension="/path/to/VoteFlow.crx"
 ```
 
 **C) Перетаскивание в chrome://extensions/ (иногда работает):**
@@ -175,26 +175,26 @@ Chrome требует, чтобы расширения были подписан
 **Шаг 1: Переименуйте файл**
 ```bash
 # Windows (PowerShell)
-Rename-Item Auto-Vote-Rating-7.2.6.crx Auto-Vote-Rating-7.2.6.zip
+Rename-Item VoteFlow-7.2.6.crx VoteFlow-7.2.6.zip
 
 # Linux/Mac
-mv Auto-Vote-Rating-7.2.6.crx Auto-Vote-Rating-7.2.6.zip
+mv VoteFlow-7.2.6.crx VoteFlow-7.2.6.zip
 ```
 
 **Шаг 2: Распакуйте архив**
 ```bash
 # Windows (PowerShell)
-Expand-Archive Auto-Vote-Rating-7.2.6.zip -DestinationPath Auto-Vote-Rating
+Expand-Archive VoteFlow-7.2.6.zip -DestinationPath VoteFlow
 
 # Linux/Mac
-unzip Auto-Vote-Rating-7.2.6.zip -d Auto-Vote-Rating
+unzip VoteFlow-7.2.6.zip -d VoteFlow
 ```
 
 **Шаг 3: Установите в Chrome**
 1. Откройте `chrome://extensions/`
 2. Включите **"Режим разработчика"** (Developer mode) в правом верхнем углу
 3. Нажмите **"Загрузить распакованное расширение"** (Load unpacked)
-4. Выберите папку `Auto-Vote-Rating`
+4. Выберите папку `VoteFlow`
 5. ✅ Готово! Расширение установлено
 
 ---
@@ -202,7 +202,7 @@ unzip Auto-Vote-Rating-7.2.6.zip -d Auto-Vote-Rating
 #### **Решение 2: Использовать ZIP-артефакт вместо CRX**
 
 Просто скачайте `.zip` файл вместо `.crx`:
-- В Artifacts ищите `Auto-Vote-Rating-ZIP-*` вместо `Auto-Vote-Rating-CRX-*`
+- В Artifacts ищите `VoteFlow-ZIP-*` вместо `VoteFlow-CRX-*`
 - В Releases скачайте `.zip` файл
 
 Затем следуйте шагам 2-3 из Решения 1.
@@ -214,18 +214,18 @@ unzip Auto-Vote-Rating-7.2.6.zip -d Auto-Vote-Rating
 **Windows:**
 ```cmd
 "C:\Program Files\Google\Chrome\Application\chrome.exe" ^
-  --load-extension="C:\path\to\Auto-Vote-Rating.crx"
+  --load-extension="C:\path\to\VoteFlow.crx"
 ```
 
 **Linux:**
 ```bash
-google-chrome --load-extension="/path/to/Auto-Vote-Rating.crx"
+google-chrome --load-extension="/path/to/VoteFlow.crx"
 ```
 
 **Mac:**
 ```bash
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
-  --load-extension="/path/to/Auto-Vote-Rating.crx"
+  --load-extension="/path/to/VoteFlow.crx"
 ```
 
 ⚠️ **Недостаток:** Расширение останется активным только пока открыт Chrome, запущенный с этим флагом.
@@ -241,14 +241,14 @@ google-chrome --load-extension="/path/to/Auto-Vote-Rating.crx"
 2. Создайте политику `ExtensionInstallForcelist` в `HKLM\SOFTWARE\Policies\Google\Chrome`
 3. Добавьте значение:
    ```
-   {extension_id};file:///C:/path/to/Auto-Vote-Rating.crx
+   {extension_id};file:///C:/path/to/VoteFlow.crx
    ```
 
 **Linux (через `/etc/opt/chrome/policies/`):**
 ```json
 {
   "ExtensionInstallForcelist": [
-    "{extension_id};file:///path/to/Auto-Vote-Rating.crx"
+    "{extension_id};file:///path/to/VoteFlow.crx"
   ]
 }
 ```

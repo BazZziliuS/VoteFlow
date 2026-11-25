@@ -1,6 +1,26 @@
 {
+  "confirmDeleteClick": {
+    "message": "Натисніть ще раз, щоб видалити"
+  },
+  "inTime": {
+    "message": "через $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "maintainer": {
+    "message": "Супровід і доопрацювання:"
+  },
+  "originalAuthor": {
+    "message": "Автор оригінального розширення:"
+  },
+  "basedOn": {
+    "message": "VoteFlow — продовження розширення Auto Vote Rating, оригінальний проєкт:"
+  },
   "appName": {
-    "message": "Auto Vote Rating"
+    "message": "VoteFlow"
   },
   "appDesc": {
     "message": "Автоматичне голосування на рейтингах за проекти чи сервера (ігрові)"

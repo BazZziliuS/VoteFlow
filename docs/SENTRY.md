@@ -136,7 +136,7 @@ Sentry.captureException(new Error('Test error from service worker'))
 ## 📈 Просмотр данных
 
 1. Войдите в [Sentry Dashboard](https://o4508675969376256.ingest.de.sentry.io/)
-2. Выберите проект **Auto Vote Rating**
+2. Выберите проект **VoteFlow**
 3. Вкладки:
    - **Issues** - список ошибок
    - **Performance** - мониторинг производительности

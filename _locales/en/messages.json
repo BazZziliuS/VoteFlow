@@ -1,6 +1,26 @@
 {
+  "confirmDeleteClick": {
+    "message": "Click again to delete"
+  },
+  "inTime": {
+    "message": "in $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "maintainer": {
+    "message": "Maintainer:"
+  },
+  "originalAuthor": {
+    "message": "Original author:"
+  },
+  "basedOn": {
+    "message": "VoteFlow is a continuation of the Auto Vote Rating extension, original project:"
+  },
   "appName": {
-    "message": "Auto Vote Rating",
+    "message": "VoteFlow",
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {
@@ -20,19 +40,19 @@
     "description": "Notification. Fast add"
   },
   "load": {
-    "message": "Loading...",
+    "message": "Loading",
     "description": "Notification. Loading message"
   },
   "addedButton": {
-    "message": "Added",
+    "message": "Projects",
     "description": "Button. Added"
   },
   "optionsButton": {
-    "message": "Options",
+    "message": "Settings",
     "description": "Button. Options"
   },
   "addTitle": {
-    "message": "Adding a new project",
+    "message": "New project",
     "description": "Header. Add"
   },
   "yourNick": {
@@ -59,11 +79,11 @@
     "description": "Input. Custom"
   },
   "optionsExtension": {
-    "message": "Expansion options",
+    "message": "Settings",
     "description": "Header. Options"
   },
   "settings": {
-    "message": "Settings",
+    "message": "General",
     "description": "Label. Settings"
   },
   "disabledNotifStart": {
@@ -166,7 +186,7 @@
     "description": "Button. Set cooldown"
   },
   "settingsFile": {
-    "message": "Export/Import",
+    "message": "Backup and logs",
     "description": "Label. Export/Import"
   },
   "importSettings": {
@@ -186,7 +206,7 @@
     "description": "Header. Added projects"
   },
   "notAddedAll": {
-    "message": "You haven't added anything here yet"
+    "message": "No projects yet. Add the first one on the Add tab"
   },
   "notAdded": {
     "message": "You haven't added any projects to this voting page yet!",
@@ -234,7 +254,7 @@
     "message": "Delete"
   },
   "nextVote": {
-    "message": "Next vote after:"
+    "message": "Next vote"
   },
   "inPriority": {
     "message": "In priority"
@@ -410,7 +430,7 @@
     "message": "Enter ID"
   },
   "developers": {
-    "message": "Developers:"
+    "message": "Authors"
   },
   "developer": {
     "message": "Developer:"
@@ -598,13 +618,13 @@
     "message": "Randomized"
   },
   "soon": {
-    "message": "Soon..."
+    "message": "soon"
   },
   "inQueue": {
-    "message": "In the voting queue..."
+    "message": "in queue"
   },
   "now": {
-    "message": "There is a vote going on right now..."
+    "message": "voting now"
   },
   "timeout": {
     "message": "Vote expecting time has expired"
@@ -696,7 +716,7 @@
     "message": "Set the number (day)"
   },
   "advSettings": {
-    "message": "Advanced setting:"
+    "message": "Advanced"
   },
   "customTimeOut": {
     "message": "Customize the time of the next vote (timeout)"
@@ -958,7 +978,7 @@
     "message": "Cancel"
   },
   "editTitle": {
-    "message": "Editing an existing project"
+    "message": "Edit project"
   },
   "operaAttention": {
     "message": "Attention! We found that you are using the Opera browser, with this browser there is a problem accessing Google captcha. Please follow the instructions below to give the extension access to Google captcha"

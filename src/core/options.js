@@ -68,9 +68,9 @@ async function createNotif(message, type, options = {}) {
     }
 
     if (type !== 'hint') {
-        let imgBlock = document.createElement('img')
-        imgBlock.src = '../../images/notif/' + type + '.png'
-        notif.append(imgBlock)
+        const dot = document.createElement('span')
+        dot.classList.add('notif-dot')
+        notif.append(dot)
         let progressBlock = document.createElement('div')
         progressBlock.classList.add('progress')
         let progressBar = document.createElement('div')
@@ -188,6 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions(true)
 
     document.querySelector('div[data-resource="version"]').textContent += chrome.runtime.getManifest().version
+    document.getElementById('navVersion').textContent = 'v' + chrome.runtime.getManifest().version
 
     //Для FireFox почему-то не доступно это API
     // noinspection JSUnresolvedVariable
@@ -284,6 +285,7 @@ async function addProjectList(project, preBend) {
 
         const count = Number(document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent)
         document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent = String(count + 1)
+        updateNavCount()
 
         if (project.time != null && project.time > Date.now()) {
             let create = true
@@ -307,77 +309,49 @@ async function addProjectList(project, preBend) {
     if (listProject.childElementCount === 0 && listProject.parentElement.style.display === 'none') return
     const li = document.createElement('li')
     li.id = 'projects' + project.key
+    li.classList.add('project')
+
+    const statusDot = document.createElement('span')
+    statusDot.classList.add('status-dot')
 
     const div = document.createElement('div')
     div.classList.add('controlItems')
 
     let img3
     if (settings.expertMode) {
-        img3 = document.createElement('div')
-        const img3svg = document.createElement('img')
-        const img3text = document.createElement('span')
-        img3text.classList.add('tooltiptext')
-        img3text.textContent = chrome.i18n.getMessage('edit')
-        img3.classList.add('projectStats')
-        img3svg.src = '../../images/icons/edit.svg'
-        img3.appendChild(img3svg)
-        img3.appendChild(img3text)
-        div.appendChild(img3)
+        img3 = createProjectAction('pencil', chrome.i18n.getMessage('edit'))
+        div.append(img3)
     }
-
-    const img0 = document.createElement('div')
-    const img0svg = document.createElement('img')
-    const img0text = document.createElement('span')
-    img0text.classList.add('tooltiptext')
-    img0text.textContent = chrome.i18n.getMessage('restart')
-    img0.classList.add('projectStats')
-    img0svg.src = '../../images/icons/restart.svg'
-    img0.appendChild(img0svg)
-    img0.appendChild(img0text)
-    div.appendChild(img0)
-
-    const img1 = document.createElement('div')
-    const img1svg = document.createElement('img')
-    const img1text = document.createElement('span')
-    img1text.classList.add('tooltiptext')
-    img1text.textContent = chrome.i18n.getMessage('stats2')
-    img1.classList.add('projectStats')
-    img1svg.src = '../../images/icons/stats.svg'
-    img1.appendChild(img1svg)
-    img1.appendChild(img1text)
-    div.appendChild(img1)
-
-    const img2 = document.createElement('div')
-    const img2svg = document.createElement('img')
-    const img2text = document.createElement('span')
-    img2text.classList.add('tooltiptext')
-    img2text.textContent = chrome.i18n.getMessage('deleteButton')
-    img2.classList.add('projectStats')
-    img2svg.src = '../../images/icons/delete.svg'
-    img2.appendChild(img2svg)
-    img2.appendChild(img2text)
-    div.appendChild(img2)
+    const img0 = createProjectAction('restart', chrome.i18n.getMessage('restart'))
+    const img1 = createProjectAction('stats', chrome.i18n.getMessage('stats2'))
+    const img2 = createProjectAction('trash', chrome.i18n.getMessage('deleteButton'))
+    img2.classList.add('danger')
+    div.append(img0, img1, img2)
 
     const contDiv = document.createElement('div')
     contDiv.classList.add('message')
 
     const nameProjectMes = document.createElement('div')
+    nameProjectMes.classList.add('projectName')
     contDiv.append(nameProjectMes)
 
-    const div2 = document.createElement('div')
-    div2.classList.add('error')
-    contDiv.appendChild(div2)
-
-    const div3 = document.createElement('div')
-    div3.classList.add('warn')
-    contDiv.appendChild(div3)
+    const tags = document.createElement('div')
+    tags.classList.add('tags')
+    contDiv.append(tags)
 
     const nextVoteMes = document.createElement('div')
     nextVoteMes.classList.add('textNextVote')
     contDiv.append(nextVoteMes)
 
-    li.append(contDiv)
-    li.append(div)
+    const div2 = document.createElement('div')
+    div2.classList.add('error')
+    contDiv.append(div2)
+
+    const div3 = document.createElement('div')
+    div3.classList.add('warn')
+    contDiv.append(div3)
+
+    li.append(statusDot, contDiv, div)
 
     if (preBend) {
         listProject.prepend(li)
@@ -388,8 +362,19 @@ async function addProjectList(project, preBend) {
     await updateProjectText(project)
 
     //Слушатель кнопки "Удалить" на проект
+    // Удаление в два клика: первый клик просит подтверждение, второй в течение 3 секунд удаляет
     img2.addEventListener('click', async (event) => {
         if (event.target.disabled) return
+        if (!img2.classList.contains('confirming')) {
+            img2.classList.add('confirming')
+            img2.querySelector('.tooltiptext').textContent = chrome.i18n.getMessage('confirmDeleteClick')
+            img2.confirmTimer = setTimeout(() => {
+                img2.classList.remove('confirming')
+                img2.querySelector('.tooltiptext').textContent = chrome.i18n.getMessage('deleteButton')
+            }, 3000)
+            return
+        }
+        clearTimeout(img2.confirmTimer)
         event.target.disabled = true
         await removeProjectList(project, false, event)
         event.target.disabled = false
@@ -443,6 +428,68 @@ async function addProjectList(project, preBend) {
     }
 }
 
+function createProjectAction(icon, label) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.classList.add('projectStats')
+    button.setAttribute('aria-label', label)
+    const iconEl = document.createElement('span')
+    iconEl.className = 'i i-' + icon
+    const tooltip = document.createElement('span')
+    tooltip.classList.add('tooltiptext')
+    tooltip.textContent = label
+    button.append(iconEl, tooltip)
+    return button
+}
+
+//Счётчик проектов в боковом меню
+async function updateNavCount() {
+    const count = await db.count('projects')
+    document.getElementById('navProjectsCount').textContent = count > 0 ? String(count) : ''
+}
+
+//Относительное время до следующего голосования: «через 3 ч 12 мин»
+function formatRelative(time) {
+    const diff = time - Date.now()
+    if (diff <= 0) return ''
+    const minutes = Math.round(diff / 60000)
+    const lang = chrome.i18n.getUILanguage()
+    const units = []
+    const days = Math.floor(minutes / 1440)
+    const hours = Math.floor((minutes % 1440) / 60)
+    const mins = minutes % 60
+    const fmt = (value, unit) => new Intl.NumberFormat(lang, {style: 'unit', unit, unitDisplay: 'short'}).format(value)
+    if (days) units.push(fmt(days, 'day'))
+    if (hours) units.push(fmt(hours, 'hour'))
+    if (!days && (mins || units.length === 0)) units.push(fmt(Math.max(mins, 1), 'minute'))
+    return chrome.i18n.getMessage('inTime', units.join(' '))
+}
+
+function renderNextVote(element, time, text) {
+    element.replaceChildren()
+    const label = document.createElement('span')
+    label.textContent = chrome.i18n.getMessage('nextVote')
+    const when = document.createElement('span')
+    when.classList.add('when')
+    if (time) when.classList.add('is-time')
+    when.textContent = text
+    element.append(label, when)
+    if (time) {
+        const rel = document.createElement('span')
+        rel.classList.add('rel')
+        rel.dataset.time = String(time)
+        rel.textContent = formatRelative(time)
+        element.append(rel)
+    }
+}
+
+//Раз в минуту обновляем «через N мин» у видимых проектов
+setInterval(() => {
+    document.querySelectorAll('.textNextVote .rel[data-time]').forEach(el => {
+        el.textContent = formatRelative(Number(el.dataset.time))
+    })
+}, 60000)
+
 async function updateModalStats(project, toggle) {
     if (toggle) {
         toggleModal('stats')
@@ -493,8 +540,8 @@ function generateBtnListRating(rating, count) {
     if (!(allProjects[rating].notRequiredCaptcha?.())) {
         const label = document.createElement('label')
         label.setAttribute('data-resource', 'passageCaptcha')
+        label.classList.add('callout', 'warn')
         label.textContent = chrome.i18n.getMessage('passageCaptcha')
-        label.style.color = '#f1af4c'
         const link = document.createElement('a')
         link.classList.add('link')
         link.target = 'blank_'
@@ -508,7 +555,8 @@ function generateBtnListRating(rating, count) {
     div2.setAttribute('data-rating-list', rating)
     ul.append(div2)
     const dellAll = document.createElement('button')
-    dellAll.className = 'submitBtn redBtn'
+    dellAll.type = 'button'
+    dellAll.className = 'btn redBtn deleteAll'
     dellAll.textContent = chrome.i18n.getMessage('deleteAll')
     dellAll.addEventListener('click', async function () {
         if (confirm(chrome.i18n.getMessage('deleteAllRating'))) {
@@ -523,7 +571,10 @@ function generateBtnListRating(rating, count) {
             document.querySelector('[data-rating-button="' + rating + '"]').remove()
             if (document.querySelector('.buttonBlock').childElementCount <= 0) {
                 document.getElementById('notAddedAll').textContent = chrome.i18n.getMessage('notAddedAll')
+            } else {
+                selectFirstRating()
             }
+            updateNavCount()
         }
     })
     ul.append(dellAll)
@@ -556,6 +607,7 @@ async function removeProjectList(project, editing, event) {
             clearTimeout(timer)
         }
         usageSpace()
+        updateNavCount()
 
         if (!editing) {
             const count = Number(document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent) - 1
@@ -564,6 +616,8 @@ async function removeProjectList(project, editing, event) {
                 document.querySelector('[data-rating-button="' + project.rating + '"]').remove()
                 if (document.querySelector('.buttonBlock').childElementCount <= 0) {
                     document.getElementById('notAddedAll').textContent = chrome.i18n.getMessage('notAddedAll')
+                } else {
+                    selectFirstRating()
                 }
             } else {
                 li.remove()
@@ -590,6 +644,17 @@ async function reloadProjectList() {
             }
         }
     }
+    updateNavCount()
+    if (document.getElementById('added').style.display !== 'none') selectFirstRating()
+}
+
+//Открывает первый по порядку рейтинг, если ни один не выбран
+function selectFirstRating() {
+    if (document.querySelector('.selectsite.activeList')) return
+    const buttons = Array.from(document.querySelectorAll('.buttonBlock .selectsite'))
+    if (!buttons.length) return
+    buttons.sort((a, b) => Number(a.style.order) - Number(b.style.order))
+    buttons[0].click()
 }
 
 //Слушатель дополнительных настроек
@@ -782,7 +847,7 @@ function resetEdit(project) {
     document.getElementById('voteMode').dispatchEvent(new Event('change'))
     document.getElementById('rating').value = ''
     document.getElementById('rating').dispatchEvent(new Event('input'))
-    document.querySelector('#addTab img').src = '../../images/icons/addBtn.svg'
+    document.querySelector('#addTab .i').className = 'i i-plus'
     document.querySelector('#addTab div').textContent = chrome.i18n.getMessage('addButton')
     document.querySelector('[data-resource="addTitle"]').textContent = chrome.i18n.getMessage('addTitle')
     document.querySelector('.editSubtitle').removeAttribute('id')
@@ -808,7 +873,7 @@ function editProject(project, switchToEdit) {
     resetEdit()
     editingProject = project
     document.querySelector('#addTab div').textContent = chrome.i18n.getMessage('edit')
-    document.querySelector('#addTab img').src = '../../images/icons/edit.svg'
+    document.querySelector('#addTab .i').className = 'i i-pencil'
     if (switchToEdit) document.getElementById('addTab').click()
     document.getElementById('switchAddMode').checked = true
     document.getElementById('switchAddMode').dispatchEvent(new Event('change'))
@@ -1367,8 +1432,8 @@ async function addProject(project, element) {
                 const button = document.createElement('button')
                 button.id = 'authvk'
                 button.classList.add('btn')
-                const img = document.createElement('img')
-                img.src = '../../images/icons/arrow.svg'
+                const img = document.createElement('span')
+                img.className = 'i i-external'
                 button.append(img)
                 const text = document.createElement('div')
                 text.textContent = chrome.i18n.getMessage('authButton')
@@ -1596,7 +1661,7 @@ document.getElementById('file-download').addEventListener('click', async () => {
     const blob = new Blob([text], {type: 'text/json;charset=UTF-8;'})
     const anchor = document.createElement('a')
 
-    anchor.download = 'AVR.json'
+    anchor.download = 'VoteFlow.json'
     anchor.href = (window.webkitURL || window.URL).createObjectURL(blob)
     anchor.dataset.downloadurl = ['text/json;charset=UTF-8;', anchor.download, anchor.href].join(':')
     anchor.click()
@@ -1898,7 +1963,7 @@ async function fastAdd() {
             await addProject(project, status)
         }
 
-        if (document.querySelector('#addFastProject img[src="images/icons/error.svg"]') != null) {
+        if (document.querySelector('#addFastProject img[src$="error.svg"]') != null) {
             const buttonRetry = document.createElement('button')
             buttonRetry.classList.add('btn')
             buttonRetry.textContent = chrome.i18n.getMessage('retry')
@@ -1985,18 +2050,10 @@ document.querySelectorAll('.tablinks').forEach((item) => {
             elem.classList.remove('active')
         })
 
-        let genStats = document.querySelector('#generalStats')
-        let todStats = document.querySelector('#todayStats')
-        if (item.getAttribute('data-tab') === 'added') {
-            genStats.style.display = 'block'
-            todStats.style.display = 'block'
-        } else {
-            genStats.removeAttribute('style')
-            todStats.removeAttribute('style')
-        }
-
         item.classList.add('active')
         document.getElementById(item.getAttribute('data-tab')).style.display = 'block'
+        if (item.getAttribute('data-tab') === 'added') selectFirstRating()
+        window.scrollTo({top: 0})
     })
 })
 
@@ -2014,7 +2071,7 @@ async function listSelect(event, tabs) {
         selectsite[x].className = selectsite[x].className.replace(' activeList', '')
     }
 
-    document.querySelector('[data-rating-tab="' + tabs + '"]').style.display = 'block'
+    document.querySelector('[data-rating-tab="' + tabs + '"]').style.display = 'flex'
     event.currentTarget.className += ' activeList'
 
     const list = document.querySelector('[data-rating-list="' + tabs + '"]')
@@ -2479,21 +2536,29 @@ async function onMessage(request) {
 async function updateProjectText(project) {
     const el = document.getElementById('projects' + project.key)
     if (el) {
+        let state = 'scheduled'
         let text = chrome.i18n.getMessage('soon')
+        let time = null
         if (!(project.time == null || project.time === '') && Date.now() < project.time) {
+            time = project.time
             text = new Date(project.time).toLocaleString().replace(',', '')
         } else {
             openedProjects = await db.get('other', 'openedProjects')
             for (const value of openedProjects.values()) {
                 if (project.rating === value.rating) {
                     text = chrome.i18n.getMessage('inQueue')
+                    state = 'queue'
                     if (project.key === value.key) {
                         text = chrome.i18n.getMessage('now')
+                        state = 'now'
                         break
                     }
                 }
             }
         }
+        if (project.error) state = 'error'
+        el.dataset.state = state
+
         let textProject = ''
         if (project.nick && project.nick !== '') textProject += ' – ' + project.nick
         if (project.game && project.game !== '') textProject += ' – ' + project.game
@@ -2504,35 +2569,38 @@ async function updateProjectText(project) {
         } else {
             textProject = textProject.replace(' – ', '')
         }
-        if (project.priority) textProject += ' (' + chrome.i18n.getMessage('inPriority') + ')'
-        if (project.randomize) textProject += ' (' + chrome.i18n.getMessage('inRandomize') + ')'
-        if (project.rating !== 'Custom' && (project.timeout != null || project.timeoutHour != null)) textProject += ' (' + chrome.i18n.getMessage('customTimeOut2') + ')'
-        if (project.lastDayMonth) textProject += ' (' + chrome.i18n.getMessage('lastDayMonth2') + ')'
-        if (project.silentMode) textProject += ' (' + chrome.i18n.getMessage('enabledSilentVoteSilent') + ')'
-        if (project.emulateMode) textProject += ' (' + chrome.i18n.getMessage('enabledSilentVoteNoSilent') + ')'
-        el.querySelector('div > div').textContent = textProject
-        el.querySelector('.textNextVote').textContent = chrome.i18n.getMessage('nextVote') + ' ' + text
+        el.querySelector('.projectName').textContent = textProject
+
+        const tags = []
+        if (project.priority) tags.push(chrome.i18n.getMessage('inPriority'))
+        if (project.randomize) tags.push(chrome.i18n.getMessage('inRandomize'))
+        if (project.rating !== 'Custom' && (project.timeout != null || project.timeoutHour != null)) tags.push(chrome.i18n.getMessage('customTimeOut2'))
+        if (project.lastDayMonth) tags.push(chrome.i18n.getMessage('lastDayMonth2'))
+        if (project.silentMode) tags.push(chrome.i18n.getMessage('enabledSilentVoteSilent'))
+        if (project.emulateMode) tags.push(chrome.i18n.getMessage('enabledSilentVoteNoSilent'))
+        el.querySelector('.tags').replaceChildren(...tags.map(tagText => {
+            const tag = document.createElement('span')
+            tag.classList.add('tag')
+            tag.textContent = tagText
+            return tag
+        }))
+
+        renderNextVote(el.querySelector('.textNextVote'), time, text)
+
         const errorElement = el.querySelector('.error')
         errorElement.textContent = ''
         const warnElement = el.querySelector('.warn')
         warnElement.textContent = ''
+        const controlItems = el.querySelector('.controlItems')
+        const accessButton = controlItems.querySelector('.access')
         if (project.error) {
             conventPlainTextToLinks(project.error, errorElement)
             if (project.error.includes('Cannot access contents of the page')) {
-                const controlItems = el.querySelector('.controlItems')
-                if (!controlItems.querySelector('img.access')) {
-                    const img = document.createElement('div')
-                    const imgsvg = document.createElement('img')
-                    const imgtext = document.createElement('span')
-                    imgtext.classList.add('tooltiptext')
-                    imgtext.textContent = chrome.i18n.getMessage('access')
-                    img.classList.add('projectStats')
-                    imgsvg.src = '../../images/icons/access.svg'
-                    imgsvg.classList.add('access')
-                    img.appendChild(imgsvg)
-                    img.appendChild(imgtext)
-                    controlItems.prepend(img)
-                    img.addEventListener('click', async () => {
+                if (!accessButton) {
+                    const button = createProjectAction('shield', chrome.i18n.getMessage('access'))
+                    button.classList.add('access', 'attention')
+                    controlItems.prepend(button)
+                    button.addEventListener('click', async () => {
                         if (await checkPermissions([project])) {
                             delete project.error
                             await chrome.runtime.sendMessage({projectRestart: project, confirmed: true})
@@ -2540,11 +2608,11 @@ async function updateProjectText(project) {
                         }
                     })
                 }
-            } else if (el.querySelector('.controlItems img.access')) {
-                el.querySelector('.controlItems img.access').parentElement.remove()
+            } else if (accessButton) {
+                accessButton.remove()
             }
-        } else if (el.querySelector('.controlItems img.access')) {
-            el.querySelector('.controlItems img.access').parentElement.remove()
+        } else if (accessButton) {
+            accessButton.remove()
         }
         if (project.warn) {
             conventPlainTextToLinks(project.warn, warnElement)
@@ -2621,8 +2689,11 @@ modalsBlock.querySelector('.overlay').addEventListener('click', () => {
         document.querySelector('#' + activeModal.id + ' .close').click()
         return
     }
-    activeModal.style.transform = 'scale(1.1)'
-    setTimeout(() => activeModal.removeAttribute('style'), 100)
+    activeModal.animate([
+        {transform: 'translate(-50%, -50%) scale(1)'},
+        {transform: 'translate(-50%, -50%) scale(1.02)'},
+        {transform: 'translate(-50%, -50%) scale(1)'}
+    ], {duration: 200, easing: 'cubic-bezier(.22, 1, .36, 1)'})
 })
 
 document.querySelectorAll('button[data-resource="deleteExtension"]').forEach(element => {
