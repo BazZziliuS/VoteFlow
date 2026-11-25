@@ -1,4 +1,10 @@
 {
+  "vkIdNotLoggedIn": {
+    "message": "you are not signed in to VK in this browser. Sign in at vk.ru and the next vote will sign in to the site automatically"
+  },
+  "vkIdNoResponse": {
+    "message": "VK ID did not respond within 45 seconds"
+  },
   "topcraftLogin": {
     "message": "Could not sign in to topcraft.club automatically. Sign in to VK or to topcraft.club in this browser — TopCraft does not allow voting without signing in"
   },

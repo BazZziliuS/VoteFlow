@@ -1,4 +1,10 @@
 {
+  "vkIdNotLoggedIn": {
+    "message": "Sie sind in diesem Browser nicht bei VK angemeldet. Melden Sie sich auf vk.ru an, dann meldet die nächste Abstimmung Sie automatisch an"
+  },
+  "vkIdNoResponse": {
+    "message": "VK ID hat nicht innerhalb von 45 Sekunden geantwortet"
+  },
   "topcraftLogin": {
     "message": "Automatische Anmeldung bei topcraft.club fehlgeschlagen. Melden Sie sich in diesem Browser bei VK oder topcraft.club an — ohne Anmeldung ist keine Abstimmung möglich"
   },

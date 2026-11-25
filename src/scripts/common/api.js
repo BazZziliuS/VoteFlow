@@ -98,6 +98,37 @@ function watchTurnstileToken() {
 }
 
 /**
+ * Вход через VK ID: ждём редиректа обратно на сайт, при необходимости один раз нажимаем «Продолжить»/«Разрешить».
+ * Форма входа означает, что пользователь не вошёл во ВКонтакте в этом браузере
+ */
+function handleVkId() {
+    const started = Date.now()
+    let clicked = false
+    const timer = setInterval(() => {
+        const loginField = document.querySelector('input[name="login"], input[name="phone"], input[type="tel"], input[autocomplete="username"]')
+        if (loginField && isVisibleElement(loginField)) {
+            clearInterval(timer)
+            chrome.runtime.sendMessage({errorAuthVK: chrome.i18n.getMessage('vkIdNotLoggedIn'), notAuth: true, ignoreReport: true})
+            return
+        }
+        if (!clicked) {
+            const confirm = [...document.querySelectorAll('button, [role="button"]')].find(button =>
+                isVisibleElement(button) && /^\s*(продолжить|разрешить|подтвердить|войти как|continue|allow|confirm|sign in as)/i.test(button.textContent))
+            if (confirm) {
+                clicked = true
+                confirm.click()
+                return
+            }
+        }
+        if (Date.now() - started > 45000) {
+            clearInterval(timer)
+            const text = (document.body?.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 300)
+            chrome.runtime.sendMessage({errorAuthVK: text || chrome.i18n.getMessage('vkIdNoResponse'), ignoreReport: true})
+        }
+    }, 1000)
+}
+
+/**
  * Ждёт токен Cloudflare Turnstile в форме. Через timeout секунд один раз просит пользователя пройти капчу
  * и продолжает ждать, чтобы голос всё равно ушёл. Все вызовы на странице делят одно ожидание
  * @param {string} [scope] селектор формы, внутри которой искать токен
@@ -158,6 +189,13 @@ async function checkAll(first) {
     }
     if (document.URL.startsWith('https://steamcommunity.com/login/home')) {
         chrome.runtime.sendMessage({authSteam: true})
+        return
+    }
+
+    // Новый VK ID (id.vk.ru / id.vk.com) — одностраничное приложение: сразу после загрузки на нём только «Загружается…».
+    // Ждём, пока он вернёт на сайт сам (доступ уже выдавался) или покажет кнопку подтверждения
+    if (/^https:\/\/id\.vk\.(ru|com)\//.test(document.URL)) {
+        handleVkId()
         return
     }
 
