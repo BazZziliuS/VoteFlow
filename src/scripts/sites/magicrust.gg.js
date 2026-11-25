@@ -10,7 +10,8 @@ const SELECTORS = {
     productCard: '.products__card',
     modal: '.modal[data-product-id="5"], .modal[data-modal="product-5"]',
     authButton: '.auth-btn, .modal-simple-cmd__btn-auth',
-    openCaseButton: '.modal-product-buy',
+    openCaseButton: '[data-attr="product-roulette-open"], .modal-roulette__btn, .modal-product-buy',
+    modalContainer: '.modal.modal-on, .modal__container, .modal__flex, .modal',
     errorMessage: '.alert-danger, .error-message',
     successMessage: '.alert-success, .success-message, .modal-roulette__result'
 }
@@ -146,19 +147,25 @@ function validateFreeCase() {
     return freeCaseButton
 }
 
+function findVisibleOpenCaseButton(root = document) {
+    return Array.from(root.querySelectorAll(SELECTORS.openCaseButton))
+        .find(btn => btn.offsetParent !== null) || null
+}
+
 async function waitForModal() {
     for (let i = 0; i < TIMEOUTS.modalMaxAttempts; i++) {
         await wait(TIMEOUTS.modalAppear)
 
         const modal = document.querySelector(SELECTORS.modal)
-        if (modal && modal.classList.contains('modal-on')) {
+        if (modal && modal.classList.contains('modal-on') && findVisibleOpenCaseButton(modal)) {
             return modal
         }
-        // Запасной вариант: любая открытая модалка с кнопкой открытия кейса
-        const anyModal = Array.from(document.querySelectorAll('.modal.modal-on'))
-            .find(m => m.querySelector(SELECTORS.openCaseButton))
-        if (anyModal) {
-            return anyModal
+        // Новая разметка: .modal__flex > .modal__container > ... > button[data-attr="product-roulette-open"]
+        // Ищем любую видимую кнопку открытия кейса и берём её контейнер модалки
+        const button = findVisibleOpenCaseButton()
+        if (button) {
+            console.log('[Free Case] Open case button found:', button.className)
+            return button.closest(SELECTORS.modalContainer) || button.parentElement
         }
     }
 
@@ -185,9 +192,7 @@ async function handleModalActions(modal) {
     }
 
     // Ищем кнопку сначала в найденной модалке, затем среди видимых модалок на странице
-    const openCaseButton = modal.querySelector(SELECTORS.openCaseButton) ||
-        Array.from(document.querySelectorAll('.modal.modal-on ' + SELECTORS.openCaseButton)).find(btn => btn.offsetParent !== null) ||
-        Array.from(document.querySelectorAll(SELECTORS.openCaseButton)).find(btn => btn.offsetParent !== null)
+    const openCaseButton = findVisibleOpenCaseButton(modal) || findVisibleOpenCaseButton()
     if (!openCaseButton) {
         sendError('Не найдена кнопка «Открыть кейс» в окне кейса')
         return false
