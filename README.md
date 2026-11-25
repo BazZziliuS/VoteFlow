@@ -128,8 +128,8 @@
 ## Разработка
 
 ```bash
-npm install          # ESLint для проверок
-npm run check        # линтер, проверка целостности и юнит-тесты
+npm install          # ESLint и хук проверки коммитов
+npm run check        # линтер, целостность, журнал изменений, юнит-тесты
 npm run test:ui      # страница настроек в headless Chrome
 npm run sites        # какие сайты доступны прямо сейчас
 ```
@@ -155,14 +155,17 @@ src/
     ├── silentvote/         # тихий режим: <домен>_silentvote.js
     └── common/             # api.js, решение капч, общие помощники
 tests/                      # юнит-тесты и тест страницы настроек
-scripts/                    # проверка целостности и доступности сайтов
+scripts/                    # проверки, журнал изменений, выпуск, правила коммитов
+docs/releases/              # заметки к каждой версии → CHANGELOG.md
 ```
 
 </details>
 
 **Новый сайт:** настройки в `src/core/projects.js`, скрипт голосования в `src/scripts/sites/<домен>.js`. Подробное руководство и соглашения — в [CLAUDE.md](CLAUDE.md), помощники для скриптов — в [src/utils/README.md](src/utils/README.md).
 
-Каждый push проверяется в [GitHub Actions](https://github.com/BazZziliuS/VoteFlow/actions): линтер, целостность путей и ключей локализации, тесты всех сайтов и страницы настроек. Релиз собирается по тегу `v*`, заметки к нему лежат в `docs/releases/`.
+Каждый push проверяется в [GitHub Actions](https://github.com/BazZziliuS/VoteFlow/actions): линтер, сообщения коммитов, целостность путей и ключей локализации, тесты всех сайтов и страницы настроек.
+
+Правила коммитов ([Conventional Commits](https://www.conventionalcommits.org/ru/v1.0.0/)), версий ([SemVer](https://semver.org/lang/ru/)) и выпуска — в [CONTRIBUTING.md](CONTRIBUTING.md). История изменений — в [CHANGELOG.md](CHANGELOG.md). Об уязвимостях — по [SECURITY.md](SECURITY.md).
 
 ## Благодарности
 

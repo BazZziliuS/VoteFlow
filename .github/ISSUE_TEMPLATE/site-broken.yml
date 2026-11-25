@@ -1,0 +1,43 @@
+name: Не голосует на сайте
+description: Голосование на сайте-рейтинге не работает или выдаёт ошибку
+title: "fix(<домен>): "
+labels: [site]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Быстрее всего заполнить задачу кнопкой «Сообщить о проблеме» у проекта с ошибкой в настройках VoteFlow — сайт, текст ошибки и версия подставятся сами.
+  - type: input
+    id: url
+    attributes:
+      label: Ссылка на проект
+      placeholder: https://topcraft.club/servers/7411/
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Текст ошибки
+      description: Как он показан у проекта в настройках
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Что происходит
+      description: Что видно на открытой вкладке, какая капча, нужен ли вход на сайт. Можно приложить скриншот
+  - type: input
+    id: version
+    attributes:
+      label: Версия VoteFlow
+      placeholder: "9.0.0"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Браузер и версия
+      placeholder: Chrome 142
+    validations:
+      required: true

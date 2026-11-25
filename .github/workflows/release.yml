@@ -29,6 +29,27 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Extension version: $VERSION"
 
+      - name: Version guard (tag = manifest = package.json, release notes exist)
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          VERSION="${TAG#v}"
+          MANIFEST=$(node -p "require('./manifest.json').version")
+          PACKAGE=$(node -p "require('./package.json').version")
+          if [ "$VERSION" != "$MANIFEST" ] || [ "$VERSION" != "$PACKAGE" ]; then
+            echo "::error::Тег $TAG не совпадает с версией: manifest.json $MANIFEST, package.json $PACKAGE"
+            exit 1
+          fi
+          NOTES="docs/releases/$VERSION.md"
+          if [ ! -f "$NOTES" ]; then
+            echo "::error::Нет заметок к релизу $NOTES — подготовьте их командой npm run release"
+            exit 1
+          fi
+          if ! head -1 "$NOTES" | grep -q 'date:'; then
+            echo "::error::В $NOTES нет даты выпуска (первая строка <!-- date: ГГГГ-ММ-ДД -->)"
+            exit 1
+          fi
+          echo "Версия $VERSION, заметки $NOTES — в порядке"
+
       - name: Get tag name
         id: get_tag
         run: |

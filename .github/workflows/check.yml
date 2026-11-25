@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # история нужна для проверки сообщений коммитов
 
       - uses: actions/setup-node@v7
         with:
@@ -20,6 +22,21 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Commit messages (CONTRIBUTING.md)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            RANGE="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          elif [ -n "${{ github.event.before }}" ] && git merge-base --is-ancestor "${{ github.event.before }}" HEAD 2>/dev/null; then
+            RANGE="${{ github.event.before }}..HEAD"
+          else
+            echo "Новая ветка, тег или перезаписанная история — проверка коммитов пропущена"
+            exit 0
+          fi
+          node scripts/commit-msg.js --range "$RANGE"
+
+      - name: Changelog is up to date
+        run: node scripts/changelog.js --check
 
       - name: Integrity check (paths, site scripts, locales)
         run: node scripts/check-manifest.js

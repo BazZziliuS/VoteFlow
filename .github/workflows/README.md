@@ -4,6 +4,8 @@
 
 Запускается на каждый push и pull request:
 - ESLint
+- сообщения коммитов по правилам [CONTRIBUTING.md](../../CONTRIBUTING.md#коммиты) (`scripts/commit-msg.js`)
+- актуальность `CHANGELOG.md` (`scripts/changelog.js --check`)
 - проверка целостности (`scripts/check-manifest.js`): пути в `importScripts`, манифесте и HTML-страницах, скрипты сайтов, ключи локализации
 - юнит-тесты (`npm test`)
 - дымовой тест страницы настроек в headless Chrome (`npm run test:ui`)
@@ -18,18 +20,19 @@
 
 Запускается пушем тега `v*` или вручную с указанием тега. Собирает `VoteFlow-{версия}.zip` и публикует релиз на GitHub.
 
-Описание релиза берётся из `docs/releases/{версия}.md`. Если файла нет — собирается из коммитов с предыдущего тега.
+Перед сборкой workflow проверяет, что тег совпадает с версией в `manifest.json` и `package.json`, а заметки `docs/releases/{версия}.md` существуют и содержат дату. Иначе релиз не публикуется. Описание релиза берётся из этих заметок.
 
 ### Как выпустить версию
 
-1. Поднимите `version` в `manifest.json`
-2. Напишите заметки в `docs/releases/{версия}.md`
-3. Закоммитьте, дождитесь зелёного Check
-4. Поставьте и отправьте тег:
-   ```bash
-   git tag -a v8.1.0 -m "VoteFlow 8.1.0"
-   git push origin v8.1.0
-   ```
+Порядок и правила версий — в [CONTRIBUTING.md](../../CONTRIBUTING.md#выпуск). Коротко:
+
+```bash
+npm run release -- patch        # версия, черновик заметок, CHANGELOG.md
+# отредактировать docs/releases/X.Y.Z.md, затем npm run changelog и npm run check
+git add -A && git commit -m "release: X.Y.Z"
+git tag -a vX.Y.Z -m "VoteFlow X.Y.Z"
+git push origin HEAD vX.Y.Z
+```
 
 Публикуется только zip: расширение не размещено в Chrome Web Store, а Chrome на Windows и macOS не устанавливает `.crx` из других источников.
 

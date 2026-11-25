@@ -61,6 +61,12 @@ if (/clients2\.google\.com/.test(manifest.update_url || '')) {
     errors.push('manifest.json: update_url указывает на Chrome Web Store — уберите его')
 }
 if (!manifest.homepage_url) errors.push('manifest.json: нет homepage_url (ссылка с названия расширения)')
+// Версия одна на проект: manifest.json и package.json поднимаются вместе (npm run release)
+{
+    const pkg = JSON.parse(read('package.json'))
+    if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) errors.push(`manifest.json: версия «${manifest.version}» не в формате X.Y.Z`)
+    if (pkg.version !== manifest.version) errors.push(`версии расходятся: manifest.json ${manifest.version}, package.json ${pkg.version} — используйте npm run release`)
+}
 
 // 3. HTML-страницы интерфейса (options.html, popup.html): все подключённые файлы существуют
 const htmlPages = fs.readdirSync(path.join(root, 'src/ui')).filter(f => f.endsWith('.html'))

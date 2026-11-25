@@ -318,7 +318,8 @@ Files used in both contexts (like `main.js`):
 
 - **Error badge**: `src/utils/browser/badge.js` — `updateErrorBadge(db)` runs from background `updateValue('projects')`, on startup, after delete/import. Change projects through `updateValue` so the badge stays correct
 - **Language**: All user-facing messages should be in Russian (this is a Russian-language extension)
-- **Commit messages**: Write in Russian, be descriptive
+- **Commit messages**: Conventional Commits — `type(scope): описание на русском` (types/scope in English, description lowercase, no trailing period, ≤100 chars). Rules in CONTRIBUTING.md; checked by `.githooks/commit-msg` and CI (`scripts/commit-msg.js`)
+- **Versioning**: SemVer per CONTRIBUTING.md (MAJOR = user must act or loses data, MINOR = features/sites/permissions, PATCH = fixes). Release: `npm run release -- patch|minor|major` bumps manifest.json + package.json, drafts `docs/releases/X.Y.Z.md` (first line `<!-- date: YYYY-MM-DD -->`), rebuilds CHANGELOG.md (generated — edit release notes, then `npm run changelog`); commit `release: X.Y.Z`, tag `vX.Y.Z`; release.yml refuses mismatched tag/version or missing notes
 - **Line endings**: Files use CRLF (Windows), git may show warnings
 - **Tests**: `npm test` — every site in projects.js (exampleURL → parseURL → pageURL/voteURL round-trip, timeout shape), next-vote time calculator, `parseCooldown`. `npm run test:ui` — options page smoke test in headless Chrome (real scripts, stubbed `chrome.*`, real IndexedDB). Add a test when fixing a bug in this logic
 - **Checks**: `npm install` once, then `npm run check` (lint + integrity + unit tests) — ESLint (`eslint.config.js`, catches undefined globals across classic scripts) plus `scripts/check-manifest.js` (missing importScripts/manifest/options.html paths, site scripts, silent-vote scripts, locale keys). CI runs the same in `.github/workflows/check.yml`. No formatter is configured

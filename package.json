@@ -1,15 +1,31 @@
 {
   "name": "voteflow",
+  "version": "9.0.0",
   "private": true,
   "description": "VoteFlow — браузерное расширение для автоматического голосования на рейтингах игровых серверов",
   "license": "MIT",
+  "homepage": "https://github.com/BazZziliuS/VoteFlow#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BazZziliuS/VoteFlow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BazZziliuS/VoteFlow/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "lint": "eslint src scripts tests",
+    "lint:fix": "eslint src scripts tests --fix",
     "test": "node --test \"tests/*.test.js\"",
     "test:ui": "node tests/ui/smoke.js",
-    "check": "npm run lint && node scripts/check-manifest.js && npm test",
-    "sites": "node scripts/check-sites.js"
+    "check": "npm run lint && node scripts/check-manifest.js && node scripts/changelog.js --check && npm test",
+    "changelog": "node scripts/changelog.js",
+    "release": "node scripts/release.js",
+    "sites": "node scripts/check-sites.js",
+    "commitlint": "node scripts/commit-msg.js --range"
   },
   "devDependencies": {
     "eslint": "^10.15.0",

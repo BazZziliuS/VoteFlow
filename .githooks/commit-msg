@@ -1,0 +1,3 @@
+#!/bin/sh
+# Проверка сообщения коммита (правила — в CONTRIBUTING.md)
+exec node scripts/commit-msg.js "$1"

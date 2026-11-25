@@ -1,0 +1,3 @@
+# Хук запускается sh — только LF, иначе «not found» в Git Bash и на Linux
+.githooks/* text eol=lf
+*.sh text eol=lf

@@ -33,7 +33,28 @@ const projectGlobals = {
     InstallTrigger: 'readonly',
 }
 
+const commonRules = {
+    'no-undef': 'error',
+    'no-dupe-keys': 'error',
+    'no-unreachable': 'error',
+    'no-const-assign': 'error',
+    'no-self-assign': 'error',
+    'use-isnan': 'error',
+    'valid-typeof': 'error',
+    'no-unused-vars': ['warn', {vars: 'local', args: 'none', caughtErrors: 'none'}],
+}
+
 module.exports = [
+    // Служебные скрипты и тесты — Node.js (CommonJS). Строки страниц внутри тестов собираются как текст, а не код
+    {
+        files: ['scripts/**/*.js', 'tests/**/*.js', 'eslint.config.js'],
+        languageOptions: {
+            ecmaVersion: 2023,
+            sourceType: 'commonjs',
+            globals: {...globals.node},
+        },
+        rules: commonRules,
+    },
     {
         files: ['src/**/*.js'],
         languageOptions: {
