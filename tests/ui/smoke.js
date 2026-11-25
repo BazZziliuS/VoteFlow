@@ -168,18 +168,25 @@ async function run() {
     const page = path.join(tmp, 'options-smoke.html')
     buildPage(page)
 
-    const port = 9300 + Math.floor(Math.random() * 500)
-    const args = ['--headless=new', '--disable-gpu', '--allow-file-access-from-files', '--no-first-run',
-        `--remote-debugging-port=${port}`, `--user-data-dir=${path.join(tmp, 'profile')}`, 'about:blank']
-    if (process.platform === 'linux') args.unshift('--no-sandbox')
-    const proc = spawn(chrome, args, {stdio: 'ignore'})
-
-    try {
-        let target
-        for (let i = 0; i < 75 && !target; i++) {
+    // На CI браузер иногда стартует медленно: ждём до 30 секунд и при неудаче пробуем ещё раз
+    let proc, target
+    for (let attempt = 1; attempt <= 2 && !target; attempt++) {
+        const port = 9300 + Math.floor(Math.random() * 500)
+        const args = ['--headless=new', '--disable-gpu', '--allow-file-access-from-files', '--no-first-run',
+            `--remote-debugging-port=${port}`, `--user-data-dir=${path.join(tmp, 'profile-' + attempt)}`, 'about:blank']
+        if (process.platform === 'linux') args.unshift('--no-sandbox', '--disable-dev-shm-usage')
+        proc = spawn(chrome, args, {stdio: 'ignore'})
+        for (let i = 0; i < 150 && !target; i++) {
             await sleep(200)
             try { target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find(t => t.type === 'page') } catch {}
         }
+        if (!target) {
+            console.warn(`Chromium не открыл порт отладки (попытка ${attempt})`)
+            proc.kill()
+        }
+    }
+
+    try {
         if (!target) throw new Error('Chromium не открыл порт отладки')
         const ws = new WebSocket(target.webSocketDebuggerUrl)
         await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject })
