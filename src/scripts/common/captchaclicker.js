@@ -310,25 +310,130 @@ async function handleMTCaptcha() {
 }
 
 
+// Yandex SmartCaptcha: галочка «Я не робот» (CheckboxCaptcha) или слайдер «Потяните вправо» (SliderCaptcha)
 async function handleSmartCaptcha() {
     try {
-        // Wait for the captcha checkbox to appear in the DOM
-        while (!document.querySelector('.CheckboxCaptcha-Checkbox')) await new Promise(resolve => setTimeout(resolve, 1000));
-        document.querySelector('.CheckboxCaptcha-Checkbox').setAttribute("data-checked", true);
+        let kind = null
+        while (!kind) {
+            if (window.dontSolve) return
+            if (document.querySelector('.CheckboxCaptcha-Checkbox')) kind = 'checkbox'
+            else if (document.querySelector('.SliderCaptcha #captcha-slider, [data-testid="thumb"]')) kind = 'slider'
+            else await new Promise(resolve => setTimeout(resolve, 1000))
+        }
 
-        // Wait for the button to appear in the DOM
-        const voteButton = document.querySelector('#js-button');
-        voteButton.click();
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        window.solvedCaptcha = true;
-        chrome.runtime.sendMessage({captchaPassed: true});
+        if (kind === 'checkbox') {
+            document.querySelector('.CheckboxCaptcha-Checkbox').setAttribute("data-checked", true);
+            const voteButton = document.querySelector('#js-button');
+            voteButton.click();
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            window.solvedCaptcha = true;
+            chrome.runtime.sendMessage({captchaPassed: true});
+            return
+        }
 
+        await solveSmartCaptchaSlider()
     } catch (error) {
-        // If an element isn't found after the timeout, send an error message and stop.
-        console.error("Error during voting interaction:", error);
+        console.error("Error during SmartCaptcha interaction:", error);
         chrome.runtime.sendMessage({message: error.message});
-        return;
     }
+}
+
+const smartSleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+// Событие указателя с isTrusted = true через istrusted_main.js (внедряется в кадр SmartCaptcha при onCommitted)
+function smartFire(target, type, x, y, buttons) {
+    const init = {bubbles: true, cancelable: true, composed: true, view: window, clientX: x, clientY: y, screenX: x, screenY: y,
+        buttons, button: 0, pointerId: 1, pointerType: 'mouse', isPrimary: true, pressure: buttons ? 0.5 : 0}
+    const port = window.portIsTrusted
+    if (port) port.dataset.ITtype = type
+    const EventClass = type.startsWith('pointer') ? PointerEvent : type.startsWith('key') ? KeyboardEvent : MouseEvent
+    target.dispatchEvent(new EventClass(type, init))
+    if (port) port.dataset.ITtype = ''
+}
+
+function smartKey(target, key) {
+    const port = window.portIsTrusted
+    for (const type of ['keydown', 'keyup']) {
+        if (port) port.dataset.ITtype = type
+        target.dispatchEvent(new KeyboardEvent(type, {key, code: key, keyCode: key === 'ArrowRight' ? 39 : 35, bubbles: true, cancelable: true}))
+        if (port) port.dataset.ITtype = ''
+    }
+}
+
+function smartSliderValue(thumb) {
+    return Number(thumb.getAttribute('aria-valuenow') || 0)
+}
+
+function smartCaptchaPassed() {
+    const status = (document.querySelector('#smartcaptcha-status')?.textContent || '').toLowerCase()
+    return /пройден|успешн|passed|success/.test(status)
+}
+
+// Протягивает бегунок вправо: плавным движением мыши, при неудаче — клавишами и кнопкой «Сдвинуть вправо»
+async function solveSmartCaptchaSlider() {
+    const thumb = document.querySelector('.SliderCaptcha #captcha-slider, [data-testid="thumb"]')
+    const track = thumb.closest('.Track') || thumb.parentElement
+    // Ждём, пока скелетон слайдера дорисуется
+    for (let i = 0; i < 20 && document.querySelector('[data-testid="slider"][data-skeleton="true"]'); i++) await smartSleep(250)
+    await smartSleep(400 + Math.random() * 600)
+
+    const t = thumb.getBoundingClientRect()
+    const r = track.getBoundingClientRect()
+    let x = t.left + t.width / 2
+    const y = t.top + t.height / 2
+    const endX = r.right - t.width / 2 + 1
+    console.log('[SmartCaptcha] Тянем слайдер', Math.round(x), '→', Math.round(endX))
+
+    for (const type of ['pointerover', 'pointerenter', 'mouseover', 'mouseenter', 'pointermove', 'mousemove']) smartFire(thumb, type, x, y, 0)
+    await smartSleep(120 + Math.random() * 150)
+    smartFire(thumb, 'pointerdown', x, y, 1)
+    smartFire(thumb, 'mousedown', x, y, 1)
+
+    const steps = 28 + Math.floor(Math.random() * 14)
+    const startX = x
+    for (let i = 1; i <= steps; i++) {
+        // Плавный разгон и торможение, небольшое дрожание по вертикали
+        const progress = i / steps
+        const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2
+        x = startX + (endX - startX) * eased
+        const jitterY = y + (Math.random() - 0.5) * 3
+        smartFire(thumb, 'pointermove', x, jitterY, 1)
+        smartFire(thumb, 'mousemove', x, jitterY, 1)
+        await smartSleep(16 + Math.random() * 22)
+    }
+    await smartSleep(80 + Math.random() * 120)
+    smartFire(thumb, 'pointerup', x, y, 0)
+    smartFire(thumb, 'mouseup', x, y, 0)
+    await smartSleep(800)
+
+    // Не дотянулся — клавиатура (так слайдер предлагает управлять им сам) и кнопка «Сдвинуть вправо»
+    if (smartSliderValue(thumb) < 100 && !smartCaptchaPassed()) {
+        console.log('[SmartCaptcha] Мышь не дотянула слайдер (', smartSliderValue(thumb), '%), пробуем клавиатуру')
+        thumb.focus()
+        for (let i = 0; i < 30 && smartSliderValue(thumb) < 100; i++) {
+            smartKey(thumb, 'ArrowRight')
+            await smartSleep(60 + Math.random() * 60)
+        }
+        if (smartSliderValue(thumb) < 100) smartKey(thumb, 'End')
+        const right = document.querySelector('.ControlButton[aria-label*="вправо"], .ControlButton[aria-label*="right" i]')
+        for (let i = 0; right && i < 30 && smartSliderValue(thumb) < 100; i++) {
+            right.click()
+            await smartSleep(80)
+        }
+    }
+
+    // Ждём результата: статус «пройдена» или исчезновение слайдера (капча закрылась)
+    for (let i = 0; i < 20; i++) {
+        if (smartCaptchaPassed() || !document.contains(thumb)) {
+            console.log('[SmartCaptcha] Слайдер пройден')
+            window.solvedCaptcha = true
+            chrome.runtime.sendMessage({captchaPassed: true})
+            return
+        }
+        await smartSleep(500)
+    }
+    // Яндекс мог запросить дополнительное задание — его решит пользователь, сайт попросит об этом сам
+    console.log('[SmartCaptcha] Слайдер не засчитан, статус:', document.querySelector('#smartcaptcha-status')?.textContent)
 }
 
 function handleReCaptchaAnchor() {

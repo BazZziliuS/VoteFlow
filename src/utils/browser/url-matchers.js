@@ -45,6 +45,7 @@ function isCaptchaUrl(url) {
  */
 function isCaptchaUrlForCommitted(url) {
     return url.match(/hcaptcha.com\/captcha\/*/) ||
+           url.includes('smartcaptcha.yandexcloud.net') ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
            url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||

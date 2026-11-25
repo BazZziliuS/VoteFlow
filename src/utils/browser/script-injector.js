@@ -34,6 +34,12 @@ function determineScriptsToInject(details, getDomainWithoutSubdomain, isCaptchaU
         filesMain.push('src/scripts/common/visible.js')
         filesIsolated.push('src/scripts/common/alert_isolated.js')
         filesMain.push('src/scripts/common/alert_main.js')
+        // Слайдер Yandex SmartCaptcha реагирует только на «настоящие» события указателя: подмена isTrusted
+        // должна оказаться в кадре до загрузки скриптов капчи, поэтому внедряем её здесь, при onCommitted
+        if (details.url.includes('smartcaptcha.yandexcloud.net')) {
+            filesIsolated.push('src/scripts/common/istrusted_isolated.js')
+            filesMain.push('src/scripts/common/istrusted_main.js')
+        }
     }
 
     return {filesIsolated, filesMain}

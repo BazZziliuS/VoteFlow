@@ -51,7 +51,9 @@
                             })
                             // более простой, но менее безопасный метод
                         } else if (args[0].type === port.dataset.ITtype) {
-                            if (!ITLastEvent) {
+                            // Новое событие того же типа после завершения обработки предыдущего (eventPhase 0) тоже подменяем:
+                            // так работает серия событий (протягивание слайдера SmartCaptcha), а не только одиночный клик
+                            if (!ITLastEvent || (ITLastEvent !== args[0] && ITLastEvent.eventPhase === 0)) {
                                 ITLastEvent = args[0]
                             } else if (ITLastEvent !== args[0]) {
                                 return Reflect.apply(...arguments)
