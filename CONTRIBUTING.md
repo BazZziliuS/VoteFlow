@@ -96,7 +96,7 @@ VoteFlow следует [SemVer](https://semver.org/lang/ru/) — `MAJOR.MINOR.P
 
 - Версия одна на проект: `manifest.json` и `package.json` всегда совпадают (проверяет `npm run check`)
 - Тег выпуска — `vX.Y.Z`, он должен совпадать с версией (проверяет workflow выпуска)
-- Версия базы данных (`idb.openDB('avr', N)` в `src/core/main.js`) ведётся отдельно и поднимается при каждой новой миграции в `src/utils/database/db-migrations/`. Миграция не должна терять данные пользователя
+- Версия базы данных (`idb.openDB('avr', N)` в `src/shared/main.js`) ведётся отдельно и поднимается при каждой новой миграции в `src/shared/database/migrations/`. Миграция не должна терять данные пользователя
 - Новое разрешение в `manifest.json` — минимум MINOR, и о нём пишется в заметках к выпуску: браузер может попросить пользователя подтвердить доступ
 
 ## Выпуск
@@ -124,7 +124,7 @@ ID расширения задаётся полем `key` в `manifest.json`. Н
 
 ## Новый сайт
 
-Как добавить сайт, описано в [CLAUDE.md](CLAUDE.md#adding-support-for-new-sites): запись в `src/core/projects.js`, скрипт `src/scripts/sites/<домен>.js`, при необходимости — тихий режим. `npm test` проверит разбор ссылки и интервал для нового сайта, `npm run check` — что скрипт существует. Обновите число сайтов в README.
+Как добавить сайт, описано в [CLAUDE.md](CLAUDE.md#adding-support-for-new-sites): запись в `src/shared/projects.js`, скрипт `src/content/sites/<домен>.js`, при необходимости — тихий режим. `npm test` проверит разбор ссылки и интервал для нового сайта, `npm run check` — что скрипт существует. Обновите число сайтов в README.
 
 ## Лицензия
 

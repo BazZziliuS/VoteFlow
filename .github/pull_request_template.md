@@ -12,5 +12,5 @@
 
 - [ ] Заголовки коммитов по правилам [CONTRIBUTING.md](../CONTRIBUTING.md#коммиты)
 - [ ] Новые тексты интерфейса — во всех языках `_locales/`
-- [ ] Новая миграция базы — поднята версия в `src/core/main.js`, миграция подключена в `background.js`, `options.html`, `popup.html`
+- [ ] Новая миграция базы — поднята версия в `src/shared/main.js`, миграция подключена в `background.js`, `options.html`, `popup.html`
 - [ ] Новое разрешение в `manifest.json` — описано в заметках к выпуску

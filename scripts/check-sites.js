@@ -7,7 +7,7 @@ const vm = require('node:vm')
 
 const root = path.resolve(__dirname, '..')
 const ctx = vm.createContext({console, URL})
-vm.runInContext(fs.readFileSync(path.join(root, 'src/core/projects.js'), 'utf8'), ctx)
+vm.runInContext(fs.readFileSync(path.join(root, 'src/shared/projects.js'), 'utf8'), ctx)
 const allProjects = vm.runInContext('allProjects', ctx)
 const getDomain = vm.runInContext('getDomainWithoutSubdomain', ctx)
 

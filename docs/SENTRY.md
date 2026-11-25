@@ -22,12 +22,12 @@
 
 ### Файлы конфигурации:
 
-**`src/core/sentry-init.js`** - инициализация для UI (options.html)
+**`src/ui/sentry.js`** - инициализация для UI (options.html)
 - Настройка интеграций (Browser Tracing, Replay)
 - Фильтрация безвредных ошибок
 - Установка контекста расширения
 
-**`src/core/sentry-background.js`** - инициализация для Service Worker
+**`src/background/sentry.js`** - инициализация для Service Worker
 - Загрузка Sentry SDK через importScripts
 - Перехват необработанных ошибок
 - Фильтрация специфичных для extensions ошибок
@@ -95,7 +95,7 @@
 **UI (options.html):**
 ```html
 <script src="https://js-de.sentry-cdn.com/af65e911a63f25c10b114b5d73f3d372.min.js" crossorigin="anonymous"></script>
-<script src="../core/sentry-init.js"></script>
+<script src="sentry.js"></script>
 ```
 
 **Service Worker (background.js):**
@@ -175,13 +175,13 @@ Sentry.replayIntegration({
 <!-- Закомментировать в options.html -->
 <!--
 <script src="https://js-de.sentry-cdn.com/..."></script>
-<script src="../core/sentry-init.js"></script>
+<script src="sentry.js"></script>
 -->
 ```
 
 ```javascript
 // Закомментировать в background.js
-// importScripts('/src/core/sentry-background.js')
+// importScripts('/src/background/sentry.js')
 ```
 
 **Вариант 2: Условная инициализация**

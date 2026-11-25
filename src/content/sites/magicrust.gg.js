@@ -471,7 +471,7 @@ const WHEEL_TIMEOUTS = {
     cooldownCheck: 500
 }
 
-// Разбор времени кулдауна — parseCooldown() из src/scripts/common/api.js
+// Разбор времени кулдауна — parseCooldown() из src/content/common/api.js
 
 function getCooldownFromPage() {
     // Try to find cooldown timer elements

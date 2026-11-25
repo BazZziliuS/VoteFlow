@@ -1,5 +1,5 @@
-// Тесты расчёта времени следующего голосования (src/utils/voting/vote-time-calculator.js)
-// и разбора таймера кулдауна (parseCooldown из src/scripts/common/api.js).
+// Тесты расчёта времени следующего голосования (src/background/voting/vote-time-calculator.js)
+// и разбора таймера кулдауна (parseCooldown из src/content/common/api.js).
 // «Сейчас» фиксируется подменой Date внутри vm-контекста.
 const test = require('node:test')
 const assert = require('node:assert/strict')
@@ -24,7 +24,7 @@ function fixedDate(iso) {
 }
 
 function calculator(nowIso, sites = {}) {
-    const ctx = loadScripts(['src/utils/voting/vote-time-calculator.js'], {Date: fixedDate(nowIso)})
+    const ctx = loadScripts(['src/background/voting/vote-time-calculator.js'], {Date: fixedDate(nowIso)})
     const calc = (project, request) => new Date(ctx.calculateNextVoteTime(
         {stats: {}, ...project}, request, sites
     )).toISOString()
@@ -109,7 +109,7 @@ test('ограниченное число голосов в день: после
 })
 
 test('у каждого сайта таймаут задаёт период (hour, hours, week или month)', () => {
-    const ctx = loadScripts(['src/core/projects.js'])
+    const ctx = loadScripts(['src/shared/projects.js'])
     const problems = []
     for (const [domain, config] of Object.entries(ctx.get('allProjects'))) {
         if (!config.timeout) continue
@@ -120,7 +120,7 @@ test('у каждого сайта таймаут задаёт период (hou
 })
 
 // parseCooldown из api.js: функция чистая, выполняем только её
-const apiSource = fs.readFileSync(path.join(root, 'src/scripts/common/api.js'), 'utf8').replace(/\r\n/g, '\n')
+const apiSource = fs.readFileSync(path.join(root, 'src/content/common/api.js'), 'utf8').replace(/\r\n/g, '\n')
 const start = apiSource.indexOf('function parseCooldown(')
 const end = apiSource.indexOf('\n}\n', start) + 2
 const cooldownCtx = vm.createContext({Date: fixedDate('2026-11-25T10:00:00Z'), String, Number})

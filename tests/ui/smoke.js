@@ -33,7 +33,7 @@ function findChrome() {
 
 function buildPage(outFile) {
     let html = fs.readFileSync(path.join(uiDir, 'options.html'), 'utf8')
-    html = html.replace(/(src|href)="(\.\.\/[^"]+|options\/[^"]+|[\w-]+\.(?:js|css))"/g, (m, attr, rel) => `${attr}="${fileUrl(path.join(uiDir, rel))}"`)
+    html = html.replace(/(src|href)="(\.\.\/[^"]+|(?:options|styles)\/[^"]+|[\w-]+\.(?:js|css))"/g, (m, attr, rel) => `${attr}="${fileUrl(path.join(uiDir, rel))}"`)
     html = html.replace(/<script src="[^"]*sentry[^"]*"><\/script>/g, '')
     const messages = fs.readFileSync(path.join(root, '_locales/ru/messages.json'), 'utf8')
     const manifest = fs.readFileSync(path.join(root, 'manifest.json'), 'utf8')

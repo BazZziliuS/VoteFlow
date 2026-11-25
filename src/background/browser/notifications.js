@@ -33,7 +33,7 @@ function sendNotification(title, message, type, notificationId) {
 
     let notification = {
         type: 'basic',
-        iconUrl: 'images/icon128.png',
+        iconUrl: '/assets/images/icon128.png',
         title: title,
         message: message
     }

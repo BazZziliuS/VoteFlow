@@ -14,45 +14,52 @@ Key features:
 
 ## Core Architecture
 
-### File Structure (After Refactoring)
+### File Structure
+
+Folders are split by **where the code runs** (details: docs/ARCHITECTURE.md):
 
 ```
-├── manifest.json        # Chrome extension manifest v3
-├── libs/
-│   ├── idb.umd.js       # IndexedDB wrapper
-│   └── linkedom.js      # DOM parser for service worker
+├── manifest.json
+├── _locales/                # ru, en, uk, de
+├── assets/                  # images/ (icons, logo), fonts/
+├── libs/                    # vendored: idb.umd.js, linkedom.js, sentry-minimal.js — don't edit
 ├── src/
-│   ├── core/
-│   │   ├── background.js    # Service worker - manages voting queue, alarms
-│   │   ├── projects.js      # Configuration for all supported sites (allProjects)
-│   │   └── main.js          # Core voting logic and utilities
-│   ├── ui/
-│   │   ├── options.html     # Extension settings page (styles: /css/main.css, /css/icons.css)
-│   │   ├── popup.html       # Toolbar popup (popup.js, /css/popup.css): upcoming votes, today stats
-│   │   ├── shared.js        # Shared by options and popup: formatRelative, projectState, isFeaturedProject,
-│   │   │                    # checkForUpdate (GitHub latest release, cached 12h in other/updateCheck), reportIssueUrl
-│   │   │                    # (CenturyMine and SideMC are always listed first — keep this rule)
-│   │   └── options/         # Options page logic as classic scripts sharing one global scope,
-│   │                        # loaded in this order: init, notifications, modals, projects-list,
-│   │                        # project-form, settings, app. Top-level code may only call functions
-│   │                        # from the same file or from modules loaded earlier
-│   ├── utils/
-│   │   ├── database/        # Database utilities (init, migrations)
-│   │   ├── voting/          # Voting logic (time calculator, result handler)
-│   │   └── browser/         # Browser APIs (tabs, notifications, alarms)
-│   └── scripts/
-│       ├── sites/           # Site-specific voting scripts (DOMAIN.js)
-│       ├── silentvote/      # Background voting scripts (DOMAIN_silentvote.js)
-│       └── common/          # Common scripts (api, captcha, alert, istrusted)
-└── css/                 # Stylesheets
+│   ├── background/          # service worker only
+│   │   ├── background.js    # entry: importScripts of all modules, voting queue, alarms
+│   │   ├── sentry.js
+│   │   ├── helpers/         # constants, time, project, retry
+│   │   ├── voting/          # time calculator, result handler, stats, silent vote, message handlers
+│   │   ├── browser/         # tabs, notifications, alarms, cookies, script-injector, badge, url-matchers
+│   │   └── silentvote/      # DOMAIN_silentvote.js
+│   ├── content/             # injected into rating-site tabs
+│   │   ├── common/          # api.js (helpers for site scripts), captchaclicker, istrusted_*, alert_*, hacktimer, visible
+│   │   └── sites/           # DOMAIN.js — one voting script per site
+│   ├── shared/              # loaded by the service worker AND the UI pages
+│   │   ├── projects.js      # configuration for all supported sites (allProjects)
+│   │   ├── main.js          # opens the DB (idb.openDB('avr', N)), shared functions
+│   │   └── database/        # db-init, database-helpers, migrations/ (migration-vN.js + index.js)
+│   └── ui/
+│       ├── options.html     # settings page (styles/main.css, styles/icons.css)
+│       ├── popup.html       # toolbar popup (popup.js, styles/popup.css): upcoming votes, today stats
+│       ├── shared.js        # shared by options and popup: formatRelative, projectState, isFeaturedProject,
+│       │                    # checkForUpdate (GitHub latest release, cached 12h in other/updateCheck), reportIssueUrl
+│       │                    # (CenturyMine and SideMC are always listed first — keep this rule)
+│       ├── sentry.js
+│       ├── styles/
+│       └── options/         # options page logic as classic scripts sharing one global scope,
+│                            # loaded in this order: init, notifications, modals, projects-list,
+│                            # project-form, settings, app. Top-level code may only call functions
+│                            # from the same file or from modules loaded earlier
+├── scripts/                 # check-manifest, check-sites, build, changelog, release, commit-msg
+├── tests/                   # node --test unit tests, tests/ui/smoke.js
+└── docs/                    # ARCHITECTURE.md, releases/
 ```
 
-**IMPORTANT**: After refactoring, Service Worker (`src/core/background.js`) uses **absolute paths** with `/` prefix in `importScripts()`:
-```javascript
-importScripts('/libs/idb.umd.js')           // ✓ Correct (absolute from extension root)
-importScripts('/src/core/projects.js')     // ✓ Correct
-importScripts('libs/idb.umd.js')           // ✗ Wrong (relative to service worker location)
-```
+Path rules:
+- Service worker `importScripts()` — absolute from extension root: `importScripts('/src/shared/projects.js')` (✗ `importScripts('libs/idb.umd.js')` resolves relative to the worker)
+- UI pages — relative to `src/ui/`: `<script src="../shared/main.js">`, images `../../assets/images/...`
+- `chrome.scripting.executeScript` files — from root without `/`: `src/content/sites/<domain>.js`
+- New migration: add the file in `background.js`, `options.html` and `popup.html` in the same order — `npm run check` compares the three lists
 
 ### How Voting Works
 
@@ -63,13 +70,13 @@ importScripts('libs/idb.umd.js')           // ✗ Wrong (relative to service wor
 2. **Voting Flow**:
    - User adds project URL → parsed by `parseURL()` → stored in IndexedDB
    - `background.js` schedules alarm based on `timeout()`
-   - On alarm: opens tab, injects `scripts/DOMAIN.js` + `scripts/main/api.js`
+   - On alarm: opens tab, injects `src/content/sites/DOMAIN.js` + `src/content/common/api.js`
    - Script executes `vote(first)` function → sends result via chrome.runtime.sendMessage
    - Results: `{successfully}`, `{later}`, `{errorVoteNoElement}`, `{message}`
 
 3. **Silent Vote Mode**:
    - Projects with `silentVote()` = true execute in background worker
-   - Script: `scripts/DOMAIN_silentvote.js` with function `silentVote_DOMAIN(project)`
+   - Script: `src/background/silentvote/DOMAIN_silentvote.js` with function `silentVote_DOMAIN(project)`
    - Uses fetch API + linkedom for DOM parsing
    - Imported in `background.js` install event
 
@@ -101,7 +108,7 @@ Content scripts communicate with background via:
 }
 ```
 
-2. **Create `scripts/example.com.js`**:
+2. **Create `src/content/sites/example.com.js`**:
 ```javascript
 async function vote(first) {
     if (first === false) return  // only run on first call
@@ -135,7 +142,7 @@ async function vote(first) {
 
 1. Add `silentVote: () => true` to `projects.js` configuration
 
-2. Create `scripts/example.com_silentvote.js`:
+2. Create `src/background/silentvote/example.com_silentvote.js`:
 ```javascript
 self['silentVote_example.com'] = async function (project) {
     const response = await fetch('https://example.com/api/vote', {
@@ -153,7 +160,7 @@ self['silentVote_example.com'] = async function (project) {
 
 3. Import in `background.js` install event:
 ```javascript
-importScripts('scripts/example.com_silentvote.js')
+importScripts('/src/background/silentvote/example.com_silentvote.js')
 ```
 
 ### Multi-Task Sites (e.g., magicrust.gg)
@@ -220,7 +227,7 @@ Parse various time formats:
 - "21:59:02" (HH:MM:SS)
 - "22 hours" (text format)
 
-Don't write a parser per site: `src/scripts/common/api.js` (injected with every site script) provides
+Don't write a parser per site: `src/content/common/api.js` (injected with every site script) provides
 `parseCooldown(text, bufferMs = 30000)` — handles all of the formats above plus days, English units and
 "Доступно через 5ч 19м 16с"; returns a timestamp or `null`. It also provides `wait(ms)`,
 `waitForElement(selector, timeout)` and `isVisibleElement(el)`.
@@ -289,16 +296,14 @@ console.log('[Site Name] Calculated cooldown:', hours, 'hours ->', new Date(time
   - Check notification appears/disappears quickly - add multiple check attempts with delays
 - **Captcha not detected**: Verify `notRequiredCaptcha()` is not set to true
 
-### Path Issues After Refactoring
-- **Files not found**: Update paths in `options.html` to use `../../` for root resources
-  - Images: `../../images/icons/file.svg`
-  - Scripts: `../core/main.js`, `../utils/database/db-init.js`
+### Files Not Found
+- Check the path rules above; `npm run check` reports missing importScripts/manifest/HTML paths
 
 ## Module System and Dependencies
 
 ### Service Worker Context
 - Uses `importScripts()` for synchronous module loading
-- All paths must be absolute from extension root: `/libs/file.js`, `/src/core/file.js`
+- All paths must be absolute from extension root: `/libs/file.js`, `/src/shared/file.js`
 - Database migrations loaded in specific order (see `background.js`)
 - No ES6 modules support in Service Worker context
 
@@ -316,7 +321,7 @@ Files used in both contexts (like `main.js`):
 
 ## Important Notes
 
-- **Error badge**: `src/utils/browser/badge.js` — `updateErrorBadge(db)` runs from background `updateValue('projects')`, on startup, after delete/import. Change projects through `updateValue` so the badge stays correct
+- **Error badge**: `src/background/browser/badge.js` — `updateErrorBadge(db)` runs from background `updateValue('projects')`, on startup, after delete/import. Change projects through `updateValue` so the badge stays correct
 - **Language**: All user-facing messages should be in Russian (this is a Russian-language extension)
 - **Commit messages**: Conventional Commits — `type(scope): описание на русском` (types/scope in English, description lowercase, no trailing period, ≤100 chars). Rules in CONTRIBUTING.md; checked by `.githooks/commit-msg` and CI (`scripts/commit-msg.js`)
 - **Versioning**: SemVer per CONTRIBUTING.md (MAJOR = user must act or loses data, MINOR = features/sites/permissions, PATCH = fixes). Release: `npm run release -- patch|minor|major` bumps manifest.json + package.json, drafts `docs/releases/X.Y.Z.md` (first line `<!-- date: YYYY-MM-DD -->`), rebuilds CHANGELOG.md (generated — edit release notes, then `npm run changelog`); commit `release: X.Y.Z`, tag `vX.Y.Z`; release.yml refuses mismatched tag/version or missing notes
@@ -324,4 +329,4 @@ Files used in both contexts (like `main.js`):
 - **Tests**: `npm test` — every site in projects.js (exampleURL → parseURL → pageURL/voteURL round-trip, timeout shape), next-vote time calculator, `parseCooldown`. `npm run test:ui` — options page smoke test in headless Chrome (real scripts, stubbed `chrome.*`, real IndexedDB). Add a test when fixing a bug in this logic
 - **Checks**: `npm install` once, then `npm run check` (lint + integrity + unit tests) — ESLint (`eslint.config.js`, catches undefined globals across classic scripts) plus `scripts/check-manifest.js` (missing importScripts/manifest/options.html paths, site scripts, silent-vote scripts, locale keys). CI runs the same in `.github/workflows/check.yml`. No formatter is configured
 - **Browser compatibility**: Chrome 105.0+, designed for Chromium-based browsers
-- **File structure**: After refactoring, core files are in `src/` subdirectories
+- **Build**: `node scripts/build.js` copies what the browser needs (manifest.json, _locales, assets, libs, src) plus user docs into build/VoteFlow; build.yml and release.yml zip it

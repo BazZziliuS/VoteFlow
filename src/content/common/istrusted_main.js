@@ -1,3 +1,5 @@
+// Мир страницы (MAIN): подменяет event.isTrusted = true для событий, отмеченных через порт из
+// istrusted_isolated.js. Нужен сайтам, которые отличают клик скрипта от настоящего (needIsTrusted).
 {
     // https://github.com/69Type/istrusted-bypass
 

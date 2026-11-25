@@ -24,10 +24,10 @@ const authVKUrls = new Map([
 ])
 
 const svgFail = document.createElement('img')
-svgFail.src = '../../images/icons/error.svg'
+svgFail.src = '../../assets/images/icons/error.svg'
 
 const svgSuccess = document.createElement('img')
-svgSuccess.src = '../../images/icons/success.svg'
+svgSuccess.src = '../../assets/images/icons/success.svg'
 
 //Локализация
 const elements = document.querySelectorAll('[data-resource]')

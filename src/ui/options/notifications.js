@@ -21,7 +21,7 @@ async function createNotif(message, type, options = {}) {
         }
         options.element.className = type
         if (type === 'success') {
-            options.element.parentElement.parentElement.parentElement.firstElementChild.src = '../../images/icons/success.svg'
+            options.element.parentElement.parentElement.parentElement.firstElementChild.src = '../../assets/images/icons/success.svg'
         }
         return
     }

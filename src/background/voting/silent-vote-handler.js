@@ -49,7 +49,7 @@ async function executeSilentVote(project, silentResponseBody) {
         // Динамическая загрузка скрипта silent vote если еще не загружен
         const scriptName = project.ratingMain || project.rating
         if (!self['silentVote_' + scriptName]) {
-            importScripts('/src/scripts/silentvote/' + scriptName + '_silentvote.js')
+            importScripts('/src/background/silentvote/' + scriptName + '_silentvote.js')
         }
 
         // Выполнение silent vote

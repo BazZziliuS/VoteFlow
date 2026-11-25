@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="images/logo.svg" width="96" height="96" alt="VoteFlow">
+<img src="assets/images/logo.svg" width="96" height="96" alt="VoteFlow">
 
 # VoteFlow
 
@@ -141,27 +141,22 @@ npm run sites        # какие сайты доступны прямо сей�
 
 ```
 src/
-├── core/
-│   ├── background.js       # service worker: очередь голосований, будильники
-│   ├── projects.js         # настройки всех сайтов (allProjects)
-│   └── main.js             # общая инициализация и база данных
-├── ui/
-│   ├── options.html        # страница настроек, логика — в options/
-│   ├── popup.html          # окно по клику на иконку
-│   └── shared.js           # общее для настроек и окна
-├── utils/                  # голосование, база данных и миграции, API браузера
-└── scripts/
-    ├── sites/              # скрипт голосования для каждого сайта: <домен>.js
-    ├── silentvote/         # тихий режим: <домен>_silentvote.js
-    └── common/             # api.js, решение капч, общие помощники
-tests/                      # юнит-тесты и тест страницы настроек
-scripts/                    # проверки, журнал изменений, выпуск, правила коммитов
-docs/releases/              # заметки к каждой версии → CHANGELOG.md
+├── background/             # service worker: очередь голосований, вкладки, уведомления, тихий режим
+├── content/
+│   ├── sites/              # скрипт голосования для каждого сайта: <домен>.js
+│   └── common/             # api.js для скриптов сайтов, решение капч
+├── shared/                 # общее для фона и окон: projects.js (все сайты), main.js, база данных
+└── ui/                     # страница настроек, окно по клику на иконку, стили
+assets/                     # иконки, логотип, шрифт
+libs/                       # сторонние библиотеки
+scripts/                    # проверки, сборка, журнал изменений, выпуск
+tests/                      # unit-тесты и тест страницы настроек
+docs/                       # архитектура, заметки к версиям
 ```
 
 </details>
 
-**Новый сайт:** настройки в `src/core/projects.js`, скрипт голосования в `src/scripts/sites/<домен>.js`. Подробное руководство и соглашения — в [CLAUDE.md](CLAUDE.md), помощники для скриптов — в [src/utils/README.md](src/utils/README.md).
+**Новый сайт:** настройки в `src/shared/projects.js`, скрипт голосования в `src/content/sites/<домен>.js`. Как устроено расширение и какие помощники есть у скриптов сайтов — в [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), пошаговый шаблон — в [CLAUDE.md](CLAUDE.md).
 
 Каждый push проверяется в [GitHub Actions](https://github.com/BazZziliuS/VoteFlow/actions): линтер, сообщения коммитов, целостность путей и ключей локализации, тесты всех сайтов и страницы настроек.
 

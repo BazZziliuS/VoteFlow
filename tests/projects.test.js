@@ -1,11 +1,11 @@
-// Проверка конфигурации всех сайтов из src/core/projects.js:
+// Проверка конфигурации всех сайтов из src/shared/projects.js:
 // ссылка-пример из exampleURL() должна разбираться parseURL() обратно в тот же ID,
 // а pageURL()/voteURL() — давать корректный адрес на том же сайте.
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const {loadScripts} = require('./helpers')
 
-const ctx = loadScripts(['src/core/projects.js'])
+const ctx = loadScripts(['src/shared/projects.js'])
 const allProjects = ctx.get('allProjects')
 const getDomainWithoutSubdomain = ctx.get('getDomainWithoutSubdomain')
 

@@ -82,12 +82,36 @@ for (const page of htmlPages) {
     for (const m of html.matchAll(/data-resource="([^"]+)"/g)) htmlKeys.push([m[1], 'src/ui/' + page])
 }
 
+// 3б. Миграции базы: фон и обе страницы подключают все файлы миграций в одном порядке,
+// а index.js вызывает каждую. Иначе база откроется по-разному в фоне и в окне настроек
+{
+    const dir = 'src/shared/database/migrations'
+    const order = f => f === 'index.js' ? Infinity : Number(f.match(/^migration-v(\d+)/)?.[1] ?? -1)
+    const expected = fs.readdirSync(path.join(root, dir)).filter(f => f.endsWith('.js')).sort((a, b) => order(a) - order(b))
+    const listed = (text, re) => [...text.matchAll(re)].map(m => m[1])
+    const sources = {
+        'src/background/background.js': listed(read('src/background/background.js'), /importScripts\('\/src\/shared\/database\/migrations\/([^']+)'\)/g),
+        'src/ui/options.html': listed(read('src/ui/options.html'), /src="\.\.\/shared\/database\/migrations\/([^"]+)"/g),
+        'src/ui/popup.html': listed(read('src/ui/popup.html'), /src="\.\.\/shared\/database\/migrations\/([^"]+)"/g),
+    }
+    for (const [file, list] of Object.entries(sources)) {
+        if (list.join() !== expected.join()) {
+            errors.push(`${file}: миграции подключены не так, как лежат в ${dir}. Нужно: ${expected.join(', ')}`)
+        }
+    }
+    const index = read(`${dir}/index.js`)
+    for (const file of expected.filter(f => f !== 'index.js')) {
+        const fn = read(`${dir}/${file}`).match(/^async function (migrateV[\w]+)\(/m)?.[1]
+        if (fn && !index.includes(fn + '(')) errors.push(`${dir}/index.js: не вызывается ${fn} из ${file}`)
+    }
+}
+
 // 4. Скрипты сайтов
 const sandbox = {console, URL}
 vm.createContext(sandbox)
-vm.runInContext(read('src/core/projects.js'), sandbox, {filename: 'projects.js'})
+vm.runInContext(read('src/shared/projects.js'), sandbox, {filename: 'projects.js'})
 const allProjects = sandbox.allProjects
-const background = read('src/core/background.js')
+const background = read('src/background/background.js')
 for (const [domain, config] of Object.entries(allProjects)) {
     if (domain === 'Custom') continue
     // Записи-алиасы вида 'topcraft.club': {} голосуют скриптом основного домена
@@ -95,13 +119,13 @@ for (const [domain, config] of Object.entries(allProjects)) {
     const main = config.URLMain?.() || domain
     let silent = false
     try { silent = !!config.silentVote?.({}) } catch { silent = true }
-    if (!exists(`src/scripts/sites/${main}.js`) && !silent) {
-        errors.push(`projects.js: «${domain}» — нет скрипта src/scripts/sites/${main}.js`)
+    if (!exists(`src/content/sites/${main}.js`) && !silent) {
+        errors.push(`projects.js: «${domain}» — нет скрипта src/content/sites/${main}.js`)
     }
     if (silent) {
         // Тихий режим загружает скрипт основного домена: ratingMain || rating
-        const silentFile = `src/scripts/silentvote/${main}_silentvote.js`
-        const generic = background.includes(`silentVote_${main}`) || read('src/utils/voting/silent-vote-handler.js').includes(`'${main}'`)
+        const silentFile = `src/background/silentvote/${main}_silentvote.js`
+        const generic = background.includes(`silentVote_${main}`) || read('src/background/voting/silent-vote-handler.js').includes(`'${main}'`)
         if (exists(silentFile)) {
             if (!background.includes(silentFile)) errors.push(`background.js: ${silentFile} не подключён через importScripts`)
         } else if (!generic) {

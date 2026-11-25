@@ -1,3 +1,5 @@
+// Мир страницы (MAIN): перехватывает alert/confirm/prompt, чтобы окна не блокировали голосование,
+// и передаёт их текст расширению через порт из alert_isolated.js.
 {
     const port = document.getElementById('avr-alert-port')
 

@@ -1,3 +1,6 @@
 .claude
 .idea
 node_modules/
+
+# Сборка (node scripts/build.js)
+build/

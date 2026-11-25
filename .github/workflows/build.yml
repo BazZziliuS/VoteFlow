@@ -21,6 +21,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
       - name: Get version from manifest
         id: get_version
         run: |
@@ -37,19 +41,7 @@ jobs:
 
       - name: Package extension
         run: |
-          # Создаём временную директорию для сборки
-          mkdir -p build/VoteFlow
-
-          # Копируем все необходимые файлы
-          cp -r src build/VoteFlow/
-          cp -r libs build/VoteFlow/
-          cp -r images build/VoteFlow/
-          cp -r _locales build/VoteFlow/
-          cp -r css build/VoteFlow/
-          cp -r fonts build/VoteFlow/
-          cp manifest.json build/VoteFlow/
-          cp THIRD_PARTY_NOTICES.md build/VoteFlow/
-          cp LICENSE build/VoteFlow/
+          node scripts/build.js build/VoteFlow
 
           # Переходим в директорию build и создаём архив
           cd build

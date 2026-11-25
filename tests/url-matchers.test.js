@@ -1,9 +1,9 @@
-// Распознавание адресов капч (src/utils/browser/url-matchers.js)
+// Распознавание адресов капч (src/background/browser/url-matchers.js)
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const {loadScripts} = require('./helpers')
 
-const ctx = loadScripts(['src/utils/browser/url-matchers.js'])
+const ctx = loadScripts(['src/background/browser/url-matchers.js'])
 
 test('Yandex SmartCaptcha на всех доменах', () => {
     for (const url of [

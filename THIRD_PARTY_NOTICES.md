@@ -12,9 +12,9 @@ VoteFlow — продолжение расширения Auto Vote Rating: https
 
 Часть кода перенесена из форка Auto Vote Rating — https://github.com/JustMordeckai/Auto-Vote-Rating (лицензия MIT), 2026-11-26:
 
-- ожидание токена Cloudflare Turnstile в `src/scripts/common/api.js` (`waitTurnstileToken`, `watchTurnstileToken`) и метка `turnstile` в `src/scripts/common/captchaclicker.js`;
-- скрипты голосования в `src/scripts/sites/`: curseforge.com, listforge.net, mclike.com, minecraft.buzz, minecraftbestservers.com, minecraftservers.org, planetminecraft.com, serveur-minecraft-vote.fr, serveur-prive.net, discords.com, mmotop.ru, minecraft-server.eu, top.gg, topg.org, top-games.net, minerank.com, topeaglerservers.com, voxelrank.com, 16bitmc.net;
-- записи этих сайтов в `src/core/projects.js`.
+- ожидание токена Cloudflare Turnstile в `src/content/common/api.js` (`waitTurnstileToken`, `watchTurnstileToken`) и метка `turnstile` в `src/content/common/captchaclicker.js`;
+- скрипты голосования в `src/content/sites/`: curseforge.com, listforge.net, mclike.com, minecraft.buzz, minecraftbestservers.com, minecraftservers.org, planetminecraft.com, serveur-minecraft-vote.fr, serveur-prive.net, discords.com, mmotop.ru, minecraft-server.eu, top.gg, topg.org, top-games.net, minerank.com, topeaglerservers.com, voxelrank.com, 16bitmc.net;
+- записи этих сайтов в `src/shared/projects.js`.
 
 Перенесённые файлы помечены строкой «Перенесено из JustMordeckai/Auto-Vote-Rating» в начале.
 

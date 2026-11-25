@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <!-- VoteFlow для 16–32 px: только острая «V», вторая полоса на таком размере сливается -->
-  <rect width="16" height="16" rx="3.5" fill="#1f6fd6"/>
-  <path d="M3.4 7 L6.9 12.2 L11.6 3.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"/>
-</svg>

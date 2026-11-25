@@ -3,7 +3,7 @@
   "short_name": "VoteFlow",
   "author": "BazZziliuS",
   "background": {
-    "service_worker": "src/core/background.js"
+    "service_worker": "src/background/background.js"
   },
   "description": "__MSG_appDesc__",
   "manifest_version": 3,
@@ -17,11 +17,11 @@
     "page": "src/ui/options.html"
   },
   "icons": {
-    "16": "images/icon16.png",
-    "32": "images/icon32.png",
-    "48": "images/icon48.png",
-    "64": "images/icon64.png",
-    "128": "images/icon128.png"
+    "16": "assets/images/icon16.png",
+    "32": "assets/images/icon32.png",
+    "48": "assets/images/icon48.png",
+    "64": "assets/images/icon64.png",
+    "128": "assets/images/icon128.png"
   },
   "permissions": [
     "notifications",
