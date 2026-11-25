@@ -199,11 +199,11 @@ After refactoring (2026-02-16), the project follows a modular architecture:
 │   ├── core/              # Core extension logic
 │   │   ├── background.js  # Service Worker (main background script)
 │   │   ├── main.js        # Shared initialization logic
-│   │   ├── options.js     # Options page logic
 │   │   └── projects.js    # Site configurations (150+ sites)
 │   ├── ui/                # User interface
-│   │   ├── options.html   # Extension settings page
-│   │   └── options.css    # Styles
+│   │   ├── options.html   # Extension settings page (styles in /css)
+│   │   └── options/       # Options page logic, loaded in order:
+│   │                      # init, notifications, modals, projects-list, project-form, settings, app
 │   ├── utils/             # Reusable utilities (19 modules)
 │   │   ├── index.js       # Barrel export
 │   │   ├── core/          # Base utilities (time, constants, retry)

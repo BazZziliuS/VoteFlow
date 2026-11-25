@@ -25,10 +25,13 @@ Key features:
 │   ├── core/
 │   │   ├── background.js    # Service worker - manages voting queue, alarms
 │   │   ├── projects.js      # Configuration for all supported sites (allProjects)
-│   │   ├── main.js          # Core voting logic and utilities
-│   │   └── options.js       # UI for managing projects and settings
+│   │   └── main.js          # Core voting logic and utilities
 │   ├── ui/
-│   │   └── options.html     # Extension settings page
+│   │   ├── options.html     # Extension settings page (styles: /css/main.css, /css/icons.css)
+│   │   └── options/         # Options page logic as classic scripts sharing one global scope,
+│   │                        # loaded in this order: init, notifications, modals, projects-list,
+│   │                        # project-form, settings, app. Top-level code may only call functions
+│   │                        # from the same file or from modules loaded earlier
 │   ├── utils/
 │   │   ├── database/        # Database utilities (init, migrations)
 │   │   ├── voting/          # Voting logic (time calculator, result handler)
