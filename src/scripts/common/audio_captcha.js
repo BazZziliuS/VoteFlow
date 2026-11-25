@@ -1,3 +1,4 @@
+/* global define, module -- UMD-обёртка */
 /*!
   Letters ASR Minimal Browser Client (single-file)
   - Classic script: window.LettersASRClient
@@ -377,6 +378,7 @@
                 signal: controller.signal
             });
 
+            // eslint-disable-next-line no-async-promise-executor -- ошибки внутри обрабатываются и передаются в reject
             return new Promise(async (resolve, reject) => {
                 const sse = new SSEReader(res);
                 const startedAt = Date.now();

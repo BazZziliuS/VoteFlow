@@ -2,7 +2,7 @@
  * Barrel export для всех миграций базы данных
  *
  * Использование в main.js:
- * importScripts('src/utils/database/db-migrations/migrations.js')
+ * importScripts('/src/utils/database/db-migrations/migrations.js')
  */
 
 // Импорт всех миграций

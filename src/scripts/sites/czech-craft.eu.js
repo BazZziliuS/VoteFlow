@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable -- голосование отключено из-за риска бана, код ниже оставлен до восстановления */
 async function vote(first) {
     // TODO ban
     const request = {}

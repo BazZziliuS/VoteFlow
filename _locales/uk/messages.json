@@ -1,4 +1,15 @@
 {
+  "Custom": {
+    "message": "Власний запит (Custom)"
+  },
+  "deletingCookies": {
+    "message": "Видалення cookies домену $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
   "confirmDeleteClick": {
     "message": "Натисніть ще раз, щоб видалити"
   },

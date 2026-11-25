@@ -1,4 +1,15 @@
 {
+  "Custom": {
+    "message": "Eigene Anfrage (Custom)"
+  },
+  "deletingCookies": {
+    "message": "Cookies für $DOMAIN$ werden gelöscht",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
   "confirmDeleteClick": {
     "message": "Zum Löschen erneut klicken"
   },

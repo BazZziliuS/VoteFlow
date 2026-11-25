@@ -34,6 +34,7 @@ function run() {
 
     const isRecaptchaAnchor = /https?:\/\/(.+?\.)?(google\.com|recaptcha\.net)\/recaptcha\/(api\d|enterprise)\/anchor/.test(url);
     const isRecaptchaBFrame = /https?:\/\/(.+?\.)?(google\.com|recaptcha\.net)\/recaptcha\/(api\d|enterprise)\/bframe/.test(url);
+    const isRecaptchaFallback = /https?:\/\/(.+?\.)?(google\.com|recaptcha\.net)\/recaptcha\/(api|enterprise)\/fallback/.test(url);
     const isMTCaptcha = /https?:\/\/service\.mtcaptcha\.com\/mtcv1/.test(url);
     const isHCaptcha = url.includes('.hcaptcha.com/captcha.v');
     const isSmartCaptcha = url.includes('smartcaptcha.yandexcloud.net');
@@ -476,7 +477,7 @@ function findAllElementsInShadowDOM(selector, root = document) {
     const result = [];
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false);
     let node;
-    while (node = walker.nextNode()) {
+    while ((node = walker.nextNode())) {
         if (node.shadowRoot) {
             const matches = node.shadowRoot.querySelectorAll(selector);
             result.push(...matches);

@@ -1752,7 +1752,7 @@ document.getElementById('file-upload').addEventListener('change', async (event) 
         generalStats = data.generalStats
         todayStats = data.todayStats
 
-        await upgrade(db, data.version, db.version, transaction)
+        await runDatabaseUpgrade(db, data.version, db.version, transaction, allProjects, getDomainWithoutSubdomain)
 
         if (!await checkPermissions(await transaction.objectStore('projects').getAll())) {
             await db.clear('projects')
@@ -2407,7 +2407,7 @@ function ratingChanged(event, reset) {
     }
 
     // noinspection JSUnresolvedVariable
-    if (!settings.operaAttention && navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' && !(funcRating.notRequiredCaptcha?.(project) || funcRating.alertManualCaptcha?.())) {
+    if (!settings.operaAttention && navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' && !(funcRating.notRequiredCaptcha?.() || funcRating.alertManualCaptcha?.())) {
         document.getElementById('operaAttention').removeAttribute('style')
     }
 

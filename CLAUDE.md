@@ -318,6 +318,6 @@ Files used in both contexts (like `main.js`):
 - **Language**: All user-facing messages should be in Russian (this is a Russian-language extension)
 - **Commit messages**: Write in Russian, be descriptive
 - **Line endings**: Files use CRLF (Windows), git may show warnings
-- **No linting**: Project has no linter/formatter configured
+- **Checks**: `npm install` once, then `npm run check` — ESLint (`eslint.config.js`, catches undefined globals across classic scripts) plus `scripts/check-manifest.js` (missing importScripts/manifest/options.html paths, site scripts, silent-vote scripts, locale keys). CI runs the same in `.github/workflows/check.yml`. No formatter is configured
 - **Browser compatibility**: Chrome 105.0+, designed for Chromium-based browsers
 - **File structure**: After refactoring, core files are in `src/` subdirectories
