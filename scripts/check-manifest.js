@@ -104,6 +104,17 @@ for (const [domain, config] of Object.entries(allProjects)) {
     }
 }
 
+// 4б. README: число сайтов в бейдже и в списке совпадает с projects.js
+{
+    const siteCount = Object.keys(allProjects).filter(site => site !== 'Custom').length
+    const readme = read('README.md')
+    const badge = readme.match(/badge\/%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-(\d+)-/)?.[1]
+    const summary = readme.match(/<summary>(\d+) сайтов/)?.[1]
+    for (const [where, value] of [['бейдж «сайтов»', badge], ['заголовок списка сайтов', summary]]) {
+        if (value && Number(value) !== siteCount) errors.push(`README.md: ${where} — ${value}, а в projects.js ${siteCount} сайтов`)
+    }
+}
+
 // 5. Ключи локализации
 const locales = Object.fromEntries(['ru', 'en'].map(l => [l, JSON.parse(read(`_locales/${l}/messages.json`))]))
 const usedKeys = new Map()

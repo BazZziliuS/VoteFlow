@@ -1,280 +1,184 @@
+<div align="center">
+
+<img src="images/logo.svg" width="96" height="96" alt="VoteFlow">
+
 # VoteFlow
 
-Browser extension (Chrome / Edge, Manifest V3) that automates voting and claiming daily rewards on game server rating sites.
+**Расширение для браузера, которое само голосует за ваши игровые серверы на сайтах-рейтингах и забирает ежедневные награды**
 
-## Credits
+[![Версия](https://img.shields.io/github/v/release/BazZziliuS/VoteFlow?label=%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F&color=1f6fd6)](https://github.com/BazZziliuS/VoteFlow/releases/latest)
+[![Проверки](https://img.shields.io/github/actions/workflow/status/BazZziliuS/VoteFlow/check.yml?branch=refactor&label=%D0%BF%D1%80%D0%BE%D0%B2%D0%B5%D1%80%D0%BA%D0%B8)](https://github.com/BazZziliuS/VoteFlow/actions/workflows/check.yml)
+[![Скачивания](https://img.shields.io/github/downloads/BazZziliuS/VoteFlow/total?label=%D1%81%D0%BA%D0%B0%D1%87%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9&color=4cc38a)](https://github.com/BazZziliuS/VoteFlow/releases)
+[![Лицензия](https://img.shields.io/github/license/BazZziliuS/VoteFlow?label=%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F)](LICENSE)
+<br>
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-4a95f2)
+![Chromium 105+](https://img.shields.io/badge/Chromium-105%2B-4a95f2?logo=googlechrome&logoColor=white)
+![Сайтов](https://img.shields.io/badge/%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-147-4a95f2)
 
-VoteFlow is a continuation of **[Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating)** by **[Serega007](https://github.com/Serega007RU)**, the original author of the extension.
-The original project is no longer maintained, so it is being developed further here under a new name.
+[Скачать](https://github.com/BazZziliuS/VoteFlow/releases/latest) · [Установка](#установка) · [Поддерживаемые сайты](#поддерживаемые-сайты) · [Сообщить о проблеме](https://github.com/BazZziliuS/VoteFlow/issues/new)
 
-Original contributors: Serega007 (developer), Qworte (designer), bozoweed and all translators. Thank you!
+</div>
 
-Some site scripts and the Cloudflare Turnstile handling come from the **[JustMordeckai/Auto-Vote-Rating](https://github.com/JustMordeckai/Auto-Vote-Rating)** fork (MIT), see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+<p align="center">
+  <img src="docs/screenshots/projects.png" width="72%" alt="Список проектов">
+  &nbsp;
+  <img src="docs/screenshots/popup.png" width="22%" alt="Окно расширения">
+</p>
 
-## License
+## Возможности
 
-VoteFlow is released under the [MIT License](LICENSE). It covers the changes and new code made in VoteFlow.
-The original Auto Vote Rating by Serega007 was published without a license, so the code inherited from it remains © Serega007;
-see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- **Голосует по расписанию.** Добавьте ссылку на свой сервер на сайте-рейтинге — VoteFlow запомнит время сброса голосов и будет голосовать сам, даже когда вы о нём забыли
+- **Помогает с капчами.** reCAPTCHA, hCaptcha, Yandex SmartCaptcha (включая слайдер), Cloudflare Turnstile и MTCaptcha. Если капчу нельзя пройти автоматически, придёт уведомление
+- **Входит в аккаунты.** Steam и ВКонтакте / VK ID — если вы уже вошли в них в этом браузере
+- **Тихий режим.** На части сайтов голосует в фоне, не открывая вкладки
+- **Видно всё сразу.** По клику на иконку — ближайшие голосования, статус каждого проекта и статистика за день; число ошибок — прямо на иконке
+- **Сообщает о проблемах.** У проекта с ошибкой есть кнопка «Сообщить о проблеме» с уже заполненной заявкой
+- **Само предлагает обновиться**, когда выходит новая версия
 
-# Integrated, free captcha assistance
-- Built‑in detectors and assistance for:
-  - reCAPTCHA (anchor + bframe)
-  - hCaptcha
-  - Yandex SmartCaptcha
-  - Cloudflare challenge / Turnstile
-  - MTCaptcha
-- Designed to reduce friction, auto‑handle where permitted, and provide clear fallbacks.
-- Respect websites’ ToS. Use responsibly. If automation isn’t appropriate, the extension will prompt for manual solve/delay.
-- Free audio to text api ( 100 usage per day free or replace by yours )
+## Установка
 
-# Supported sites
+1. Скачайте `VoteFlow-<версия>.zip` из [последнего релиза](https://github.com/BazZziliuS/VoteFlow/releases/latest) и распакуйте
+2. Откройте страницу расширений своего браузера (адреса — в таблице ниже) и включите **режим разработчика**
+3. Нажмите **«Загрузить распакованное расширение»** и выберите папку `VoteFlow`
+
+**Обновление:** замените содержимое папки и нажмите «Обновить» на странице расширений — проекты и настройки сохранятся.
+
+### Браузеры
+
+Нужен браузер на Chromium версии 105 или новее.
+
+| Браузер | Страница расширений | Проверено |
+| --- | --- | --- |
+| Google Chrome | `chrome://extensions/` | через Chromium 159 |
+| Microsoft Edge | `edge://extensions/` | Edge 158 |
+| Brave | `brave://extensions/` | — |
+| Opera, Opera GX | `opera://extensions/` | ограниченный режим, см. ниже |
+| Яндекс Браузер | `browser://extensions/` | — |
+| Vivaldi | `vivaldi://extensions/` | — |
+
+> [!NOTE]
+> В Opera VoteFlow работает в ограниченном режиме: нет групп вкладок, нет доступа к кадрам Google reCAPTCHA и нет работы в фоне, когда закрыты все вкладки. Расширение объясняет это при первом запуске. Firefox не поддерживается.
+
+> [!WARNING]
+> VoteFlow не опубликован в магазинах расширений. Публикации с названием Auto Vote Rating в Chrome Web Store и Edge Add-ons — это старое оригинальное расширение, а не VoteFlow.
+
+## Как пользоваться
+
+1. Откройте страницу своего сервера на сайте-рейтинге и нажмите на иконку VoteFlow — расширение предложит добавить проект. Или вставьте ссылку вручную на вкладке **«Добавить»**
+2. Укажите ник и один раз разрешите доступ к сайту
+3. Дальше VoteFlow голосует сам. Время следующего голоса видно на вкладке **«Проекты»** и в окне расширения
+
+Ссылка нужна на страницу сервера **на сайте-рейтинге**, а не на сайт самого сервера. Расширение подсказывает это ещё до нажатия «Добавить».
+
+## Поддерживаемые сайты
+
 <details>
-<summary>View the full list</summary>
+<summary>147 сайтов — показать список</summary>
 
-<a href="http://topcraft.club/">topcraft.club</a>  
-<a href="https://mctop.su/">mctop.su</a>  
-<a href="http://minecraft-servers.ru/">minecraft-servers.ru</a>  
-<a href="http://mcrate.su/">mcrate.su</a>  
-<a href="http://minecraftrating.ru/">minecraftrating.ru</a>  
-<a href="http://monitoringminecraft.ru/">monitoringminecraft.ru</a>  
-<a href="https://minecraftservers.org/">minecraftservers.org</a>  
-<a href="https://serveur-prive.net/minecraft">serveur-prive.net</a>  
-<a href="https://www.planetminecraft.com/">planetminecraft.com</a>  
-<a href="https://topg.org/minecraft">topg.org</a>  
-<a href="https://minecraft-mp.com/">minecraft-mp.com</a>  
-<a href="http://minecraft-server-list.com/">minecraft-server-list.com</a>  
-<a href="https://www.serverpact.com/">serverpact.com</a>  
-<a href="https://www.minecraftiplist.com/">minecraftiplist.com</a>  
-<a href="https://topminecraftservers.org/">topminecraftservers.org</a>  
-<a href="http://minecraftservers.biz/">minecraftservers.biz</a>  
-<a href="https://hotmc.ru/">hotmc.ru</a>  
-<a href="https://top-games.net/">top-games.net or top-serveurs.net</a>  
-<a href="https://tmonitoring.com/">tmonitoring.com</a>  
-<a href="https://top.gg/">top.gg</a>  
-<a href="https://discordbotlist.com/">discordbotlist.com</a>  
-<a href="https://discords.com/">discords.com</a>  
-<a href="https://mmotop.ru/">mmotop.ru</a>  
-<a href="https://mc-servers.com/">mc-servers.com</a>  
-<a href="https://minecraftlist.org/">minecraftlist.org</a>  
-<a href="https://serverlist101.com/">serverlist101.com</a>  
-<a href="https://mcserver-list.eu/">mcserver-list.eu</a>  
-<a href="https://craftlist.org/">craftlist.org</a>  
-<a href="https://czech-craft.eu/">czech-craft.eu</a>  
-<a href="https://minecraft.buzz/">minecraft.buzz</a>  
-<a href="https://minecraftservery.eu/">minecraftservery.eu</a>  
-<a href="https://www.rpg-paradize.com/">rpg-paradize.com</a>  
-<a href="https://www.minecraft-serverlist.net/">minecraft-serverlist.net</a>  
-<a href="https://minecraft-server.eu/">minecraft-server.eu</a>  
-<a href="https://www.minecraftkrant.nl/">minecraftkrant.nl</a>  
-<a href="https://www.trackyserver.com/">trackyserver.com</a>  
-<a href="https://mc-lists.org/">mc-lists.org</a>  
-<a href="https://topmcservers.com/">topmcservers.com</a>  
-<a href="https://bestservers.com/">bestservers.com</a>  
-<a href="https://www.minecraft-servers-list.org/">minecraft-servers-list.org</a>  
-<a href="https://www.serverliste.net/">serverliste.net</a>  
-<a href="https://gtop100.com/">gtop100.com</a>  
-<a href="https://wargm.ru/s">wargm.ru</a>  
-<a href="https://minestatus.net/">minestatus.net</a>  
-<a href="https://misterlauncher.org/">misterlauncher.org</a>  
-<a href="https://minecraft-servers.de/">minecraft-servers.de</a>  
-<a href="https://serverlist.games/">serverlist.games</a>  
-<a href="https://best-minecraft-servers.co/">best-minecraft-servers.co</a>  
-<a href="https://minecraftservers100.com/">minecraftservers100.com</a>  
-<a href="https://mineservers.com/">mineservers.com</a>  
-<a href="https://atlauncher.com/">atlauncher.com</a>  
-<a href="https://www.minecraft-list.cz/">minecraft-list.cz</a>  
-<a href="https://www.liste-serveurs-minecraft.org/">liste-serveurs-minecraft.org</a>  
-<a href="https://mcservidores.com/">mcservidores.com</a>  
-<a href="https://www.xtremetop100.com/">xtremetop100.com</a>  
-<a href="https://www.serveursminecraft.org/">serveursminecraft.org</a>  
-<a href="https://serveurs-mc.net/">serveurs-mc.net</a>  
-<a href="https://serveur-minecraft.com/">serveur-minecraft.com</a>  
-<a href="https://serveur-minecraft-vote.fr/">serveur-minecraft-vote.fr</a>  
-<a href="https://minebrowse.com/">minebrowse.com</a>  
-<a href="https://top-mmogames.ru/">top-mmogames.ru</a>  
-<a href="https://mmorpg.top/">mmorpg.top</a>  
-<a href="https://mmovote.ru/">mmovote.ru</a>  
-<a href="https://mcservertime.com/">mcservertime.com</a>  
-<a href="https://www.liste-serveurs.fr/">liste-serveurs.fr</a>  
-<a href="https://serveur-minecraft.fr/">serveur-minecraft.fr</a>  
-<a href="https://7daystodie-servers.com/">7daystodie-servers.com</a>  
-<a href="https://ark-servers.net/">ark-servers.net</a>  
-<a href="https://arma3-servers.net/">arma3-servers.net</a>  
-<a href="https://atlas-servers.io/">atlas-servers.io</a>  
-<a href="https://conan-exiles.com/">conan-exiles.com</a>  
-<a href="https://counter-strike-servers.net/">counter-strike-servers.net</a>  
-<a href="https://cubeworld-servers.com/">cubeworld-servers.com</a>  
-<a href="https://dayz-servers.org/">dayz-servers.org</a>  
-<a href="https://ecoservers.io/">ecoservers.io</a>  
-<a href="https://empyrion-servers.com/">empyrion-servers.com</a>  
-<a href="https://gmod-servers.com/">gmod-servers.com</a>  
-<a href="https://hurtworld-servers.net/">hurtworld-servers.net</a>  
-<a href="https://hytale-servers.io/">hytale-servers.io</a>  
-<a href="https://life-is-feudal.org/">life-is-feudal.org</a>  
-<a href="https://minecraftpocket-servers.com/">minecraftpocket-servers.com</a>  
-<a href="https://minecraft-tracker.com/">minecraft-tracker.com</a>  
-<a href="https://miscreated-servers.com/">miscreated-servers.com</a>  
-<a href="https://reign-of-kings.net/">reign-of-kings.net</a>  
-<a href="https://rust-servers.net/">rust-servers.net</a>  
-<a href="https://space-engineers.com/">space-engineers.com</a>  
-<a href="https://squad-servers.com/">squad-servers.com</a>  
-<a href="https://starbound-servers.net/">starbound-servers.net</a>  
-<a href="https://tf2-servers.com/">tf2-servers.com</a>  
-<a href="https://teamspeak-servers.org/">teamspeak-servers.org</a>  
-<a href="https://terraria-servers.com/">terraria-servers.com</a>  
-<a href="https://unturned-servers.net/">unturned-servers.net</a>  
-<a href="https://wurm-unlimited.com/">wurm-unlimited.com</a>  
-<a href="https://pixelmonservers.com/">pixelmonservers.com</a>  
-<a href="https://tekkitserverlist.com/">tekkitserverlist.com</a>  
-<a href="https://technicservers.com/">technicservers.com</a>  
-<a href="https://ftbservers.com/">ftbservers.com</a>  
-<a href="https://mineserv.top/">mineserv.top</a>  
-<a href="https://www.top100arena.com/">top100arena.com</a>  
-<a href="https://minecraftbestservers.com/">minecraftbestservers.com</a>  
-<a href="https://mclike.com/">mclike.com</a>  
-<a href="https://pixelmon-server-list.com/">pixelmon-server-list.com</a>  
-<a href="https://www.minecraftserver.sk/">minecraftserver.sk</a>  
-<a href="https://servidoresdeminecraft.es/">servidoresdeminecraft.es</a>  
-<a href="https://minecraftsurvivalservers.com/">minecraftsurvivalservers.com</a>  
-<a href="https://minecraft.global/">minecraft.global</a>  
-<a href="https://ru.warface.com/bonus/">warface.com</a>  
-<a href="https://www.curseforge.com/servers/">curseforge.com</a>  
-<a href="https://act.hoyolab.com/ys/event/signin-sea-v3/index.html?act_id=e202102251931481">hoyolab.com</a>  
-<a href="https://mclist.io/">mclist.io</a>  
-<a href="https://loliland.ru/">loliland.ru</a>  
-<a href="https://mcservers.top/">mcservers.top</a>  
-<a href="https://discadia.com/">discadia.com</a>  
-<a href="https://minecraftsurvivalservers.net/">minecraftsurvivalservers.net</a>  
-<a href="https://topservers.com/">topservers.com</a>  
-<a href="https://emeraldservers.com/">emeraldservers.com</a>  
-<a href="https://40servidoresmc.es/">40servidoresmc.es</a>  
-<a href="https://top-mc-servers.net/">top-mc-servers.net</a>  
-<a href="https://minecraft-serverlist.com/">minecraft-serverlist.com</a>  
-<a href="https://findmcserver.com/">findmcserver.com</a>  
-<a href="https://serveurliste.com/">serveurliste.com</a>  
-<a href="https://craftbook.cz/">craftbook.cz</a>  
-<a href="https://rovelstars.com/">rovelstars.com</a>  
-<a href="https://infinitybots.gg/">infinitybots.gg</a>  
-<a href="https://botlist.me/">botlist.me</a>  
-<a href="https://minelist.net/">minelist.net</a>  
-<a href="https://liste-serv-minecraft.fr/">liste-serv-minecraft.fr</a>  
-<a href="https://play-minecraft-servers.com/">play-minecraft-servers.com</a>  
-<a href="https://minecraft.menu/">minecraft.menu</a>  
-<a href="https://www.minerank.com/">minerank.com</a>  
-<a href="https://topeaglerservers.com/">topeaglerservers.com</a>  
-<a href="https://voxelrank.com/">voxelrank.com</a>  
-<a href="https://16bitmc.net/">16bitmc.net</a>  
+| | | | |
+| --- | --- | --- | --- |
+| [16bitmc.net](https://16bitmc.net/) | [liste-serveurs.fr](https://liste-serveurs.fr/) | [minecraftserver.sk](https://minecraftserver.sk/) | [serveur-prive.net](https://serveur-prive.net/) |
+| [40servidoresmc.es](https://40servidoresmc.es/) | [listforge.net](https://listforge.net/) | [minecraftserverlijst.nl](https://minecraftserverlijst.nl/) | [serveurliste.com](https://serveurliste.com/) |
+| [ark-servers.net](https://ark-servers.net/) | [loliland.net](https://loliland.net/) | [minecraftserverlist.eu](https://minecraftserverlist.eu/) | [serveurs-mc.net](https://serveurs-mc.net/) |
+| [arma3-servers.net](https://arma3-servers.net/) | [loliland.ru](https://loliland.ru/) | [minecraftservers.biz](https://minecraftservers.biz/) | [serveursminecraft.org](https://serveursminecraft.org/) |
+| [atlas-servers.io](https://atlas-servers.io/) | [magicrust.gg](https://magicrust.gg/) | [minecraftservers.org](https://minecraftservers.org/) | [servidoresdeminecraft.es](https://servidoresdeminecraft.es/) |
+| [atlauncher.com](https://atlauncher.com/) | [mc-liste.de](https://mc-liste.de/) | [minecraftservers100.com](https://minecraftservers100.com/) | [space-engineers.com](https://space-engineers.com/) |
+| [attackofthebteamservers.com](https://attackofthebteamservers.com/) | [mc-lists.org](https://mc-lists.org/) | [minecraftservery.eu](https://minecraftservery.eu/) | [squad-servers.com](https://squad-servers.com/) |
+| [best-minecraft-servers.co](https://best-minecraft-servers.co/) | [mc-servers.com](https://mc-servers.com/) | [minecraftsurvivalservers.com](https://minecraftsurvivalservers.com/) | [starbound-servers.net](https://starbound-servers.net/) |
+| [bestservers.com](https://bestservers.com/) | [mclike.com](https://mclike.com/) | [minecraftsurvivalservers.net](https://minecraftsurvivalservers.net/) | [teamspeak-servers.org](https://teamspeak-servers.org/) |
+| [bloodrust.com](https://bloodrust.com/) | [mclist.io](https://mclist.io/) | [minehut.com](https://minehut.com/) | [technicservers.com](https://technicservers.com/) |
+| [botlist.me](https://botlist.me/) | [mcrate.su](https://mcrate.su/) | [minelist.net](https://minelist.net/) | [tekkitserverlist.com](https://tekkitserverlist.com/) |
+| [conan-exiles.com](https://conan-exiles.com/) | [mcserver-list.eu](https://mcserver-list.eu/) | [minerank.com](https://minerank.com/) | [terraria-servers.com](https://terraria-servers.com/) |
+| [counter-strike-servers.net](https://counter-strike-servers.net/) | [mcservers.top](https://mcservers.top/) | [mineserv.top](https://mineserv.top/) | [tf2-servers.com](https://tf2-servers.com/) |
+| [craftbook.cz](https://craftbook.cz/) | [mcservertime.com](https://mcservertime.com/) | [mineservers.com](https://mineservers.com/) | [tmonitoring.com](https://tmonitoring.com/) |
+| [craftlist.org](https://craftlist.org/) | [mcservidores.com](https://mcservidores.com/) | [minestatus.net](https://minestatus.net/) | [top-games.net](https://top-games.net/) |
+| [cubeworld-servers.com](https://cubeworld-servers.com/) | [mctop.su](https://mctop.su/) | [miscreated-servers.com](https://miscreated-servers.com/) | [top-mc-servers.net](https://top-mc-servers.net/) |
+| [curseforge.com](https://curseforge.com/) | [minebrowse.com](https://minebrowse.com/) | [misterlauncher.org](https://misterlauncher.org/) | [top-mmogames.ru](https://top-mmogames.ru/) |
+| [czech-craft.eu](https://czech-craft.eu/) | [minecraft-list.cz](https://minecraft-list.cz/) | [mmorpg.top](https://mmorpg.top/) | [top-serveurs.net](https://top-serveurs.net/) |
+| [dayz-servers.org](https://dayz-servers.org/) | [minecraft-mp.com](https://minecraft-mp.com/) | [mmotop.ru](https://mmotop.ru/) | [top.gg](https://top.gg/) |
+| [discadia.com](https://discadia.com/) | [minecraft-news.net](https://minecraft-news.net/) | [mmovote.ru](https://mmovote.ru/) | [top100arena.com](https://top100arena.com/) |
+| [discordbotlist.com](https://discordbotlist.com/) | [minecraft-server-list.com](https://minecraft-server-list.com/) | [monitoringminecraft.ru](https://monitoringminecraft.ru/) | [topcraft.club](https://topcraft.club/) |
+| [discords.com](https://discords.com/) | [minecraft-server.eu](https://minecraft-server.eu/) | [pixelmon-server-list.com](https://pixelmon-server-list.com/) | [topcraft.ru](https://topcraft.ru/) |
+| [ecoservers.io](https://ecoservers.io/) | [minecraft-serverlist.com](https://minecraft-serverlist.com/) | [pixelmonservers.com](https://pixelmonservers.com/) | [topeaglerservers.com](https://topeaglerservers.com/) |
+| [emeraldservers.com](https://emeraldservers.com/) | [minecraft-serverlist.net](https://minecraft-serverlist.net/) | [planetminecraft.com](https://planetminecraft.com/) | [topg.org](https://topg.org/) |
+| [empyrion-servers.com](https://empyrion-servers.com/) | [minecraft-servers-list.org](https://minecraft-servers-list.org/) | [play-minecraft-servers.com](https://play-minecraft-servers.com/) | [topmcservers.com](https://topmcservers.com/) |
+| [findmcserver.com](https://findmcserver.com/) | [minecraft-servers.de](https://minecraft-servers.de/) | [reign-of-kings.net](https://reign-of-kings.net/) | [topminecraftservers.org](https://topminecraftservers.org/) |
+| [ftbservers.com](https://ftbservers.com/) | [minecraft-servers.ru](https://minecraft-servers.ru/) | [rovelstars.com](https://rovelstars.com/) | [topservers.com](https://topservers.com/) |
+| [gmod-servers.com](https://gmod-servers.com/) | [minecraft-tracker.com](https://minecraft-tracker.com/) | [rpg-paradize.com](https://rpg-paradize.com/) | [trackyserver.com](https://trackyserver.com/) |
+| [gtop100.com](https://gtop100.com/) | [minecraft.buzz](https://minecraft.buzz/) | [rust-servers.net](https://rust-servers.net/) | [unturned-servers.net](https://unturned-servers.net/) |
+| [hotmc.ru](https://hotmc.ru/) | [minecraft.global](https://minecraft.global/) | [serverlist.games](https://serverlist.games/) | [valheim-servers.io](https://valheim-servers.io/) |
+| [hoyolab.com](https://hoyolab.com/) | [minecraft.menu](https://minecraft.menu/) | [serverlist101.com](https://serverlist101.com/) | [voxelrank.com](https://voxelrank.com/) |
+| [hurtworld-servers.net](https://hurtworld-servers.net/) | [minecraftbestservers.com](https://minecraftbestservers.com/) | [serverliste.net](https://serverliste.net/) | [vrising-servers.net](https://vrising-servers.net/) |
+| [hytale-servers.io](https://hytale-servers.io/) | [minecraftiplist.com](https://minecraftiplist.com/) | [serverpact.com](https://serverpact.com/) | [warface.com](https://warface.com/) |
+| [infinitybots.gg](https://infinitybots.gg/) | [minecraftkrant.nl](https://minecraftkrant.nl/) | [serverpact.nl](https://serverpact.nl/) | [wargm.ru](https://wargm.ru/) |
+| [life-is-feudal.org](https://life-is-feudal.org/) | [minecraftlist.org](https://minecraftlist.org/) | [serveur-minecraft-vote.fr](https://serveur-minecraft-vote.fr/) | [wurm-unlimited.com](https://wurm-unlimited.com/) |
+| [liste-serv-minecraft.fr](https://liste-serv-minecraft.fr/) | [minecraftpocket-servers.com](https://minecraftpocket-servers.com/) | [serveur-minecraft.com](https://serveur-minecraft.com/) | [xtremetop100.com](https://xtremetop100.com/) |
+| [liste-serveurs-minecraft.org](https://liste-serveurs-minecraft.org/) | [minecraftrating.ru](https://minecraftrating.ru/) | [serveur-minecraft.fr](https://serveur-minecraft.fr/) |  |
 
 </details>
 
-## Browsers
+Сайт не работает или его нет в списке? [Откройте заявку](https://github.com/BazZziliuS/VoteFlow/issues/new) — укажите ссылку на страницу сервера и что происходит.
 
-VoteFlow works in Chromium-based browsers, version 105 or newer:
+## Разработка
 
-| Browser | Extensions page | Checked |
-| --- | --- | --- |
-| Google Chrome | `chrome://extensions/` | via Chromium 159 |
-| Microsoft Edge | `edge://extensions/` | Edge 158 |
-| Brave | `brave://extensions/` | — |
-| Opera, Opera GX | `opera://extensions/` | — (see note) |
-| Yandex Browser | `browser://extensions/` | — |
-| Vivaldi | `vivaldi://extensions/` | — |
-
-In Opera VoteFlow works in a limited mode: no tab groups, no access to Google reCAPTCHA frames and no work in the background when all tabs are closed. The extension explains this on first start.
-Firefox is not supported.
-
-VoteFlow is not published in browser stores: the store listings named Auto Vote Rating are the old original extension.
-
-## Install from a release
-
-1. Download `VoteFlow-<version>.zip` from [Releases](https://github.com/BazZziliuS/VoteFlow/releases/latest) and unzip it
-2. Open the extensions page of your browser (see the table above) and turn on Developer mode
-3. Click "Load unpacked" and select the `VoteFlow` folder
-
-To update, replace the folder contents and click "Reload" on the extensions page — projects and settings are kept.
-VoteFlow 8.2.0 and newer tell you when a new version is out.
-
-
-## Project Structure
-
-After refactoring (2026-02-16), the project follows a modular architecture:
-
-```
-├── src/
-│   ├── core/              # Core extension logic
-│   │   ├── background.js  # Service Worker (main background script)
-│   │   ├── main.js        # Shared initialization logic
-│   │   └── projects.js    # Site configurations (140+ sites)
-│   ├── ui/                # User interface
-│   │   ├── options.html   # Extension settings page (styles in /css)
-│   │   └── options/       # Options page logic, loaded in order:
-│   │                      # init, notifications, modals, projects-list, project-form, settings, app
-│   ├── utils/             # Reusable utilities (19 modules)
-│   │   ├── index.js       # Barrel export
-│   │   ├── core/          # Base utilities (time, constants, retry)
-│   │   ├── database/      # IndexedDB helpers + migrations
-│   │   ├── voting/        # Voting logic (calculators, handlers, stats)
-│   │   └── browser/       # Browser API wrappers (tabs, alarms, cookies)
-│   └── scripts/           # Site-specific voting scripts
-│       ├── sites/         # Per-domain voting scripts (DOMAIN.js)
-│       └── main/          # Shared content script utilities (captcha, API)
-├── libs/                  # Third-party libraries
-│   ├── idb.umd.js
-│   └── linkedom.js
-├── images/                # Extension icons and assets
-└── manifest.json          # Chrome Extension Manifest v3
+```bash
+npm install          # ESLint для проверок
+npm run check        # линтер, проверка целостности и юнит-тесты
+npm run test:ui      # страница настроек в headless Chrome
+npm run sites        # какие сайты доступны прямо сейчас
 ```
 
-### Key Architecture Patterns
+Расширение загружается без сборки: «Загрузить распакованное расширение» → папка репозитория. После изменений нажмите «Обновить» на странице расширений.
 
-**Service Worker Context vs HTML Context:**
-- `background.js` runs in Service Worker - uses `importScripts()` with **absolute paths** (`/src/core/main.js`)
-- `options.html` runs in HTML context - uses `<script>` tags with **relative paths** (`../core/main.js`)
+<details>
+<summary>Структура проекта</summary>
 
-**Module System:**
-- All utilities in `src/utils/` are imported via barrel export: `importScripts('/src/utils/index.js')`
-- Database migrations are modular: `src/utils/database/db-migrations/`
-- Each site has isolated voting script: `src/scripts/sites/DOMAIN.js`
+```
+src/
+├── core/
+│   ├── background.js       # service worker: очередь голосований, будильники
+│   ├── projects.js         # настройки всех сайтов (allProjects)
+│   └── main.js             # общая инициализация и база данных
+├── ui/
+│   ├── options.html        # страница настроек, логика — в options/
+│   ├── popup.html          # окно по клику на иконку
+│   └── shared.js           # общее для настроек и окна
+├── utils/                  # голосование, база данных и миграции, API браузера
+└── scripts/
+    ├── sites/              # скрипт голосования для каждого сайта: <домен>.js
+    ├── silentvote/         # тихий режим: <домен>_silentvote.js
+    └── common/             # api.js, решение капч, общие помощники
+tests/                      # юнит-тесты и тест страницы настроек
+scripts/                    # проверка целостности и доступности сайтов
+```
 
-**Message Protocol:**
-Content scripts communicate with background via:
-- `{successfully: timestamp}` - vote succeeded
-- `{later: timestamp}` - cooldown detected (must send exact timestamp, not `true`)
-- `{errorVoteNoElement: message}` - element not found
-- `{silentVote: true}` - silent vote completed
+</details>
 
-## Development
+**Новый сайт:** настройки в `src/core/projects.js`, скрипт голосования в `src/scripts/sites/<домен>.js`. Подробное руководство и соглашения — в [CLAUDE.md](CLAUDE.md), помощники для скриптов — в [src/utils/README.md](src/utils/README.md).
 
-### Prerequisites
-- Chrome/Edge 105.0+ (Chromium-based browser)
-- Basic understanding of Chrome Extensions Manifest v3
-- Knowledge of IndexedDB and Service Workers
+Каждый push проверяется в [GitHub Actions](https://github.com/BazZziliuS/VoteFlow/actions): линтер, целостность путей и ключей локализации, тесты всех сайтов и страницы настроек. Релиз собирается по тегу `v*`, заметки к нему лежат в `docs/releases/`.
 
-### Getting Started
+## Благодарности
 
-1. Clone the repository
-2. Load unpacked extension from `chrome://extensions/`
-3. Read `CLAUDE.md` for detailed development guidelines
-4. See `src/utils/README.md` for utilities documentation
+VoteFlow продолжает расширение **[Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating)**, автор — **[Serega007](https://github.com/Serega007RU)**. Оригинальный проект больше не поддерживается. Спасибо его участникам: Serega007 (разработка), Qworte (дизайн), bozoweed и всем переводчикам.
 
-### Adding Support for New Sites
+Часть исправлений сайтов и обработка Cloudflare Turnstile перенесены из форка **[JustMordeckai/Auto-Vote-Rating](https://github.com/JustMordeckai/Auto-Vote-Rating)** (MIT).
 
-See `CLAUDE.md` for comprehensive guide. Quick overview:
+Используются библиотеки [idb](https://github.com/jakearchibald/idb), [LinkeDOM](https://github.com/WebReflection/linkedom) и [HackTimer](https://github.com/turuslan/HackTimer).
 
-1. Add configuration to `src/core/projects.js`
-2. Create voting script in `src/scripts/sites/DOMAIN.js`
-3. (Optional) Create silent vote script: `DOMAIN_silentvote.js`
-4. Test voting flow and cooldown detection
+## Лицензия
 
-### Testing Changes
+[MIT](LICENSE) — для кода VoteFlow. Оригинальный Auto Vote Rating опубликован без лицензии, поэтому унаследованный из него код остаётся © Serega007. Подробности — в [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-1. Reload extension at `chrome://extensions/`
-2. For Service Worker changes, may need to unregister at `chrome://serviceworker-internals/`
-3. Check console logs in background Service Worker and content script
-4. Verify timing calculations and statistics updates
+---
 
-## Libraries used
-### [IDB](https://github.com/jakearchibald/idb) - IndexedDB wrapper
-### [LinkeDOM](https://github.com/WebReflection/linkedom) - DOM parser for Service Worker (also [Polyfill](https://github.com/regseb/castkodi/tree/main/src/polyfill))
-### [HackTimer](https://github.com/turuslan/HackTimer) - Background-safe timers
+<details>
+<summary><b>In English</b></summary>
+
+VoteFlow is a Chromium browser extension (Manifest V3) that votes for your game servers on rating sites on schedule and claims daily rewards. It supports 147 sites, helps with reCAPTCHA, hCaptcha, Yandex SmartCaptcha, Cloudflare Turnstile and MTCaptcha, and signs in via Steam and VK ID.
+
+**Install:** download `VoteFlow-<version>.zip` from [Releases](https://github.com/BazZziliuS/VoteFlow/releases/latest), unzip it, enable Developer mode on your browser's extensions page and click "Load unpacked".
+
+VoteFlow continues [Auto Vote Rating](https://github.com/Serega007RU/Auto-Vote-Rating) by Serega007. Licensed under [MIT](LICENSE) for VoteFlow code; code inherited from the original remains © Serega007.
+
+</details>
