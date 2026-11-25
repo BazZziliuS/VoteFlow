@@ -84,6 +84,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV14(transaction)
     }
 
+    // Миграция v15: удаление проектов на закрытых сайтах
+    if (oldVersion <= 15) {
+        await migrateV15(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

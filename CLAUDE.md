@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-VoteFlow (formerly Auto Vote Rating, original author Serega007) is a Chrome/Edge browser extension (Manifest v3) that automates voting and claiming daily rewards on gaming server rating sites. It supports 150+ sites including Minecraft servers, Discord bot listings, Rust servers, and more.
+VoteFlow (formerly Auto Vote Rating, original author Serega007) is a Chrome/Edge browser extension (Manifest v3) that automates voting and claiming daily rewards on gaming server rating sites. It supports 140+ sites including Minecraft servers, Discord bot listings, Rust servers, and more.
 
 Key features:
 - Automated voting with captcha assistance (reCAPTCHA, hCaptcha, Yandex SmartCaptcha, Cloudflare Turnstile, MTCaptcha)

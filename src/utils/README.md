@@ -500,7 +500,7 @@ function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allProjects
 
 2. **Использование в main.js**:
 ```javascript
-db = await idb.openDB('avr', 15, {
+db = await idb.openDB('avr', 16, {
     upgrade: (db, oldVersion, newVersion, transaction) => {
         return runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allProjects, getDomainWithoutSubdomain)
     }
