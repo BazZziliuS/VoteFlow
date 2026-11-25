@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # нужна история и теги для changelog
 
       - name: Get version from manifest
         id: get_version
@@ -64,7 +66,15 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          # Генерируем changelog из последних коммитов
+          # Если для версии есть заметки docs/releases/<версия>.md — используем их
+          NOTES="docs/releases/${{ steps.get_version.outputs.version }}.md"
+          if [ -f "$NOTES" ]; then
+            cp "$NOTES" changelog.txt
+            echo "Using $NOTES"
+            exit 0
+          fi
+
+          # Иначе собираем changelog из коммитов с предыдущего тега
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
 
           if [ -z "$PREVIOUS_TAG" ]; then
