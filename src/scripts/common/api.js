@@ -367,6 +367,55 @@ function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Ждёт появления элемента на странице
+ * @param {string} selector CSS-селектор
+ * @param {number} [timeout=5000] сколько ждать, мс
+ * @param {number} [step=100] как часто проверять, мс
+ * @returns {Promise<Element|null>} элемент или null, если не дождались
+ */
+async function waitForElement(selector, timeout = 5000, step = 100) {
+    const start = Date.now()
+    let element = document.querySelector(selector)
+    while (!element && Date.now() - start < timeout) {
+        await wait(step)
+        element = document.querySelector(selector)
+    }
+    return element || null
+}
+
+/**
+ * Разбирает текст таймера кулдауна и возвращает момент следующего голосования
+ * Понимает «3 ч. 37 м. 36 с.», «1д 2ч», «5ч 19м 16с», «19 мин», «22 hours», «2h 5m», «21:59:02»
+ * @param {string} text текст таймера
+ * @param {number} [bufferMs=30000] запас сверху, чтобы не прийти на секунду раньше
+ * @returns {number|null} timestamp или null, если время не найдено
+ */
+function parseCooldown(text, bufferMs = 30000) {
+    if (!text) return null
+    const clean = String(text).replace(/\s+/g, ' ').trim().toLowerCase()
+
+    let seconds = null
+    const clock = clean.match(/(\d+):(\d{2}):(\d{2})/)
+    if (clock) {
+        seconds = Number(clock[1]) * 3600 + Number(clock[2]) * 60 + Number(clock[3])
+    } else {
+        const units = [
+            [/^(дн\S*|день|д|days?|d)$/, 86400],
+            [/^(час\S*|ч|hours?|hrs?|h)$/, 3600],
+            [/^(мин\S*|м|minutes?|mins?|m)$/, 60],
+            [/^(сек\S*|с|seconds?|secs?|s)$/, 1],
+        ]
+        const re = /(\d+)\s*([a-zа-яё]+)/g
+        for (const [, value, unit] of clean.matchAll(re)) {
+            const found = units.find(([pattern]) => pattern.test(unit))
+            if (found) seconds = (seconds || 0) + Number(value) * found[1]
+        }
+    }
+    if (seconds == null) return null
+    return Date.now() + seconds * 1000 + bufferMs
+}
+
 function isVisibleElement(elem) {
     if (!(elem instanceof Element)) return false
     const style = getComputedStyle(elem)

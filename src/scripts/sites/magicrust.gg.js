@@ -42,10 +42,6 @@ const TIMEOUTS = {
 // ============================================================================
 // Helper Functions
 // ============================================================================
-function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 function sendError(message) {
     chrome.runtime.sendMessage({errorVoteNoElement: message})
 }
@@ -202,7 +198,7 @@ async function handleModalActions(modal) {
     if (isOpenCaseButtonOnCooldown(openCaseButton)) {
         const timerText = openCaseButton.querySelector('.modal-roulette__timer')?.textContent ||
             openCaseButton.querySelector('.modal-roulette__btn-cooldown')?.textContent || ''
-        const cooldownTime = parseCooldownTime(timerText)
+        const cooldownTime = parseCooldown(timerText)
         console.log('[Free Case] Open case button on cooldown, timer:', timerText.trim(), '->', cooldownTime ? new Date(cooldownTime).toLocaleString() : 'default')
         sendCooldown(cooldownTime)
         return false
@@ -475,71 +471,7 @@ const WHEEL_TIMEOUTS = {
     cooldownCheck: 500
 }
 
-// Cooldown Parsing Functions
-function parseCooldownTime(text) {
-    if (!text) return null
-
-    // Clean up text: remove extra spaces, normalize
-    const cleanText = text.trim().replace(/\s+/g, ' ')
-
-    // Try to parse format "3 ч. 37 м. 36 с." (Russian format from magicrust.gg)
-    // Also handle variations: "3ч. 37м. 36с.", "3 ч 37 м 36 с"
-    const russianMatch = cleanText.match(/(\d+)\s*ч\.?\s*(\d+)\s*м\.?\s*(\d+)\s*с\.?/)
-    if (russianMatch) {
-        const hours = parseInt(russianMatch[1]) || 0
-        const minutes = parseInt(russianMatch[2]) || 0
-        const seconds = parseInt(russianMatch[3]) || 0
-        const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
-        const result = Date.now() + milliseconds + (30 * 1000) // +30 seconds buffer
-        console.log('[Wheel Fortune] Parsed Russian format:', cleanText, '→', hours + 'h', minutes + 'm', seconds + 's', '→ Next vote:', new Date(result).toLocaleString())
-        return result
-    }
-
-    // Try format with only hours and minutes: "3 ч. 37 м."
-    const russianHMMatch = cleanText.match(/(\d+)\s*ч\.?\s*(\d+)\s*м\.?/)
-    if (russianHMMatch) {
-        const hours = parseInt(russianHMMatch[1]) || 0
-        const minutes = parseInt(russianHMMatch[2]) || 0
-        const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
-        const result = Date.now() + milliseconds + (30 * 1000)
-        console.log('[Wheel Fortune] Parsed Russian H:M format:', cleanText, '→', hours + 'h', minutes + 'm', '→ Next vote:', new Date(result).toLocaleString())
-        return result
-    }
-
-    // Формат без часов: "19м 16с" / "19 м. 16 с."
-    const russianMSMatch = cleanText.match(/(\d+)\s*м\.?\s*(\d+)\s*с/)
-    if (russianMSMatch) {
-        const minutes = parseInt(russianMSMatch[1]) || 0
-        const seconds = parseInt(russianMSMatch[2]) || 0
-        const result = Date.now() + (minutes * 60 + seconds) * 1000 + (30 * 1000)
-        console.log('[magicrust] Parsed M:S format:', cleanText, '→ Next vote:', new Date(result).toLocaleString())
-        return result
-    }
-
-    // Try to find time in format HH:MM:SS or H:MM:SS
-    const timeMatch = cleanText.match(/(\d+):(\d+):(\d+)/)
-    if (timeMatch) {
-        const hours = parseInt(timeMatch[1]) || 0
-        const minutes = parseInt(timeMatch[2]) || 0
-        const seconds = parseInt(timeMatch[3]) || 0
-        const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
-        const result = Date.now() + milliseconds + (60 * 1000) // +1 minute buffer
-        console.log('[Wheel Fortune] Parsed HH:MM:SS format:', cleanText, '→ Next vote:', new Date(result).toLocaleString())
-        return result
-    }
-
-    // Try to find hours in text (e.g., "22 часа", "22 hours")
-    const hoursMatch = cleanText.match(/(\d+)\s*(час|hour)/i)
-    if (hoursMatch) {
-        const hours = parseInt(hoursMatch[1]) || 0
-        const result = Date.now() + (hours * 60 * 60 * 1000) + (60 * 1000)
-        console.log('[Wheel Fortune] Parsed hours only:', cleanText, '→', hours + 'h', '→ Next vote:', new Date(result).toLocaleString())
-        return result
-    }
-
-    console.log('[Wheel Fortune] Could not parse time from:', cleanText)
-    return null
-}
+// Разбор времени кулдауна — parseCooldown() из src/scripts/common/api.js
 
 function getCooldownFromPage() {
     // Try to find cooldown timer elements
@@ -554,7 +486,7 @@ function getCooldownFromPage() {
 
         console.log('[Wheel Fortune] Checking timer element:', element.className, 'Text:', text)
 
-        const cooldownTime = parseCooldownTime(text)
+        const cooldownTime = parseCooldown(text)
         if (cooldownTime) {
             return cooldownTime
         }
@@ -643,7 +575,7 @@ async function voteWheelFortune(first) {
     }
 
     // Кулдаун может отображаться прямо в тексте кнопки (например "21:59:02" или "3 ч. 37 м.")
-    const buttonCooldown = parseCooldownTime(spinButton.textContent)
+    const buttonCooldown = parseCooldown(spinButton.textContent)
     if (buttonCooldown) {
         console.log('[Wheel Fortune] Cooldown found in button text:', spinButton.textContent.trim())
         sendCooldown(buttonCooldown)

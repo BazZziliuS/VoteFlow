@@ -213,21 +213,15 @@ Parse various time formats:
 - "21:59:02" (HH:MM:SS)
 - "22 hours" (text format)
 
-Example parsing function:
-```javascript
-function parseCooldownTime(text) {
-    const cleanText = text.trim().replace(/\s+/g, ' ')
+Don't write a parser per site: `src/scripts/common/api.js` (injected with every site script) provides
+`parseCooldown(text, bufferMs = 30000)` — handles all of the formats above plus days, English units and
+"Доступно через 5ч 19м 16с"; returns a timestamp or `null`. It also provides `wait(ms)`,
+`waitForElement(selector, timeout)` and `isVisibleElement(el)`.
 
-    // Russian format: "3 ч. 37 м. 36 с."
-    const russianMatch = cleanText.match(/(\d+)\s*ч\.?\s*(\d+)\s*м\.?\s*(\d+)\s*с\.?/)
-    if (russianMatch) {
-        const hours = parseInt(russianMatch[1]) || 0
-        const minutes = parseInt(russianMatch[2]) || 0
-        const seconds = parseInt(russianMatch[3]) || 0
-        return Date.now() + (hours * 3600 + minutes * 60 + seconds) * 1000 + 30000
-    }
-    return null
-}
+```javascript
+const timer = document.querySelector('.cooldown-timer')
+const nextVote = parseCooldown(timer?.textContent)
+if (nextVote) chrome.runtime.sendMessage({later: nextVote})
 ```
 
 ### Success Detection

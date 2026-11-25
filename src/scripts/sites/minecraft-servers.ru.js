@@ -55,18 +55,6 @@ async function waitForToast(timeout = 15000, interval = 500) {
     }
 }
 
-async function waitForElement(selector, timeout = 5000, step = 100) {
-    const start = Date.now();
-    let element = document.querySelector(selector);
-
-    while (!element && Date.now() - start < timeout) {
-        await wait(step);
-        element = document.querySelector(selector);
-    }
-
-    return element || null;
-}
-
 function getToastText(selectors, classKeyword) {
     for (const selector of selectors) {
         const node = document.querySelector(selector);
