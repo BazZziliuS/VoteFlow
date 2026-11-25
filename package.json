@@ -8,7 +8,8 @@
     "lint:fix": "eslint src --fix",
     "test": "node --test \"tests/*.test.js\"",
     "test:ui": "node tests/ui/smoke.js",
-    "check": "npm run lint && node scripts/check-manifest.js && npm test"
+    "check": "npm run lint && node scripts/check-manifest.js && npm test",
+    "sites": "node scripts/check-sites.js"
   },
   "devDependencies": {
     "eslint": "^10.15.0",
