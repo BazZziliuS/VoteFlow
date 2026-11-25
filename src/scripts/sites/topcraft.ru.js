@@ -36,8 +36,51 @@ function topcraftNeedsLogin() {
 
 function topcraftHasCaptcha(container) {
     return Boolean(container.querySelector(
-        'iframe[src*="captcha"], iframe[src*="recaptcha"], iframe[src*="smartcaptcha"], .g-recaptcha, .h-captcha, .smart-captcha, [data-sitekey]'
+        'iframe[src*="captcha"], iframe[src*="recaptcha"], iframe[src*="smartcaptcha"], .g-recaptcha, .h-captcha, .smart-captcha, [data-sitekey], input[name="smart-token"]'
     ))
+}
+
+// Yandex SmartCaptcha в окне голосования может дорисоваться после открытия окна — ждём её до 5 секунд
+async function topcraftWaitCaptcha(container) {
+    for (let i = 0; i < 10; i++) {
+        if (topcraftHasCaptcha(container)) return true
+        await wait(500)
+    }
+    return false
+}
+
+// Токен SmartCaptcha появляется в скрытом поле, когда капча пройдена — автоматически, вручную или невидимо.
+// По нему отправляем голос, даже если captchaclicker не прислал captchaPassed
+function topcraftWatchCaptchaToken(modal) {
+    const timer = setInterval(() => {
+        if (topcraftSubmitted) {
+            clearInterval(timer)
+            return
+        }
+        const token = modal.querySelector('input[name="smart-token"]')?.value
+        if (token) {
+            clearInterval(timer)
+            console.log(TOPCRAFT_LOG, 'SmartCaptcha пройдена — отправляем голос')
+            topcraftSubmit(modal)
+        }
+    }, 1000)
+}
+
+let topcraftSubmitted = false
+
+function topcraftSubmit(modal) {
+    if (topcraftSubmitted) return
+    const form = modal.querySelector('form')
+    const submit = form?.querySelector('button[type="submit"], input[type="submit"]')
+        || modal.querySelector('.modal-footer .btn-primary, .modal-footer button')
+    if (!submit) {
+        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка отправки голоса'})
+        return
+    }
+    topcraftSubmitted = true
+    console.log(TOPCRAFT_LOG, 'Отправляем голос')
+    topcraftClickTrusted(submit)
+    watchTopcraftResult(modal)
 }
 
 function topcraftClickTrusted(element) {
@@ -120,21 +163,18 @@ async function vote(first) {
         nickInput.dispatchEvent(new Event('change', {bubbles: true}))
     }
 
-    // С капчей ждём её прохождения: api.js вызовет vote(false)
-    if (first && topcraftHasCaptcha(modal)) {
+    // С капчей (Yandex SmartCaptcha) ждём её прохождения: captchaclicker пришлёт captchaPassed и api.js вызовет vote(false),
+    // а наблюдатель за токеном отправит голос, если капчу прошли иначе
+    if (first && (topcraftHasCaptcha(modal) || await topcraftWaitCaptcha(modal))) {
         console.log(TOPCRAFT_LOG, 'Ждём прохождения капчи')
+        topcraftWatchCaptchaToken(modal)
+        setTimeout(() => {
+            if (!topcraftSubmitted) chrome.runtime.sendMessage({captcha: true})
+        }, 30000)
         return
     }
 
-    const submit = form.querySelector('button[type="submit"], input[type="submit"]')
-        || modal.querySelector('.modal-footer .btn-primary, .modal-footer button')
-    if (!submit) {
-        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка отправки голоса'})
-        return
-    }
-    console.log(TOPCRAFT_LOG, 'Отправляем голос за', project.nick)
-    topcraftClickTrusted(submit)
-    watchTopcraftResult(modal)
+    topcraftSubmit(modal)
 }
 
 // Результат голосования: тост сайта, подсказка у кнопки или сообщение внутри окна
