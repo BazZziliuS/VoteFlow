@@ -1,3 +1,8 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
+const TOS_DIALOG_SELECTOR = 'div[role="dialog"]:not([class*="fc-"])'
+
+let submitted = false
+
 async function vote(first) {
     if (document.querySelector('#center > div > h1') != null && document.querySelector('#center > div > h1').textContent.includes('Successfully voted')) {
         chrome.runtime.sendMessage({successfully: true})
@@ -17,11 +22,12 @@ async function vote(first) {
         return
     }
 
-    if (isVisibleElement(document.querySelector('div[role="dialog"]'))) {
+    // div[role="dialog"] is also used by the Google consent banner (.fc-dialog), which does not block voting
+    if (isVisibleElement(document.querySelector(TOS_DIALOG_SELECTOR))) {
         chrome.runtime.sendMessage({requiredConfirmTOS: true})
         await new Promise(resolve => {
             const timer2 = setInterval(() => {
-                if (!document.querySelector('div[role="dialog"]')) {
+                if (!document.querySelector(TOS_DIALOG_SELECTOR)) {
                     clearInterval(timer2)
                     resolve()
                 }
@@ -37,7 +43,14 @@ async function vote(first) {
         return
     }
 
-    if (first) return
+    // The rating replaced reCAPTCHA with an invisible Cloudflare Turnstile which solves itself,
+    // so instead of waiting for a captchaPassed message we wait for the token it writes into the form
+    const turnstileField = document.querySelector('#submit_vote_form input[name="cf-turnstile-response"]')
+    const turnstileWidget = document.querySelector('#turnstile-widget') || document.querySelector('#submit_vote_form .cf-turnstile')
+    if (turnstileField == null && turnstileWidget == null && first) {
+        // Another kind of captcha is in use, we wait until it is solved
+        return
+    }
 
     const project = await getProject()
     if (document.querySelector('#submit_vote_form > input[name="mcname"]') != null) {
@@ -45,5 +58,13 @@ async function vote(first) {
     } else {
         console.warn('Не удалось найти поле для никнейма, возможно это голосование без награды')
     }
+
+    if ((turnstileField != null || turnstileWidget != null) && !(turnstileField?.value.length > 0)) {
+        await waitTurnstileToken('#submit_vote_form')
+    }
+
+    // vote() can be called a second time when the captcha reports itself as solved
+    if (submitted) return
+    submitted = true
     document.querySelector('#submit_vote_form > input[type="submit"]').click()
 }

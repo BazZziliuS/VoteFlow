@@ -1,5 +1,8 @@
 let resolveProject, waitProject
 if (!waitProject) waitProject = new Promise(resolve => resolveProject = resolve)
+// Состояние ожидания Cloudflare Turnstile объявлено первым: run() может дойти до скрипта голосования, пока файл ещё грузится.
+// Механизм перенесён из форка JustMordeckai/Auto-Vote-Rating (MIT)
+let turnstileWait, turnstilePassed = false
 
 //Фикс-костыль двойной загрузки (для Rocket Loader)
 if (!window.loaded) {
@@ -15,6 +18,11 @@ async function run() {
             if (request.vkontakte) window.vkontakte = request.vkontakte
             resolveProject()
         } else if (request.captchaPassed) {
+            // Этот Turnstile мог уже засчитать наблюдатель за токеном — не голосуем второй раз
+            if (request.turnstile) {
+                if (turnstilePassed) return
+                turnstilePassed = true
+            }
             // noinspection JSIgnoredPromiseFromCall
             checkAll(false)
         }
@@ -26,12 +34,10 @@ async function run() {
         })
     }
 
-    try {
-        await checkAll(true)
-    } catch (error) {
-        throwError(error)
-        return
-    }
+    // vote(true) может ждать токен Turnstile, пока открыта вкладка,
+    // поэтому помощники решения капчи запускаются, не дожидаясь его
+    const firstVote = checkAll(true)
+    const turnstileTimer = watchTurnstileToken()
 
     // Интеграция с расширениями на автоматические решение капч
     const timer1 = setInterval(() => {
@@ -60,6 +66,59 @@ async function run() {
             clearInterval(timer2)
         }
     }, 1000)
+
+    try {
+        await firstVote
+    } catch (error) {
+        clearInterval(turnstileTimer)
+        clearInterval(timer1)
+        clearInterval(timer2)
+        throwError(error)
+    }
+}
+
+// Невидимый Cloudflare Turnstile часто проходит сам и не показывает «успех», поэтому captchaclicker о нём не сообщит.
+// Заполненный токен cf-turnstile-response считаем пройденной капчей и один раз вызываем голосование, как после captchaPassed.
+// Если на странице есть hCaptcha или reCAPTCHA, Turnstile там — только проверка на бота, и ждать нужно другую капчу
+function watchTurnstileToken() {
+    const timer = setInterval(() => {
+        if (turnstilePassed || document.querySelector('.h-captcha, .g-recaptcha, [name="h-captcha-response"], [name="g-recaptcha-response"], iframe[src*="hcaptcha.com"], iframe[src*="/recaptcha/"], #captcha-block')) {
+            clearInterval(timer)
+            return
+        }
+        const field = document.querySelector('input[name="cf-turnstile-response"]')
+        if (field != null && field.value.length > 0) {
+            clearInterval(timer)
+            turnstilePassed = true
+            // noinspection JSIgnoredPromiseFromCall
+            checkAll(false)
+        }
+    }, 1000)
+    return timer
+}
+
+/**
+ * Ждёт токен Cloudflare Turnstile в форме. Через timeout секунд один раз просит пользователя пройти капчу
+ * и продолжает ждать, чтобы голос всё равно ушёл. Все вызовы на странице делят одно ожидание
+ * @param {string} [scope] селектор формы, внутри которой искать токен
+ * @param {number} [timeout=60] через сколько секунд попросить пройти капчу вручную
+ * @returns {Promise<string>} токен
+ */
+function waitTurnstileToken(scope = '', timeout = 60) {
+    if (turnstileWait) return turnstileWait
+    turnstileWait = new Promise(resolve => {
+        let ticks = 0
+        const timer = setInterval(() => {
+            const field = document.querySelector((scope ? scope + ' ' : '') + 'input[name="cf-turnstile-response"]')
+            if (field != null && field.value.length > 0) {
+                clearInterval(timer)
+                resolve(field.value)
+            } else if (++ticks === timeout) {
+                chrome.runtime.sendMessage({captcha: true})
+            }
+        }, 1000)
+    })
+    return turnstileWait
 }
 
 async function checkAll(first) {

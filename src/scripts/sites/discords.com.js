@@ -1,3 +1,4 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
     const project = await getProject()
     if (document.querySelector('a[href="/bots/auth"]')) {
@@ -59,7 +60,7 @@ async function vote(first) {
                         clearInterval(timer)
                         throwError(error)
                     }
-                })
+                }, 1000)
             })
         }
 

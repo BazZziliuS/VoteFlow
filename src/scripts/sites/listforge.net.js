@@ -1,3 +1,6 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
+let submitted = false
+
 async function vote(first) {
     //Пилюля от жадности
     if (document.getElementById('adblock-notice')) document.getElementById('adblock-notice').style.display = 'none'
@@ -5,6 +8,8 @@ async function vote(first) {
     if (document.getElementById('vote-loading-block')) document.getElementById('vote-loading-block').style.display = 'none'
     if (document.getElementById('blocked-notice')) document.getElementById('blocked-notice').style.display = 'none'
     if (document.getElementById('privacysettings-notice')) document.getElementById('privacysettings-notice').style.display = 'none'
+    // The site's own bait check shows "Ad blocker detected" here, and it misfires when the tab loads slowly (#21)
+    if (document.getElementById('vote-warning-block')) document.getElementById('vote-warning-block').style.display = 'none'
     document.getElementById('vote-form-block')?.removeAttribute('style')
     document.getElementById('vote-button-block')?.removeAttribute('style')
     document.querySelector('.alert-danger a[href*="/servers/premium/"]')?.parentElement?.remove()
@@ -31,7 +36,8 @@ async function vote(first) {
 
     for (const el of document.querySelectorAll('div.alert.alert-danger')) {
         if (el.querySelector('center > strong')) continue
-        if (!el.innerText) continue
+        // innerText of a hidden element still returns its text, so it can't tell hidden alerts apart
+        if (!el.checkVisibility() || !el.innerText) continue
 
         const request = {}
         request.message = el.textContent.trim()
@@ -78,17 +84,27 @@ async function vote(first) {
         return
     }
 
+    // Cloudflare Turnstile is invisible and solves itself, we only wait for the token it writes into the form
+    if (document.querySelector('.cf-turnstile')) {
+        await waitTurnstileToken()
     //Если на странице есть hCaptcha то мы ждём её решения
-    if ((document.querySelector('div.h-captcha') || document.querySelector('.cf-turnstile') || document.querySelector('#captcha-block')) && first) {
+    } else if ((document.querySelector('div.h-captcha') || document.querySelector('#captcha-block')) && first) {
         return
     }
 
     //Соглашаемся с Privacy Policy
     if (document.querySelector('#accept')) document.querySelector('#accept').checked = true
+    // Newer layout: one shared checkbox that the site copies into a hidden "accept" input of each form
+    const sharedAccept = document.getElementById('sharedAccept')
+    if (sharedAccept && !sharedAccept.checked) {
+        sharedAccept.checked = true
+        sharedAccept.dispatchEvent(new Event('change', {bubbles: true}))
+    }
+    document.querySelectorAll('.shared-mirror').forEach(el => el.value = '1')
 
     //Если требуется авторизация Steam
-    if (document.querySelector('form[name="steam_form"] > input[type="image"]') != null) {
-        document.querySelector('form[name="steam_form"] > input[type="image"]').click()
+    if (document.querySelector('form[name^="steam_form"] > input[type="image"]') != null) {
+        document.querySelector('form[name^="steam_form"] > input[type="image"]').click()
         return
     }
 
@@ -125,6 +141,11 @@ async function vote(first) {
         }
 
         document.getElementById('nickname').value = project.nick
+
+        // vote() can be called a second time when the captcha reports itself as solved
+        if (submitted) return
+        submitted = true
+
         //Кликаем проголосовать, если нет hCaptcha
         if (document.getElementById('voteBtn') != null) {
             document.getElementById('voteBtn').click()

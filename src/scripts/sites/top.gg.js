@@ -1,3 +1,4 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
     if (first === false) return
 
@@ -25,18 +26,27 @@ async function vote(first) {
         return
     }
 
+    let finished = false
+    let timer1, timer2, reloadTimer
+    function finish(request) {
+        if (finished) return
+        finished = true
+        clearInterval(timer1)
+        clearInterval(timer2)
+        clearTimeout(reloadTimer)
+        chrome.runtime.sendMessage(request)
+    }
+
     let countAlreadyVoted = 0
-    const timer1 = setInterval(() => {
+    timer1 = setInterval(() => {
         try {
-            const result = findElement('p.chakra-text', ['thanks for voting', 'already voted', 'something went wrong'])
+            const result = findElement('h1, h2, h3, p, [role="alert"], [role="status"]', ['thanks for voting', 'thank you for voting', 'already voted', 'something went wrong'])
             if (result != null) {
-                if (result.textContent.toLowerCase().includes('thanks for voting')) {
-                    chrome.runtime.sendMessage({successfully: true})
-                    clearInterval(timer1)
+                if (/thank(s| you) for voting/i.test(result.textContent)) {
+                    finish({successfully: true})
                 } else if (result.textContent.toLowerCase().includes('already voted')) {
                     if (countAlreadyVoted > 15) {
-                        chrome.runtime.sendMessage({later: true})
-                        clearInterval(timer1)
+                        finish({later: true})
                     } else {
                         countAlreadyVoted = countAlreadyVoted + 1
                     }
@@ -46,8 +56,7 @@ async function vote(first) {
                     if (request.message.includes('Something went wrong while trying to vote')) {
                         request.ignoreReport = true
                     }
-                    chrome.runtime.sendMessage(request)
-                    clearInterval(timer1)
+                    finish(request)
                 }
             }
         } catch (e) {
@@ -58,8 +67,9 @@ async function vote(first) {
 
     // TODO этот костыль сделан из-за того что сайт сначало показывает что вот голосуй, а потом через несколько секунд пишет "Вы уже голосовали"
     await wait(Math.floor(Math.random() * (15000 - 10000) + 10000))
+    if (finished) return
 
-    const timer2 = setInterval(() => {
+    timer2 = setInterval(() => {
         try {
             const vote = findElement('button', ['vote'])
             if (!vote) return
@@ -81,10 +91,10 @@ async function vote(first) {
             clearInterval(timer2)
             throwError(e)
         }
-    })
+    }, 1000)
 
     // TODO иногда сайт просто зависает на "You must be logged in to vote." или "You will be able to vote after this ad.", просто втупую через некоторое время перезагружаем страницу
-    setTimeout(() => {
+    reloadTimer = setTimeout(() => {
         document.location.reload()
     }, Math.floor(Math.random() * (300000 - 420000) + 420000))
 }

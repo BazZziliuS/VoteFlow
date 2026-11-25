@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(function (request/*, sender, sendResponse*/
             }
             run();
         } else if (window.solvedCaptcha) {
-            chrome.runtime.sendMessage({captchaPassed: 'double'});
+            chrome.runtime.sendMessage({captchaPassed: 'double', turnstile: window.solvedTurnstile});
         }
     }
 });
@@ -792,7 +792,8 @@ function handleTurnstileInShadowDOM() {
                                     if (checkSuccess()) {
                                         clearInterval(timerSuccess);
                                         window.solvedCaptcha = true;
-                                        chrome.runtime.sendMessage({captchaPassed: true});
+                                        window.solvedTurnstile = true;
+                                        chrome.runtime.sendMessage({captchaPassed: true, turnstile: true});
                                         console.log(`[Turnstile DEBUG] 🟢 CAPTCHA solved successfully.`);
                                     }
                                 }, 1000);
@@ -887,7 +888,8 @@ function handleTurnstileInShadowDOM() {
                     if (checkSuccess()) {
                         clearInterval(timerSuccess);
                         window.solvedCaptcha = true;
-                        chrome.runtime.sendMessage({captchaPassed: true});
+                        window.solvedTurnstile = true;
+                        chrome.runtime.sendMessage({captchaPassed: true, turnstile: true});
                         console.log(`[Turnstile DEBUG] 🟢 CAPTCHA solved successfully.`);
                     }
                 }, 1000);
@@ -1028,7 +1030,8 @@ function handleTurnstileInIframe() {
                                     if (checkSuccess()) {
                                         clearInterval(timerSuccess);
                                         window.solvedCaptcha = true;
-                                        chrome.runtime.sendMessage({captchaPassed: true});
+                                        window.solvedTurnstile = true;
+                                        chrome.runtime.sendMessage({captchaPassed: true, turnstile: true});
                                         console.log(`[Turnstile DEBUG] 🟢 CAPTCHA solved successfully.`);
                                         handled = true;
                                     }

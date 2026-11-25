@@ -1,3 +1,4 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
     // https://i.imgur.com/yI6PmMA.png
     if (document.querySelector('body > h1')?.textContent === 'Forbidden') {
@@ -54,16 +55,12 @@ async function vote(first) {
         chrome.runtime.sendMessage({message: document.querySelector('.vote-content').innerText, ignoreReport: true})
     }
 
+    // div.notice is the site-wide announcement banner, not a voting error (site errors come through
+    // div.ui-pnotify above), so we only report the announcements that actually block the vote
     if (document.querySelector('div.notice div.alert')) {
-        const request = {}
-        request.message = document.querySelector('div.notice div.alert').innerText
-        if (request.message.includes('News') || request.message.includes('Объявление!')) {
-            // None
-        } else {
-            if (request.message.includes('требуется активировать аккаунт')) {
-                request.ignoreReport = true
-            }
-            chrome.runtime.sendMessage(request)
+        const message = document.querySelector('div.notice div.alert').innerText
+        if (message.includes('требуется активировать аккаунт') || message.includes('account activation is required')) {
+            chrome.runtime.sendMessage({message, ignoreReport: true})
             return
         }
     }

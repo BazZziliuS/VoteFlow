@@ -1,3 +1,4 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
 
     // Если мы каким-то образом попали на форум значит что-то не так
@@ -57,4 +58,4 @@ const timer = setInterval(async () => {
         clearInterval(timer)
         throwError(e)
     }
-})
+}, 1000)

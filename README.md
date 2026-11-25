@@ -9,6 +9,8 @@ The original project is no longer maintained, so it is being developed further h
 
 Original contributors: Serega007 (developer), Qworte (designer), bozoweed and all translators. Thank you!
 
+Some site scripts and the Cloudflare Turnstile handling come from the **[JustMordeckai/Auto-Vote-Rating](https://github.com/JustMordeckai/Auto-Vote-Rating)** fork (MIT), see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 # Integrated, free captcha assistance
 - Built‑in detectors and assistance for:
   - reCAPTCHA (anchor + bframe)
@@ -153,26 +155,39 @@ Original contributors: Serega007 (developer), Qworte (designer), bozoweed and al
 <a href="https://liste-serv-minecraft.fr/">liste-serv-minecraft.fr</a>  
 <a href="https://play-minecraft-servers.com/">play-minecraft-servers.com</a>  
 <a href="https://minecraft.menu/">minecraft.menu</a>  
+<a href="https://www.minerank.com/">minerank.com</a>  
+<a href="https://topeaglerservers.com/">topeaglerservers.com</a>  
+<a href="https://voxelrank.com/">voxelrank.com</a>  
+<a href="https://16bitmc.net/">16bitmc.net</a>  
 
 </details>
 
-### Links to the extension where you can install it:
-[Chrome Web Store](https://chrome.google.com/webstore/detail/auto-vote-minecraft-ratin/mdfmiljoheedihbcfiifopgmlcincadd)   
-[Firefox Add-ons](https://addons.mozilla.org/ru/firefox/addon/auto-vote-rating/) (no longer supported)   
-[Opera Addons](https://addons.opera.com/ru/extensions/details/auto-vote-minecraft-rating/) (not published, waiting for an endless moderation check)   
-[Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/auto-vote-rating/ecoifpgiojfhmihcfomafdcmkphafpba)
+## Browsers
 
-### Support via Discord: https://discord.com/invite/GyvMtbU
+VoteFlow works in Chromium-based browsers, version 105 or newer:
 
-## Install the extension from zip archive
-Here is a short guide how to install an unpacked extension on Google Chrome or Chromium-based browsers
-1. [Download](https://github.com/BazZziliuS/VoteFlow/archive/refs/heads/dev.zip) this repository
-2. Unzip the archive to any convenient location
-3. Open the "Extensions" page `chrome://extensions/` in the browser and turn on the "Developer mode"
+| Browser | Extensions page | Checked |
+| --- | --- | --- |
+| Google Chrome | `chrome://extensions/` | via Chromium 159 |
+| Microsoft Edge | `edge://extensions/` | Edge 158 |
+| Brave | `brave://extensions/` | — |
+| Opera, Opera GX | `opera://extensions/` | — (see note) |
+| Yandex Browser | `browser://extensions/` | — |
+| Vivaldi | `vivaldi://extensions/` | — |
 
-![](https://i.imgur.com/iQ4DXVu.png)
+In Opera VoteFlow works in a limited mode: no tab groups, no access to Google reCAPTCHA frames and no work in the background when all tabs are closed. The extension explains this on first start.
+Firefox is not supported.
 
-4. Click on the "Load unpacked" button and select the directory where you unpacked the archive.
+VoteFlow is not published in browser stores: the store listings named Auto Vote Rating are the old original extension.
+
+## Install from a release
+
+1. Download `VoteFlow-<version>.zip` from [Releases](https://github.com/BazZziliuS/VoteFlow/releases/latest) and unzip it
+2. Open the extensions page of your browser (see the table above) and turn on Developer mode
+3. Click "Load unpacked" and select the `VoteFlow` folder
+
+To update, replace the folder contents and click "Reload" on the extensions page — projects and settings are kept.
+VoteFlow 8.2.0 and newer tell you when a new version is out.
 
 
 ## Project Structure

@@ -1,180 +1,140 @@
+// Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
-    if (first === false) return;
+    if (first === false) return
 
     if (isVisibleElement(document.querySelector('.fc-dialog-container'))) {
-        chrome.runtime.sendMessage({ requiredConfirmTOS: true });
+        chrome.runtime.sendMessage({requiredConfirmTOS: true})
         await new Promise(resolve => {
             const timer2 = setInterval(() => {
                 if (!document.querySelector('.fc-dialog-container')) {
-                    clearInterval(timer2);
-                    resolve();
+                    clearInterval(timer2)
+                    resolve()
                 }
-            }, 1000);
-        });
+            }, 1000)
+        })
     }
 
-    console.log("[DEBUG] Page HTML contains Turnstile:", document.body.innerHTML.includes('cf-turnstile-response'));
-    console.log("[DEBUG] Turnstile container:", document.querySelector('.turnstile-container')?.outerHTML);
-    
-    // Check for Turnstile-specific elements
-    const turnstileWidget = document.querySelector('.cf-turnstile, [data-widget-id], [name="cf-turnstile-response"]');
-    if (turnstileWidget) {
-        console.log("[DEBUG] Found Turnstile widget");
+    //Détection de la page de succès pour top-serveurs.net (nouvelle structure)
+    if (document.querySelector('.vote-success-header') != null || document.querySelector('.success-title') != null) {
+        chrome.runtime.sendMessage({successfully: true})
+        return
     }
 
-    // Если успешное авто-голосование
-    if (window.location.href.endsWith('/success')) {
-        chrome.runtime.sendMessage({ successfully: true });
-        return;
-    }
-    if (document.querySelector(".failed-description") != null){
-        const numbers = document.querySelector(".failed-description").textContent.match(/\d+/g).map(Number);
-        const milliseconds = numbers[0] * 60 * 1000
-        chrome.runtime.sendMessage({ later: Date.now() + milliseconds });
-        return;
-    }
-    // Если есть предупреждение
-    if (document.getElementById('digitalCountdown') != null) {
-        const numbers = document.getElementById('digitalCountdown').textContent.match(/\d+/g).map(Number);
-        const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000); 
-        chrome.runtime.sendMessage({ later: Date.now() + milliseconds });
-        return;
-    } 
-
-    // Если есть ошибка
-    for (const el of document.querySelectorAll('div.alert.alert-danger')) {
-        const request = { message: el.innerText };
-
-        if (
-            request.message.includes('cannot vote more than once at the same time') ||
-            request.message.includes('avant de pouvoir voter à nouveau')
-        ) {
-            chrome.runtime.sendMessage({ later: true });
-            return;
-        } else if (request.message.includes('Captcha')) {
-            // We'll handle captcha via content.js — do nothing here
-            continue;
-        } else if (
-            request.message.includes('Sie können nicht wählen, weil Ihr Netzwerk kein') ||
-            request.message.includes('cannot vote because your network') ||
-            request.message.includes('не можете голосовать из-за того, что находитесь в частной или закрытой сети') ||
-            request.message.includes('não pode votar porque sua rede não é uma rede') ||
-            request.message.includes('ne pouvez pas voter car votre réseau n\'est pas un réseau') ||
-            request.message.includes('puedes votar porque tu red no es una red')
-        ) {
-            request.ignoreReport = true;
-        }
-
-        chrome.runtime.sendMessage(request);
-        return;
-    }
-
-    if (document.getElementById('playername') != null) {
-        const project = await getProject();
-        document.getElementById('playername').value = project.nick;
-    }
-
-    // ==================== WAIT FOR CAPTCHA TO BE SOLVED ====================
-    let captchaSolved = false;
-
-    // Special handling for Cloudflare Turnstile
-    function checkTurnstileSolved() {
-        // Check for hidden response field with value
-        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]');
-        if (turnstileResponse && turnstileResponse.value && turnstileResponse.value.length > 0) {
-            return true;
-        }
-        
-        // Check for success indicator classes
-        const successIndicators = document.querySelectorAll('.cf-turnstile-success, .turnstile-success, [data-state="solved"]');
-        for (let indicator of successIndicators) {
-            if (indicator.offsetParent !== null) {
-                return true;
+    // Détection de la page "déjà voté" via la section cooldown (nouvelle structure HTML)
+    if (document.querySelector('.vote-cooldown-section') != null) {
+        // Essayer d'abord d'utiliser le compteur digital qui est plus précis
+        const digitalCountdown = document.getElementById('digitalCountdown')
+        if (digitalCountdown) {
+            const hoursSpan = digitalCountdown.querySelector('[data-unit="hours"]')
+            const minutesSpan = digitalCountdown.querySelector('[data-unit="minutes"]')
+            const secondsSpan = digitalCountdown.querySelector('[data-unit="seconds"]')
+            
+            if (hoursSpan && minutesSpan && secondsSpan) {
+                const hours = parseInt(hoursSpan.textContent.trim(), 10) || 0
+                const minutes = parseInt(minutesSpan.textContent.trim(), 10) || 0
+                const seconds = parseInt(secondsSpan.textContent.trim(), 10) || 0
+                const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
+                chrome.runtime.sendMessage({later: Date.now() + milliseconds})
+                return
             }
         }
         
-        return false;
-    }
-
-    // Listen for captchaPassed message from content.js
-    const captchaListener = (message, sender, sendResponse) => {
-        if (message.captchaPassed === true || message.captchaPassed === 'double') {
-            console.log("[VOTE] CAPTCHA solved! Proceeding to submit vote.");
-            captchaSolved = true;
-            chrome.runtime.onMessage.removeListener(captchaListener);
-        }
-    };
-    chrome.runtime.onMessage.addListener(captchaListener);
-
-    // Also check if CAPTCHA was already solved before
-    if (window.__captchaExt?.solvedCaptcha) {
-        console.log("[VOTE] CAPTCHA was already solved. Proceeding immediately.");
-        captchaSolved = true;
-    }
-
-    // Check specifically for Turnstile being solved
-    if (!captchaSolved && document.querySelector('.cf-turnstile, [data-widget-id]')) {
-        console.log("[VOTE] Checking if Turnstile is already solved...");
-        if (checkTurnstileSolved()) {
-            console.log("[VOTE] Turnstile already solved!");
-            captchaSolved = true;
-        }
-    }
-
-    // If not solved yet, wait for it
-    if (!captchaSolved) {
-        console.log("[VOTE] Waiting for CAPTCHA to be solved...");
-
-        // // Optional: timeout after 60s
-        // const timeoutId = setTimeout(() => {
-        //     console.warn("[VOTE] Timeout waiting for CAPTCHA solve.");
-        //     chrome.runtime.onMessage.removeListener(captchaListener);
-        // }, 60000);
-
-        // Wait until captchaSolved becomes true
-        await new Promise(resolve => {
-            const checkInterval = setInterval(() => {
-                // Check both the general captcha solution and Turnstile-specific solution
-                if (captchaSolved || checkTurnstileSolved()) {
-                    if (checkTurnstileSolved()) {
-                        console.log("[VOTE] Turnstile solved by direct check!");
-                        captchaSolved = true;
-                    }
-                    clearInterval(checkInterval);;
-                    resolve();
+        // Sinon, utiliser le voteTimer en secours
+        const voteTimer = document.getElementById('voteTimer')
+        if (voteTimer != null) {
+            const timerText = voteTimer.textContent.trim()
+            // Extraire les minutes et secondes (format: "91m 22s" ou "1h 31m")
+            const numbers = timerText.match(/\d+/g)
+            if (numbers && numbers.length > 0) {
+                let milliseconds = 0
+                if (timerText.includes('h')) {
+                    // Format avec heures
+                    const hours = parseInt(numbers[0], 10) || 0
+                    const minutes = parseInt(numbers[1], 10) || 0
+                    milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+                } else {
+                    // Format sans heures (seulement minutes)
+                    const minutes = parseInt(numbers[0], 10) || 0
+                    const seconds = parseInt(numbers[1], 10) || 0
+                    milliseconds = (minutes * 60 * 1000) + (seconds * 1000)
                 }
-            }, 500);
-        });
-    }
-
-    // ==================== NOW CLICK SUBMIT BUTTON ====================
-    console.log("[VOTE] Clicking #btnSubmitVote...");
-
-    // Enable button if disabled
-    const submitBtn = document.getElementById('btnSubmitVote');
-    if (submitBtn?.disabled) {
-        console.log("[VOTE] Button is disabled. Waiting for enable...");
-        await new Promise(resolve => {
-            const enableCheck = setInterval(() => {
-                if (submitBtn && !submitBtn.disabled) {
-                    clearInterval(enableCheck);
-                    resolve();
-                }
-            }, 500);
-        });
-    }
-
-    // Finally click
-    if (submitBtn) {
-        // Double-check Turnstile is solved right before submitting
-        if (document.querySelector('.cf-turnstile, [data-widget-id]') && !checkTurnstileSolved()) {
-            console.warn("[VOTE] Turnstile may not be fully solved yet, waiting a bit longer...");
-            await new Promise(resolve => setTimeout(resolve, 2000));
+                chrome.runtime.sendMessage({later: Date.now() + milliseconds})
+                return
+            }
         }
-        
-        submitBtn.click();
-        console.log("[VOTE] Vote submitted!");
-    } else {
-        console.error("[VOTE] Submit button not found!");
+        // Si le timer n'est pas trouvé mais la section cooldown existe
+        chrome.runtime.sendMessage({later: true})
+        return
+    }
+
+    //Если есть предупреждение
+    if (document.querySelector('div.alert.alert-warning') != null) {
+        //Если вы уже голосовали
+        if (document.getElementById('voteTimer') != null) {
+            const numbers = document.getElementById('voteTimer').textContent.match(/\d+/g).map(Number)
+            const milliseconds = /*(hour * 60 * 60 * 1000) + */(numbers[0] * 60 * 1000)/* + (sec * 1000)*/
+            chrome.runtime.sendMessage({later: Date.now() + milliseconds})
+            return
+        } else {
+            chrome.runtime.sendMessage({message: document.querySelector('div.alert.alert-warning').innerText})
+            return
+        }
+    }
+    //Если есть ошибка
+    for (const el of document.querySelectorAll('div.alert.alert-danger')) {
+        const request = {}
+        request.message = el.innerText
+        if (request.message.includes('cannot vote more than once at the same time') || request.message.includes('avant de pouvoir voter à nouveau')) {
+            chrome.runtime.sendMessage({later: true})
+            return
+        } else if (request.message.includes('Captcha')) {
+            // None
+        } else {
+            if (
+                    request.message.includes('Sie können nicht wählen, weil Ihr Netzwerk kein')
+                    || request.message.includes('cannot vote because your network')
+                    || request.message.includes('не можете голосовать из-за того, что находитесь в частной или закрытой сети')
+                    || request.message.includes('não pode votar porque sua rede não é uma rede')
+                    || request.message.includes('ne pouvez pas voter car votre réseau n\'est pas un réseau')
+                    || request.message.includes('puedes votar porque tu red no es una red')) {
+                request.ignoreReport = true
+            }
+            chrome.runtime.sendMessage(request)
+            return
+        }
+    }
+
+    if (document.getElementById('playername') != null) {
+        const project = await getProject()
+        document.getElementById('playername').value = project.nick
+    }
+
+    const timer = setInterval(function() {
+        try {
+            if (document.querySelector('#captcha-content > div > div.grecaptcha-logo > iframe') != null) {
+                //Ждёт загрузки reCaptcha
+                const submitButton = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+                if (submitButton) submitButton.click()
+                clearInterval(timer)
+            }
+        } catch (e) {
+            clearInterval(timer)
+            throwError(e)
+        }
+    }, 1000)
+
+    if (document.querySelector('.mtcaptcha') != null) {
+        chrome.runtime.sendMessage({captcha: true})
+    }
+
+    const submitButton = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+    if (submitButton && submitButton.disabled === true) {
+        const timer = setInterval(() => {
+            const btn = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+            if (btn?.disabled === false) {
+                clearInterval(timer)
+                btn.click()
+            }
+        }, 1000)
     }
 }

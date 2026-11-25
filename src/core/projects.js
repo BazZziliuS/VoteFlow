@@ -104,7 +104,6 @@ var allProjects = {
             return project
         },
         timeout: () => ({hours: 1, minutes: 30}),
-        limitedCountVote: () => true,
         alertManualCaptcha: () => true,
         exampleURLGame: () => ['https://serveur-prive.net/', 'minecraft', '/gommehd-net-4932'],
         defaultGame: () => 'minecraft',
@@ -136,10 +135,16 @@ var allProjects = {
     'topg.org': {
         pageURL: (project) => 'https://topg.org/' + project.game + '/' + project.id,
         voteURL: (project) => 'https://topg.org/' + project.game + '/' + project.id,
-        projectName: (doc) => doc.querySelector('div.sheader').textContent,
+        projectName: (doc) => doc.querySelector('#main-heading').textContent,
         exampleURL: () => ['https://topg.org/minecraft-servers/', 'server-405637', ''],
-        parseURL: (url) => ({game: url.pathname.split('/')[1], id: url.pathname.split('/')[2]}),
-        timeout: () => ({hours: 12}),
+        parseURL: (url) => {
+            // Translated pages add a language segment (/fr/serveurs-minecraft/server-405637) and the id can carry a name slug
+            const parts = url.pathname.split('/').filter(Boolean)
+            const index = parts.findIndex(part => /^server-\d+/.test(part))
+            if (index === -1) return {game: parts[0], id: parts[1]}
+            return {game: parts.slice(0, index).join('/'), id: parts[index].match(/^server-\d+/)[0]}
+        },
+        timeout: () => ({hours: 6}),
         exampleURLGame: () => ['https://topg.org/', 'minecraft-servers', '/server-405637'],
         gameList: () => new Map([
             ['minecraft-servers', 'Minecraft'],
@@ -359,7 +364,6 @@ var allProjects = {
             return project
         },
         timeout: () => ({hours: 2}),
-        limitedCountVote: () => true,
         exampleURLGame: () => ['https://top-serveurs.net/', 'minecraft', '/hailcraft'],
         defaultGame: () => 'minecraft',
         gameList: () => new Map([
@@ -598,7 +602,7 @@ var allProjects = {
         pageURL: (project) => 'https://minecraft.buzz/server/' + project.id,
         voteURL: (project) => 'https://minecraft.buzz/vote/' + project.id,
         projectName: (doc) => doc.querySelector('#vote-line').previousElementSibling.textContent.trim(),
-        exampleURL: () => ['https://minecraft.buzz/vote/', '306', ''],
+        exampleURL: () => ['https://minecraft.buzz/vote/', 'complex-gaming', ''],
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 0})
     },
@@ -1006,11 +1010,14 @@ var allProjects = {
         limitedCountVote: () => true
     },
     'serveur-minecraft-vote.fr': {
-        pageURL: (project) => 'https://serveur-minecraft-vote.fr/serveurs/' + project.id + '/vote',
-        voteURL: (project) => 'https://serveur-minecraft-vote.fr/serveurs/' + project.id + '/vote',
-        projectName: (doc) => doc.querySelector('.server-name').textContent,
-        exampleURL: () => ['https://serveur-minecraft-vote.fr/serveurs/', 'ectalia.425', '/vote'],
-        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        // Old projects store "slug.id" (e.g. "ectalia.425"), the site now only answers on the numeric id
+        pageURL: (project) => 'https://serveur-minecraft-vote.fr/serveur/' + String(project.id).split('.').pop() + '/voter',
+        voteURL: (project) => 'https://serveur-minecraft-vote.fr/serveur/' + String(project.id).split('.').pop() + '/voter',
+        // The page is rendered by React, the server data is embedded as JSON
+        projectName: (doc) => JSON.parse(doc.querySelector('#new-design-data').textContent).serverPage.name,
+        exampleURL: () => ['https://serveur-minecraft-vote.fr/serveur/', '1959', '/voter'],
+        // Handles both /serveur/1959/voter and the legacy /serveurs/cactaia.1959/vote
+        parseURL: (url) => ({id: url.pathname.split('/')[2].split('.').pop()}),
         timeout: () => ({hours: 1, minutes: 30}),
         limitedCountVote: () => true
     },
@@ -1130,7 +1137,8 @@ var allProjects = {
             project.id = project.id.replace('minecraft-server-', '')
             return project
         },
-        oneProject: () => 1
+        oneProject: () => 1,
+        alertManualCaptcha: () => true
     },
     'pixelmon-server-list.com': {
         pageURL: (project) => 'https://pixelmon-server-list.com/server/' + project.id,
@@ -1490,6 +1498,44 @@ var allProjects = {
         exampleURL: () => ['https://www.mc-liste.de/server/', '54', '/vote'],
         parseURL: (url) => ({id: url.pathname.split('/')[2]}),
         alertManualCaptcha: () => true
+    },
+    'minerank.com': {
+        pageURL: (project) => 'https://www.minerank.com/' + project.id,
+        voteURL: (project) => 'https://www.minerank.com/' + project.id + '/vote',
+        projectName: (doc) => doc.querySelector('div.text-xl').textContent.trim(),
+        exampleURL: () => ['https://www.minerank.com/', 'minehut', '/vote'],
+        parseURL: (url) => ({ id: url.pathname.split('/')[1] }),
+        timeout: () => ({ hour: 24 })
+    },
+    'topeaglerservers.com': {
+        pageURL: (project) => 'https://topeaglerservers.com/vote/' + project.id,
+        voteURL: (project) => 'https://topeaglerservers.com/vote/' + project.id,
+        projectName: (doc) => doc.querySelector('h2.text-xl')?.textContent.replace('Vote for ', '').trim(),
+        exampleURL: () => ['https://topeaglerservers.com/vote/', '7b6ebcd3', ''],
+        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        timeout: () => ({hours: 24})
+    },
+    'voxelrank.com': {
+        pageURL: (project) => 'https://voxelrank.com/server/' + project.id,
+        voteURL: (project) => 'https://voxelrank.com/vote/' + project.id,
+        // The h1 also holds the server headline in a span
+        projectName: (doc) => doc.querySelector('h1')?.firstChild?.textContent.trim(),
+        exampleURL: () => ['https://voxelrank.com/vote/', '8709-error-smp', ''],
+        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        // Only used when the page gives no countdown, the window opened at 23:00 UTC in October
+        timeout: () => ({hour: 23})
+    },
+    '16bitmc.net': {
+        pageURL: (project) => 'https://16bitmc.net/server/' + project.id,
+        voteURL: (project) => 'https://16bitmc.net/vote/' + project.id,
+        // The h1 adds "Minecraft Server IP and Details" after the name, the icon alt only adds "icon"
+        projectName: (doc) => doc.querySelector('img.server-icon')?.alt.replace(/\s*icon$/i, '') || doc.querySelector('h1').textContent.replace(/\s*Minecraft Server IP and Details\s*$/i, ''),
+        // Unknown ids still answer 200, with an error box instead of the server
+        notFound: (doc) => doc.querySelector('.container > .error-box')?.textContent.trim() || false,
+        exampleURL: () => ['https://16bitmc.net/vote/', '226', ''],
+        parseURL: (url) => ({id: url.pathname.split('/')[2]}),
+        // Only used when the page gives no cooldown
+        timeout: () => ({hours: 24})
     },
     Custom: {
         pageURL: (project) => project.responseURL,
