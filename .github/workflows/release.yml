@@ -56,6 +56,7 @@ jobs:
           cp README.md build/VoteFlow/
           cp PRIVACY.md build/VoteFlow/
           cp THIRD_PARTY_NOTICES.md build/VoteFlow/
+          cp LICENSE build/VoteFlow/
 
           # Переходим в директорию build и создаём архив
           cd build

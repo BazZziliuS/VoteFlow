@@ -1,5 +1,13 @@
 # Сторонний код
 
+VoteFlow распространяется по лицензии MIT (см. LICENSE). Она действует на изменения и новый код VoteFlow.
+
+## Serega007/Auto-Vote-Rating
+
+VoteFlow — продолжение расширения Auto Vote Rating: https://github.com/Serega007RU/Auto-Vote-Rating (автор — Serega007).
+Оригинальный репозиторий опубликован без лицензии и переведён в архив, поэтому унаследованный из него код
+остаётся © Serega007 и его участники; лицензия MIT VoteFlow на него не распространяется.
+
 ## JustMordeckai/Auto-Vote-Rating
 
 Часть кода перенесена из форка Auto Vote Rating — https://github.com/JustMordeckai/Auto-Vote-Rating (лицензия MIT), 2026-11-26:

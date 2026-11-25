@@ -11,6 +11,12 @@ Original contributors: Serega007 (developer), Qworte (designer), bozoweed and al
 
 Some site scripts and the Cloudflare Turnstile handling come from the **[JustMordeckai/Auto-Vote-Rating](https://github.com/JustMordeckai/Auto-Vote-Rating)** fork (MIT), see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
+## License
+
+VoteFlow is released under the [MIT License](LICENSE). It covers the changes and new code made in VoteFlow.
+The original Auto Vote Rating by Serega007 was published without a license, so the code inherited from it remains © Serega007;
+see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 # Integrated, free captcha assistance
 - Built‑in detectors and assistance for:
   - reCAPTCHA (anchor + bframe)

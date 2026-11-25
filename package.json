@@ -2,7 +2,7 @@
   "name": "voteflow",
   "private": true,
   "description": "VoteFlow — браузерное расширение для автоматического голосования на рейтингах игровых серверов",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
