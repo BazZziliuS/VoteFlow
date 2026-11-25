@@ -1,4 +1,24 @@
 {
+  "popupUpcoming": {
+    "message": "Nächste Abstimmungen"
+  },
+  "popupAllProjects": {
+    "message": "Alle Projekte"
+  },
+  "popupError": {
+    "message": "Fehler"
+  },
+  "popupToday": {
+    "message": "Heute: $SUCCESS$ erfolgreich, $ERRORS$ fehlgeschlagen",
+    "placeholders": {
+      "success": {
+        "content": "$1"
+      },
+      "errors": {
+        "content": "$2"
+      }
+    }
+  },
   "groupNotifications": {
     "message": "Benachrichtigungen"
   },

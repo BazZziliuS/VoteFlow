@@ -1,4 +1,24 @@
 {
+  "popupUpcoming": {
+    "message": "Ближайшие голосования"
+  },
+  "popupAllProjects": {
+    "message": "Все проекты"
+  },
+  "popupError": {
+    "message": "ошибка"
+  },
+  "popupToday": {
+    "message": "Сегодня: успешно $SUCCESS$, с ошибкой $ERRORS$",
+    "placeholders": {
+      "success": {
+        "content": "$1"
+      },
+      "errors": {
+        "content": "$2"
+      }
+    }
+  },
   "groupNotifications": {
     "message": "Уведомления"
   },

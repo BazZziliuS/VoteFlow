@@ -1,0 +1,135 @@
+/* VoteFlow — попап по клику на иконку. Токены и кнопки — из main.css */
+
+body.popup {
+    width: 360px;
+    min-height: 0;
+    background: var(--bg-deep);
+}
+
+.popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 12px 8px 16px;
+}
+
+.popup-head .logo {
+    height: 32px;
+    padding: 0;
+    margin: 0;
+}
+
+.popup-head .tooltiptext {
+    bottom: auto;
+    top: calc(100% + 6px);
+}
+
+.popup-today {
+    margin: 0 16px 12px;
+    padding: 8px 12px;
+    border-radius: var(--r);
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--text-2);
+    font-size: 12px;
+}
+
+.popup-title {
+    padding: 0 16px 6px;
+    color: var(--text-3);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.popup-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 360px;
+    padding: 0 8px;
+    overflow-y: auto;
+}
+
+.popup-item {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px;
+    border-radius: var(--r);
+    text-align: left;
+    transition: background-color .15s var(--ease);
+}
+
+.popup-item:hover {
+    background: var(--hover);
+}
+
+.popup-item .status-dot {
+    margin-top: 0;
+    background: var(--ok);
+}
+
+.popup-item[data-state="queue"] .status-dot {
+    background: var(--warn);
+}
+
+.popup-item[data-state="now"] .status-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.popup-item[data-state="error"] .status-dot {
+    background: var(--err);
+}
+
+.popup-item-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.popup-item-name, .popup-item-site {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.popup-item-name {
+    font-weight: 500;
+}
+
+.popup-item-site {
+    color: var(--text-3);
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.popup-item-when {
+    color: var(--text-2);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.popup-item[data-state="error"] .popup-item-when {
+    color: #ff9a9d;
+}
+
+.popup-empty {
+    padding: 24px 16px;
+    color: var(--text-3);
+    text-align: center;
+}
+
+.popup-foot {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px 16px;
+    margin-top: 8px;
+    border-top: 1px solid var(--line);
+}
+
+.popup-foot .btn {
+    flex: 1;
+}

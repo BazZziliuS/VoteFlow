@@ -604,9 +604,6 @@ async function updateValue(objStore, value) {
     await updateStoreValue(db, objStore, value)
 }
 
-// Клик по иконке расширения в панели браузера открывает настройки
-chrome.action.onClicked.addListener(() => chrome.runtime.openOptionsPage())
-
 chrome.runtime.onInstalled.addListener(async function (details) {
     await initializeFunc
     // Проверка браузера Opera

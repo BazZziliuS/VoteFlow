@@ -47,6 +47,7 @@ const manifest = JSON.parse(read('manifest.json'))
 const manifestPaths = [
     manifest.background?.service_worker,
     manifest.options_ui?.page,
+    manifest.action?.default_popup,
     ...Object.values(manifest.icons || {}),
     ...Object.values(manifest.action?.default_icon || {}),
     ...(manifest.web_accessible_resources || []).flatMap(r => r.resources),
@@ -61,11 +62,18 @@ if (/clients2\.google\.com/.test(manifest.update_url || '')) {
 }
 if (!manifest.homepage_url) errors.push('manifest.json: нет homepage_url (ссылка с названия расширения)')
 
-// 3. options.html
+// 3. HTML-страницы интерфейса (options.html, popup.html): все подключённые файлы существуют
+const htmlPages = fs.readdirSync(path.join(root, 'src/ui')).filter(f => f.endsWith('.html'))
 const optionsHtml = read('src/ui/options.html')
-for (const m of optionsHtml.matchAll(/(?:src|href)="(\.\.\/[^"]+)"/g)) {
-    const resolved = path.posix.normalize(path.posix.join('src/ui', m[1]))
-    if (!exists(resolved)) errors.push(`src/ui/options.html: «${m[1]}» — файла нет`)
+const htmlKeys = []
+for (const page of htmlPages) {
+    const html = read('src/ui/' + page)
+    for (const m of html.matchAll(/(?:src|href)="((?:\.\.\/|[\w-]+\/|[\w-]+\.js)[^"]*)"/g)) {
+        if (/^https?:/.test(m[1])) continue
+        const resolved = path.posix.normalize(path.posix.join('src/ui', m[1]))
+        if (!exists(resolved)) errors.push(`src/ui/${page}: «${m[1]}» — файла нет`)
+    }
+    for (const m of html.matchAll(/data-resource="([^"]+)"/g)) htmlKeys.push([m[1], 'src/ui/' + page])
 }
 
 // 4. Скрипты сайтов
@@ -100,7 +108,7 @@ for (const [domain, config] of Object.entries(allProjects)) {
 const locales = Object.fromEntries(['ru', 'en'].map(l => [l, JSON.parse(read(`_locales/${l}/messages.json`))]))
 const usedKeys = new Map()
 const addKey = (key, where) => { if (!usedKeys.has(key)) usedKeys.set(key, where) }
-for (const m of optionsHtml.matchAll(/data-resource="([^"]+)"/g)) addKey(m[1], 'src/ui/options.html')
+for (const [key, where] of htmlKeys) addKey(key, where)
 for (const m of optionsHtml.matchAll(/placeholder="([A-Za-z]\w+)"/g)) addKey(m[1], 'src/ui/options.html (placeholder)')
 for (const file of sourceFiles) {
     for (const m of read(file).matchAll(/i18n\.getMessage\('([^']+)'/g)) addKey(m[1], file)

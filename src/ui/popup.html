@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="dark">
+    <title data-resource="appName"></title>
+    <link rel="stylesheet" href="../../css/reset.css">
+    <link rel="stylesheet" href="../../css/icons.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/popup.css">
+</head>
+<body class="popup">
+<header class="popup-head">
+    <div class="logo">
+        <img src="../../images/logo.svg" alt="">
+        <span class="logo-name">VoteFlow</span>
+    </div>
+    <button id="openSettings" class="projectStats" type="button">
+        <span class="i i-sliders"></span>
+        <span class="tooltiptext" data-resource="optionsButton"></span>
+    </button>
+</header>
+
+<div id="today" class="popup-today mono"></div>
+
+<main>
+    <h2 class="popup-title" data-resource="popupUpcoming"></h2>
+    <ul id="popupList" class="popup-list"></ul>
+    <div id="popupEmpty" class="popup-empty" hidden>
+        <p data-resource="notAddedAll"></p>
+    </div>
+    <p id="popupLoading" class="popup-empty muted" data-resource="load"></p>
+</main>
+
+<footer class="popup-foot">
+    <button id="openProjects" class="btn" type="button"><span class="i i-list"></span><span data-resource="popupAllProjects"></span></button>
+    <button id="openAdd" class="btn btn-primary" type="button"><span class="i i-plus"></span><span data-resource="addButton"></span></button>
+</footer>
+
+<script src="../../libs/idb.umd.js"></script>
+<script src="../core/projects.js"></script>
+<script src="../utils/database/db-migrations/migration-v0.js"></script>
+<script src="../utils/database/db-migrations/migration-v1-v12.js"></script>
+<script src="../utils/database/db-migrations/migration-v13.js"></script>
+<script src="../utils/database/db-migrations/migration-v14.js"></script>
+<script src="../utils/database/db-migrations/migration-v15.js"></script>
+<script src="../utils/database/db-migrations/index.js"></script>
+<script src="../utils/database/db-init.js"></script>
+<script src="../core/main.js"></script>
+<script src="shared.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

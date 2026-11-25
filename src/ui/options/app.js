@@ -49,7 +49,28 @@ window.addEventListener('load', async () => {
     document.getElementById('addedLoading').style.display = 'none'
     document.getElementById('notAddedAll').removeAttribute('style')
     resolveLoad()
+    openFromHash()
 })
+
+//Переходы из попапа: #project=<key> — показать проект, #projects — список, #settings — настройки, #add — добавление
+function openFromHash() {
+    const hash = location.hash.slice(1)
+    if (!hash) return
+    history.replaceState(null, '', location.pathname)
+    const projectKey = hash.match(/^project=(-?\d+)$/)?.[1]
+    if (projectKey != null) {
+        onMessage({openProject: Number(projectKey)})
+    } else if (hash === 'projects') {
+        document.getElementById('addedTab').click()
+    } else if (hash === 'settings') {
+        document.getElementById('settingsTab').click()
+    } else if (hash === 'add') {
+        document.getElementById('addTab').click()
+        document.getElementById('link').focus()
+    }
+}
+
+window.addEventListener('hashchange', openFromHash)
 
 // Restores select box and checkbox state using the preferences
 async function restoreOptions(first) {

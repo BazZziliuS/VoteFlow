@@ -28,6 +28,9 @@ Key features:
 │   │   └── main.js          # Core voting logic and utilities
 │   ├── ui/
 │   │   ├── options.html     # Extension settings page (styles: /css/main.css, /css/icons.css)
+│   │   ├── popup.html       # Toolbar popup (popup.js, /css/popup.css): upcoming votes, today stats
+│   │   ├── shared.js        # Shared by options and popup: formatRelative, projectState, isFeaturedProject
+│   │   │                    # (CenturyMine and SideMC are always listed first — keep this rule)
 │   │   └── options/         # Options page logic as classic scripts sharing one global scope,
 │   │                        # loaded in this order: init, notifications, modals, projects-list,
 │   │                        # project-form, settings, app. Top-level code may only call functions

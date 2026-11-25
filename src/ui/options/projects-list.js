@@ -8,6 +8,7 @@ async function addProjectList(project, preBend) {
     if (!document.querySelector('[data-rating-button="' + project.rating + '"]')) {
         generateBtnListRating(project.rating, 0)
     }
+    if (isFeaturedProject(project)) markFeaturedRating(project.rating)
     if (!project.key) {
         if (project.priority) {
             preBend = true
@@ -95,6 +96,13 @@ async function addProjectList(project, preBend) {
     contDiv.append(div3)
 
     li.append(statusDot, contDiv, div)
+
+    // centurymine и SideMC всегда наверху списка
+    if (isFeaturedProject(project)) {
+        preBend = true
+        li.classList.add('featured')
+        markFeaturedRating(project.rating)
+    }
 
     if (preBend) {
         listProject.prepend(li)
@@ -193,23 +201,7 @@ async function updateNavCount() {
     document.getElementById('welcome').style.display = count > 0 ? 'none' : ''
 }
 
-//Относительное время до следующего голосования: «через 3 ч 12 мин»
-function formatRelative(time) {
-    const diff = time - Date.now()
-    if (diff <= 0) return ''
-    const minutes = Math.round(diff / 60000)
-    const lang = chrome.i18n.getUILanguage()
-    const units = []
-    const days = Math.floor(minutes / 1440)
-    const hours = Math.floor((minutes % 1440) / 60)
-    const mins = minutes % 60
-    const fmt = (value, unit) => new Intl.NumberFormat(lang, {style: 'unit', unit, unitDisplay: 'short'}).format(value)
-    if (days) units.push(fmt(days, 'day'))
-    if (hours) units.push(fmt(hours, 'hour'))
-    if (!days && (mins || units.length === 0)) units.push(fmt(Math.max(mins, 1), 'minute'))
-    return chrome.i18n.getMessage('inTime', units.join(' '))
-}
-
+// formatRelative, isFeaturedProject, projectState — в src/ui/shared.js
 function renderNextVote(element, time, text) {
     element.replaceChildren()
     const label = document.createElement('span')
@@ -390,7 +382,16 @@ async function reloadProjectList() {
         }
     }
     updateNavCount()
+    for (const project of await db.getAll('projects')) {
+        if (isFeaturedProject(project)) markFeaturedRating(project.rating)
+    }
     if (document.getElementById('added').style.display !== 'none') selectFirstRating()
+}
+
+//Сайт-рейтинг с закреплённым проектом показывается первым в списке сайтов
+function markFeaturedRating(rating) {
+    const button = document.querySelector('[data-rating-button="' + rating + '"]')
+    if (button) button.style.order = '-1'
 }
 
 //Открывает первый по порядку рейтинг, если ни один не выбран
