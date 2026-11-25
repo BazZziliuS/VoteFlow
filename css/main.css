@@ -1444,6 +1444,29 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator,
     margin-top: 16px;
 }
 
+/* Предупреждение для Opera: длинные подписи кнопок переносятся, кнопки — колонкой на всю ширину окна */
+.notSupportedBrowser .events {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.notSupportedBrowser .events .btn {
+    height: auto;
+    min-height: 40px;
+    padding: 10px 16px;
+    white-space: normal;
+    line-height: 20px;
+    text-align: center;
+}
+
+.notSupportedBrowser .events .redBtn {
+    order: -1;
+}
+
+.notSupportedBrowser .events .redBtn:disabled {
+    font-variant-numeric: tabular-nums;
+}
+
 /* Статистика: три плитки сверху, остальное строками */
 .stats-modal table {
     width: 100%;
