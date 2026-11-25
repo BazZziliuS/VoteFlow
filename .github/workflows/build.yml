@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Get version from manifest
         id: get_version
@@ -79,14 +79,14 @@ jobs:
           ls -lh VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.*
 
       - name: Upload ZIP artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VoteFlow-ZIP-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
           path: build/VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.zip
           retention-days: 90
 
       - name: Upload CRX artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: VoteFlow-CRX-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}
           path: build/VoteFlow-${{ steps.get_version.outputs.version }}-${{ steps.get_branch.outputs.branch }}.crx

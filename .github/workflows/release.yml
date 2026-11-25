@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Get version from manifest
         id: get_version
@@ -94,7 +94,7 @@ jobs:
           ls -lh VoteFlow-${{ steps.get_version.outputs.version }}.*
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.get_tag.outputs.tag }}
           name: VoteFlow ${{ steps.get_version.outputs.version }}
