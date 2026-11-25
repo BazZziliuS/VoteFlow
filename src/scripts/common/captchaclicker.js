@@ -37,7 +37,7 @@ function run() {
     const isRecaptchaFallback = /https?:\/\/(.+?\.)?(google\.com|recaptcha\.net)\/recaptcha\/(api|enterprise)\/fallback/.test(url);
     const isMTCaptcha = /https?:\/\/service\.mtcaptcha\.com\/mtcv1/.test(url);
     const isHCaptcha = url.includes('.hcaptcha.com/captcha.v');
-    const isSmartCaptcha = url.includes('smartcaptcha.yandexcloud.net');
+    const isSmartCaptcha = /^https:\/\/(smartcaptcha\.cloud\.yandex\.ru|captcha-api\.yandex\.ru|smartcaptcha\.yandexcloud\.net)\//.test(url);
     const isCloudflareChallengePage = url.startsWith('https://challenges.cloudflare.com');
     const hasTurnstileWidget = document.querySelector('.cf-turnstile, [name="cf-turnstile-response"], iframe[src*="challenges.cloudflare.com/turnstile"]') !== null;
 

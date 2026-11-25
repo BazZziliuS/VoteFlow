@@ -44,6 +44,8 @@
     "https://*.recaptcha.net/recaptcha/*",
     "https://challenges.cloudflare.com/*",
     "https://*.yandexcloud.net/*",
+    "https://smartcaptcha.cloud.yandex.ru/*",
+    "https://captcha-api.yandex.ru/*",
     "https://*.mtcaptcha.com/*",
     "https://*.t.me/*",
     "https://id.vk.ru/*",

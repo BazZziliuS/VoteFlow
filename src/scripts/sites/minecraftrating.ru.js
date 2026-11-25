@@ -65,7 +65,7 @@ async function vote(first) {
         }
     }
 
-    const smartCaptchaIframe = document.querySelector('iframe[src*="smartcaptcha.yandexcloud.net"]');
+    const smartCaptchaIframe = document.querySelector('iframe[src*="smartcaptcha.yandexcloud.net"], iframe[src*="smartcaptcha.cloud.yandex.ru"], iframe[src*="captcha-api.yandex.ru"]');
 
     if (smartCaptchaIframe) {
         console.log("[VOTE SCRIPT] Yandex SmartCaptcha detected. Waiting for automatic solver...");

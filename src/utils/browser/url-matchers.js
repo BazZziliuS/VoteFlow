@@ -20,9 +20,15 @@ function isAuthUrl(url) {
  * @param {string} url - URL для проверки
  * @returns {boolean} true если это URL капчи
  */
+// Yandex SmartCaptcha открывает кадры на домене своего скрипта: smartcaptcha.cloud.yandex.ru, captcha-api.yandex.ru
+// или (старый) smartcaptcha.yandexcloud.net
+function isSmartCaptchaUrl(url) {
+    return /^https:\/\/(smartcaptcha\.cloud\.yandex\.ru|captcha-api\.yandex\.ru|smartcaptcha\.yandexcloud\.net)\//.test(url)
+}
+
 function isCaptchaUrl(url) {
     return url.match(/hcaptcha.com\/captcha\/*/) ||
-           url.includes('smartcaptcha.yandexcloud.net') ||
+           isSmartCaptchaUrl(url) ||
            url.includes('service.mtcaptcha.com') ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
@@ -45,7 +51,7 @@ function isCaptchaUrl(url) {
  */
 function isCaptchaUrlForCommitted(url) {
     return url.match(/hcaptcha.com\/captcha\/*/) ||
-           url.includes('smartcaptcha.yandexcloud.net') ||
+           isSmartCaptchaUrl(url) ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
            url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
            url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
