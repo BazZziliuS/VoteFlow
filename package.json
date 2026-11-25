@@ -21,14 +21,19 @@
     "lint:fix": "eslint src scripts tests --fix",
     "test": "node --test \"tests/*.test.js\"",
     "test:ui": "node tests/ui/smoke.js",
-    "check": "npm run lint && node scripts/check-manifest.js && node scripts/changelog.js --check && npm test",
+    "check": "npm run lint && node scripts/check-manifest.js && node scripts/changelog.js --check && node scripts/vendor.js --check && npm test",
     "changelog": "node scripts/changelog.js",
+    "vendor": "node scripts/vendor.js",
+    "build": "node scripts/build.js",
     "release": "node scripts/release.js",
     "sites": "node scripts/check-sites.js",
     "commitlint": "node scripts/commit-msg.js --range"
   },
   "devDependencies": {
+    "esbuild": "0.28.2",
     "eslint": "^10.15.0",
-    "globals": "^17.14.0"
+    "globals": "^17.14.0",
+    "idb": "8.0.4",
+    "linkedom": "0.18.15"
   }
 }

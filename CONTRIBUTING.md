@@ -24,6 +24,8 @@ npm run check # линтер, целостность, журнал измене�
 | `npm run test:ui` | Тест страницы настроек в headless Chrome |
 | `npm run sites` | Проверка доступности сайтов-рейтингов |
 | `npm run changelog` | Пересобрать `CHANGELOG.md` из `docs/releases/*.md` |
+| `npm run vendor` | Пересобрать `libs/` из пакетов npm (после обновления idb или linkedom) |
+| `npm run build` | Собрать расширение в `build/VoteFlow` |
 | `npm run release -- <patch\|minor\|major>` | Подготовить выпуск (см. ниже) |
 
 ## Ветки и pull request
@@ -117,6 +119,18 @@ VoteFlow следует [SemVer](https://semver.org/lang/ru/) — `MAJOR.MINOR.P
 5. GitHub Actions (`release.yml`) сверит тег с версией, соберёт `VoteFlow-<версия>.zip` и опубликует релиз с заметками
 
 Заметки к выпуску (`docs/releases/<версия>.md`) начинаются строкой `<!-- date: ГГГГ-ММ-ДД -->`. Журнал `CHANGELOG.md` собирается из них — правьте заметки, а не журнал.
+
+## Сторонние библиотеки
+
+`libs/` не правятся вручную: их собирает `scripts/vendor.js` из пакетов npm, версии закреплены в `package.json` (`devDependencies`, без `^`). Обновление:
+
+```bash
+npm outdated idb linkedom
+npm i -D -E idb@<версия> linkedom@<версия>
+npm run vendor
+```
+
+Затем проверьте расширение: страница настроек (база на idb) и тихий режим (разбор HTML через linkedom). Обновите версии в `THIRD_PARTY_NOTICES.md`. `npm run check` не пропустит `libs/`, не совпадающие с `package.json`.
 
 ## Ключ расширения
 

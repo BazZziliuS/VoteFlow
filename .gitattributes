@@ -1,3 +1,6 @@
 # Хук запускается sh — только LF, иначе «not found» в Git Bash и на Linux
 .githooks/* text eol=lf
 *.sh text eol=lf
+
+# Собираются scripts/vendor.js — байты как есть, без замены переводов строк
+libs/** -text

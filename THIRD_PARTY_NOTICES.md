@@ -8,6 +8,15 @@ VoteFlow — продолжение расширения Auto Vote Rating: https
 Оригинальный репозиторий опубликован без лицензии и переведён в архив, поэтому унаследованный из него код
 остаётся © Serega007 и его участники; лицензия MIT VoteFlow на него не распространяется.
 
+## Библиотеки в libs/
+
+Собираются из пакетов npm командой `npm run vendor`, версии закреплены в `package.json`.
+
+| Файл | Пакет | Лицензия |
+|---|---|---|
+| `libs/idb.umd.js` | [idb](https://github.com/jakearchibald/idb) 8.0.4 — Jake Archibald | ISC |
+| `libs/linkedom.js` | [linkedom](https://github.com/WebReflection/linkedom) 0.18.15 (`linkedom/worker`) — Andrea Giammarchi; включает htmlparser2, css-select, cssom и другие зависимости linkedom под их лицензиями (MIT, BSD-2-Clause, ISC) | ISC |
+
 ## JustMordeckai/Auto-Vote-Rating
 
 Часть кода перенесена из форка Auto Vote Rating — https://github.com/JustMordeckai/Auto-Vote-Rating (лицензия MIT), 2026-11-26:

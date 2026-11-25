@@ -1625,10 +1625,3 @@ function extractHostname(url) {
 
     return hostname
 }
-
-// Удалённая конфигурация расширения
-// if (typeof db !== 'undefined' && typeof settings !== 'undefined' && settings.disabledNotifStart != null && !settings.disabledSendErrorSentry && (settings.enabledReportTimeout || !settings.enabledReportTooManyAttempts)) {
-//     settings.enabledReportTimeout = false
-//     settings.enabledReportTooManyAttempts = true
-//     db.put('other', settings, 'settings')
-// }

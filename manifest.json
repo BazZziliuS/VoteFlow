@@ -48,8 +48,7 @@
     "https://captcha-api.yandex.ru/*",
     "https://*.mtcaptcha.com/*",
     "https://*.t.me/*",
-    "https://id.vk.ru/*",
-    "https://*.ingest.de.sentry.io/*"
+    "https://id.vk.ru/*"
   ],
   "optional_host_permissions": [
     "<all_urls>"

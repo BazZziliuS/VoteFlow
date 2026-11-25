@@ -1138,12 +1138,6 @@
   "rejectDelete": {
     "message": "Cannot be deleted while the voting is running, restart the extension if the voting is stuck"
   },
-  "disabledSendErrorSentry": {
-    "message": "Disable sending error reports to the extension developer"
-  },
-  "disabledSendErrorSentryTooltip": {
-    "message": "About some errors, the extension sends an error report to the extension developer via the service Sentry.io , this report includes details of the error, a screenshot of the site (in the form of png and html) and also details of your settings (this is your nickname, on which site you vote and with which settings). You can disable this"
-  },
   "expertMode": {
     "message": "I am an advanced user"
   },

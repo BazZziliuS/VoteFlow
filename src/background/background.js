@@ -2,9 +2,6 @@
 
 const state = self.serviceWorker.state
 
-// Sentry Error Monitoring (загружаем первым для отслеживания всех ошибок)
-importScripts('/src/background/sentry.js')
-
 importScripts('/libs/idb.umd.js')
 importScripts('/src/shared/projects.js')
 // Импорт утилит базы данных (должны быть ДО main.js)

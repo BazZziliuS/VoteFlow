@@ -28,7 +28,6 @@ const projectGlobals = {
     ...collectTopLevelNames(path.join(__dirname, 'src')),
     idb: 'readonly',
     linkedom: 'readonly',
-    Sentry: 'readonly',
     opr: 'readonly',
     InstallTrigger: 'readonly',
 }
