@@ -189,6 +189,8 @@ function createProjectAction(icon, label) {
 async function updateNavCount() {
     const count = await db.count('projects')
     document.getElementById('navProjectsCount').textContent = count > 0 ? String(count) : ''
+    // «Как это работает» показываем, пока не добавлен ни один проект
+    document.getElementById('welcome').style.display = count > 0 ? 'none' : ''
 }
 
 //Относительное время до следующего голосования: «через 3 ч 12 мин»

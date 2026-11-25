@@ -8,6 +8,9 @@
   "description": "__MSG_appDesc__",
   "manifest_version": 3,
   "name": "__MSG_appName__",
+  "action": {
+    "default_title": "__MSG_appName__"
+  },
   "options_ui": {
     "open_in_tab": true,
     "page": "src/ui/options.html"

@@ -83,6 +83,19 @@ window.addEventListener('load', async () => {
     await loaded
     await sleep(300)
 
+    await updateNavCount()
+    check('«Как это работает» видно без проектов', document.getElementById('welcome').style.display !== 'none')
+    await step('link: unsupported', () => { const l = document.getElementById('link'); l.value = 'https://example.org/server/1'; l.dispatchEvent(new Event('input')) })
+    check('неподдерживаемый сайт отмечен ошибкой', document.getElementById('linkStatus').classList.contains('error'))
+    await step('link: recognized', () => { const l = document.getElementById('link'); l.value = 'https://minecraftrating.ru/projects/mcskill/'; l.dispatchEvent(new Event('input')) })
+    check('ссылка распознана', document.getElementById('linkStatus').classList.contains('ok') && document.getElementById('linkStatus').textContent.includes('mcskill'))
+    check('список сайтов заполнен', document.querySelectorAll('#sitesList .site-chip').length > 100)
+    // Переключатель «О начале голосования» включён = уведомления не отключены
+    check('инверсия: уведомления о начале включены по умолчанию', document.getElementById('disabledNotifStart').checked === !settings.disabledNotifStart)
+    await step('invert toggle', () => { const c = document.getElementById('disabledNotifStart'); c.checked = !c.checked; c.dispatchEvent(new Event('change')) })
+    await sleep(200)
+    check('инверсия: выключение переключателя отключает уведомления', settings.disabledNotifStart === !document.getElementById('disabledNotifStart').checked)
+
     // Тестовый проект прямо в БД — так же, как его сохраняет форма
     await step('seed project', async () => {
         const project = {rating: 'minecraftrating.ru', listing: 'projects', id: 'mcskill', nick: 'Steve_2011', name: 'MCSKILL',
@@ -98,6 +111,7 @@ window.addEventListener('load', async () => {
     check('карточка проекта отрисована', document.querySelector('.project .projectName')?.textContent.includes('MCSKILL'))
     check('время следующего голоса', !!document.querySelector('.project .textNextVote .rel')?.textContent)
     check('счётчик в меню', document.getElementById('navProjectsCount').textContent === '1')
+    check('«Как это работает» скрыто при наличии проектов', document.getElementById('welcome').style.display === 'none')
     await step('project stats', () => document.querySelector('.project .projectStats:nth-child(2)').click())
     await sleep(300)
     check('статистика проекта', document.querySelector('#stats td[data-resource="statsSuccessVotes"] + th')?.textContent === '12')

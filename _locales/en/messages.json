@@ -1,4 +1,120 @@
 {
+  "groupNotifications": {
+    "message": "Notifications"
+  },
+  "groupVoting": {
+    "message": "Voting"
+  },
+  "groupAdvanced": {
+    "message": "Advanced"
+  },
+  "settingNotifStart": {
+    "message": "Vote started"
+  },
+  "settingNotifInfo": {
+    "message": "Vote succeeded"
+  },
+  "settingNotifWarn": {
+    "message": "Warnings"
+  },
+  "settingNotifError": {
+    "message": "Errors"
+  },
+  "settingWarnCaptcha": {
+    "message": "Captcha needs to be solved manually"
+  },
+  "settingWarnCaptchaHint": {
+    "message": "Notify and log when the extension could not solve a captcha itself"
+  },
+  "settingFocusedTab": {
+    "message": "Switch to the voting tab"
+  },
+  "settingClickCaptcha": {
+    "message": "Click “I am not a robot” automatically"
+  },
+  "settingClickCaptchaHint": {
+    "message": "Turn off if another extension solves captchas for you"
+  },
+  "settingRestartOnTimeout": {
+    "message": "Restart a stuck vote"
+  },
+  "settingCheckInternet": {
+    "message": "Check the internet connection"
+  },
+  "settingCheckInternetHint": {
+    "message": "Without a connection voting waits until it is back"
+  },
+  "welcomeTitle": {
+    "message": "How it works"
+  },
+  "welcomeStep1": {
+    "message": "Paste a project link"
+  },
+  "welcomeStep1Hint": {
+    "message": "Open your server on the rating site and copy the page address"
+  },
+  "welcomeStep2": {
+    "message": "Allow access to the site"
+  },
+  "welcomeStep2Hint": {
+    "message": "The browser asks once for permission to open this rating"
+  },
+  "welcomeStep3": {
+    "message": "The rest is automatic"
+  },
+  "welcomeStep3Hint": {
+    "message": "VoteFlow votes on the site schedule, the next vote time is on the Projects tab"
+  },
+  "switchAddModeHint": {
+    "message": "If the link is not recognized, enter the site and project ID manually"
+  },
+  "supportedSites": {
+    "message": "Supported sites"
+  },
+  "sitesFilter": {
+    "message": "Find a site"
+  },
+  "addProjectButton": {
+    "message": "Add a project"
+  },
+  "linkInvalid": {
+    "message": "This does not look like a link. Copy the full page address starting with https://"
+  },
+  "linkUnsupported": {
+    "message": "$SITE$ is not supported. Use the link to the project page on the rating site, not the server website",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkNoProject": {
+    "message": "$SITE$ is supported, but the link has no project. Open your server page and copy its address",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkRecognized": {
+    "message": "$SITE$, project $ID$",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "linkRecognizedSite": {
+    "message": "$SITE$ recognized",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
   "Custom": {
     "message": "Custom request"
   },
@@ -110,7 +226,7 @@
     "description": "Checkbox. Alert notifications"
   },
   "disabledNotifWarnTooltip": {
-    "message": "For example, a notification that you have already voted (This is when the extension tried to vote for the project but you yourself have already voted)",
+    "message": "For example, when you already voted manually before the extension did",
     "description": "1234"
   },
   "disabledNotifError": {
@@ -217,7 +333,7 @@
     "description": "Header. Added projects"
   },
   "notAddedAll": {
-    "message": "No projects yet. Add the first one on the Add tab"
+    "message": "No projects yet"
   },
   "notAdded": {
     "message": "You haven't added any projects to this voting page yet!",
@@ -934,7 +1050,7 @@
     "message": "I am an advanced user"
   },
   "expertModeTooltip": {
-    "message": "You will be given the ability to access the advanced settings, this function is intended for users who are well versed in computers and its subtle technical nuances."
+    "message": "Unlocks fine-tuning: timeouts, schedules and voting modes for projects"
   },
   "link": {
     "message": "Link to the rating"
@@ -951,7 +1067,7 @@
     }
   },
   "switchAddMode": {
-    "message": "Manual mode"
+    "message": "Pick the site from a list"
   },
   "storageUsed": {
     "message": "Storage used: $value$ $unit$",

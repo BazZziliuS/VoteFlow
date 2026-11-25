@@ -7,41 +7,43 @@
 for (const check of document.querySelectorAll('input[name=checkbox]')) {
     check.addEventListener('change', async function (event) {
         event.target.disabled = true
+        const value = readSettingCheckbox(this)
         if (this.id === 'disabledNotifStart')
-            settings.disabledNotifStart = this.checked
+            settings.disabledNotifStart = value
         else if (this.id === 'disabledNotifInfo')
-            settings.disabledNotifInfo = this.checked
+            settings.disabledNotifInfo = value
         else if (this.id === 'disabledNotifWarn')
-            settings.disabledNotifWarn = this.checked
+            settings.disabledNotifWarn = value
         else if (this.id === 'disabledNotifError') {
-            if (this.checked && confirm(chrome.i18n.getMessage('confirmDisableErrors'))) {
-                settings.disabledNotifError = this.checked
-            } else if (this.checked) {
-                this.checked = false
+            if (value && confirm(chrome.i18n.getMessage('confirmDisableErrors'))) {
+                settings.disabledNotifError = value
+            } else if (value) {
+                this.checked = !this.checked
+                event.target.disabled = false
                 return
             } else {
-                settings.disabledNotifError = this.checked
+                settings.disabledNotifError = value
             }
         } else if (this.id === 'disabledCheckInternet')
-            settings.disabledCheckInternet = this.checked
+            settings.disabledCheckInternet = value
         else if (this.id === 'disabledOneVote')
-            settings.disabledOneVote = this.checked
+            settings.disabledOneVote = value
         else if (this.id === 'disabledRestartOnTimeout')
-            settings.disabledRestartOnTimeout = this.checked
+            settings.disabledRestartOnTimeout = value
         else if (this.id === 'disabledFocusedTab')
-            settings.disabledFocusedTab = this.checked
+            settings.disabledFocusedTab = value
         else if (this.id === 'disabledWarnCaptcha')
-            settings.disabledWarnCaptcha = this.checked
+            settings.disabledWarnCaptcha = value
         else if (this.id === 'disabledClickCaptcha')
-            settings.disabledClickCaptcha = this.checked
+            settings.disabledClickCaptcha = value
         else if (this.id === 'disabledDebug')
-            settings.debug = this.checked
+            settings.debug = value
         else if (this.id === 'disableCloseTabsOnSuccess')
-            settings.disableCloseTabsOnSuccess = this.checked
+            settings.disableCloseTabsOnSuccess = value
         else if (this.id === 'disableCloseTabsOnError')
-            settings.disableCloseTabsOnError = this.checked
+            settings.disableCloseTabsOnError = value
         else if (this.id === 'expertMode') {
-            settings.expertMode = this.checked
+            settings.expertMode = value
             if (this.checked) {
                 document.getElementById('timeout').parentElement.removeAttribute('style')
                 document.getElementById('timeoutError').parentElement.removeAttribute('style')

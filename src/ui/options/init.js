@@ -42,3 +42,14 @@ document.querySelectorAll('[placeholder]').forEach(function (el) {
 document.getElementById('nick').setAttribute('placeholder', chrome.i18n.getMessage('enterNick'))
 // document.getElementById('donate').setAttribute('href', chrome.i18n.getMessage('donate'))
 document.querySelector('#load div').textContent = chrome.i18n.getMessage('load')
+
+// Переключатели настроек с data-invert="true" показывают включённую функцию,
+// а в settings хранится флаг disabled… — значение инвертируется только в интерфейсе
+function setSettingCheckbox(id, value) {
+    const el = document.getElementById(id)
+    el.checked = el.dataset.invert === 'true' ? !value : Boolean(value)
+}
+
+function readSettingCheckbox(el) {
+    return el.dataset.invert === 'true' ? !el.checked : el.checked
+}

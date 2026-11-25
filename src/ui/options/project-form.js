@@ -971,7 +971,7 @@ async function fastAdd() {
             settings.disabledNotifInfo = true
             await db.put('other', settings, 'settings')
             chrome.runtime.sendMessage('reloadSettings')
-            document.getElementById('disabledNotifInfo').checked = settings.disabledNotifInfo
+            setSettingCheckbox('disabledNotifInfo', settings.disabledNotifInfo)
             const html = document.createElement('div')
             html.classList.add('fastAddEl')
             html.append(svgSuccess.cloneNode(true))
@@ -988,7 +988,7 @@ async function fastAdd() {
             settings.disabledNotifWarn = true
             await db.put('other', settings, 'settings')
             chrome.runtime.sendMessage('reloadSettings')
-            document.getElementById('disabledNotifWarn').checked = settings.disabledNotifWarn
+            setSettingCheckbox('disabledNotifWarn', settings.disabledNotifWarn)
             const html = document.createElement('div')
             html.classList.add('fastAddEl')
             html.append(svgSuccess.cloneNode(true))
@@ -1005,7 +1005,7 @@ async function fastAdd() {
             settings.disabledNotifStart = true
             await db.put('other', settings, 'settings')
             chrome.runtime.sendMessage('reloadSettings')
-            document.getElementById('disabledNotifStart').checked = settings.disabledNotifStart
+            setSettingCheckbox('disabledNotifStart', settings.disabledNotifStart)
             const html = document.createElement('div')
             html.classList.add('fastAddEl')
             html.append(svgSuccess.cloneNode(true))
@@ -1444,3 +1444,75 @@ function generateDataList() {
         datalist.append(option)
     }
 }
+
+//Подсказка под полем ссылки: распознан ли сайт и проект ещё до нажатия «Добавить»
+function updateLinkStatus() {
+    const status = document.getElementById('linkStatus')
+    const value = document.getElementById('link').value.trim()
+    status.className = 'field-status'
+    status.textContent = ''
+    if (!value) return
+
+    let url
+    try {
+        url = new URL(value)
+    } catch {
+        status.classList.add('error')
+        status.textContent = chrome.i18n.getMessage('linkInvalid')
+        return
+    }
+    const domain = getDomainWithoutSubdomain(value)
+    const funcRating = allProjects[domain]
+    if (!funcRating || domain === 'Custom') {
+        status.classList.add('error')
+        status.textContent = chrome.i18n.getMessage('linkUnsupported', domain)
+        return
+    }
+    let project
+    try {
+        project = funcRating.parseURL(url)
+    } catch {
+        project = {}
+    }
+    if (!funcRating.notRequiredId?.() && !project?.id) {
+        status.classList.add('warn')
+        status.textContent = chrome.i18n.getMessage('linkNoProject', domain)
+        return
+    }
+    status.classList.add('ok')
+    status.textContent = project?.id
+        ? chrome.i18n.getMessage('linkRecognized', [domain, String(project.id)])
+        : chrome.i18n.getMessage('linkRecognizedSite', domain)
+}
+
+document.getElementById('link').addEventListener('input', updateLinkStatus)
+
+//Список поддерживаемых сайтов с поиском
+function renderSupportedSites() {
+    const sites = Object.keys(allProjects).filter(site => site !== 'Custom').sort()
+    document.getElementById('sitesCount').textContent = String(sites.length)
+    const list = document.getElementById('sitesList')
+    list.replaceChildren(...sites.map(site => {
+        const link = document.createElement('a')
+        link.className = 'site-chip'
+        link.href = 'https://' + site + '/'
+        link.target = '_blank'
+        link.rel = 'noopener'
+        link.textContent = site
+        return link
+    }))
+}
+
+renderSupportedSites()
+
+document.getElementById('sitesFilter').addEventListener('input', function () {
+    const query = this.value.trim().toLowerCase()
+    for (const chip of document.querySelectorAll('#sitesList .site-chip')) {
+        chip.hidden = query !== '' && !chip.textContent.includes(query)
+    }
+})
+
+document.getElementById('emptyAddButton').addEventListener('click', () => {
+    document.getElementById('addTab').click()
+    document.getElementById('link').focus()
+})

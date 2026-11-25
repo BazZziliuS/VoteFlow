@@ -1,4 +1,123 @@
 {
+  "groupNotifications": {
+    "message": "Сповіщення"
+  },
+  "groupVoting": {
+    "message": "Голосування"
+  },
+  "groupAdvanced": {
+    "message": "Додатково"
+  },
+  "settingNotifStart": {
+    "message": "Про початок голосування"
+  },
+  "settingNotifInfo": {
+    "message": "Про успішне голосування"
+  },
+  "settingNotifWarn": {
+    "message": "Попередження"
+  },
+  "settingNotifError": {
+    "message": "Помилки"
+  },
+  "settingWarnCaptcha": {
+    "message": "Коли капчу треба пройти вручну"
+  },
+  "settingWarnCaptchaHint": {
+    "message": "Сповіщення і запис у лог, якщо розширення не змогло пройти капчу саме"
+  },
+  "settingFocusedTab": {
+    "message": "Перемикатися на вкладку голосування"
+  },
+  "settingClickCaptcha": {
+    "message": "Натискати «Я не робот» автоматично"
+  },
+  "settingClickCaptchaHint": {
+    "message": "Вимкніть, якщо капчу у вас розв’язує інше розширення"
+  },
+  "settingRestartOnTimeout": {
+    "message": "Перезапускати зависле голосування"
+  },
+  "settingCheckInternet": {
+    "message": "Перевіряти підключення до інтернету"
+  },
+  "settingCheckInternetHint": {
+    "message": "Без підключення голосування відкладається до його появи"
+  },
+  "welcomeTitle": {
+    "message": "Як це працює"
+  },
+  "welcomeStep1": {
+    "message": "Вставте посилання на проєкт"
+  },
+  "welcomeStep1Hint": {
+    "message": "Відкрийте свій сервер на сайті-рейтингу і скопіюйте адресу сторінки"
+  },
+  "welcomeStep2": {
+    "message": "Дозвольте доступ до сайту"
+  },
+  "welcomeStep2Hint": {
+    "message": "Браузер один раз запитає дозвіл відкривати цей рейтинг"
+  },
+  "welcomeStep3": {
+    "message": "Далі все саме"
+  },
+  "welcomeStep3Hint": {
+    "message": "VoteFlow голосує за розкладом сайту, час наступного голосу видно у вкладці «Проєкти»"
+  },
+  "switchAddMode": {
+    "message": "Вибрати сайт зі списку"
+  },
+  "switchAddModeHint": {
+    "message": "Якщо посилання не розпізнається — вкажіть сайт і ID проєкту вручну"
+  },
+  "supportedSites": {
+    "message": "Підтримувані сайти"
+  },
+  "sitesFilter": {
+    "message": "Знайти сайт"
+  },
+  "addProjectButton": {
+    "message": "Додати проєкт"
+  },
+  "linkInvalid": {
+    "message": "Це не схоже на посилання. Скопіюйте адресу сторінки повністю, починаючи з https://"
+  },
+  "linkUnsupported": {
+    "message": "$SITE$ не підтримується. Потрібне посилання на сторінку проєкту на сайті-рейтингу, а не на сайт сервера",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkNoProject": {
+    "message": "$SITE$ підтримується, але в посиланні немає проєкту. Відкрийте сторінку свого сервера і скопіюйте її адресу",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkRecognized": {
+    "message": "$SITE$, проєкт $ID$",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "linkRecognizedSite": {
+    "message": "$SITE$ — сайт розпізнано",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
   "editTitle": {
     "message": "Редагування проєкту"
   },
@@ -94,7 +213,7 @@
     "message": "Відключили сповіщення попереджень"
   },
   "disabledNotifWarnTooltip": {
-    "message": "Наприклад повідомлення про то що ви вже голосували (Це коли розширення намагалось проголосувати за проект але ви вже самі проголосували)"
+    "message": "Наприклад, якщо ви вже проголосували вручну раніше за розширення"
   },
   "disabledNotifError": {
     "message": "Відключити сповіщення помилок"
@@ -154,7 +273,7 @@
     "message": "Список вже добавлених вами проектів"
   },
   "notAddedAll": {
-    "message": "Проєктів поки немає. Додайте перший на вкладці «Додати»"
+    "message": "Проєктів поки немає"
   },
   "notAdded": {
     "message": "Ви ще не добавили ні одного проекта на цей топ!"

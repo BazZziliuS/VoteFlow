@@ -1,4 +1,120 @@
 {
+  "groupNotifications": {
+    "message": "Уведомления"
+  },
+  "groupVoting": {
+    "message": "Голосование"
+  },
+  "groupAdvanced": {
+    "message": "Дополнительно"
+  },
+  "settingNotifStart": {
+    "message": "О начале голосования"
+  },
+  "settingNotifInfo": {
+    "message": "Об успешном голосовании"
+  },
+  "settingNotifWarn": {
+    "message": "Предупреждения"
+  },
+  "settingNotifError": {
+    "message": "Ошибки"
+  },
+  "settingWarnCaptcha": {
+    "message": "Когда капчу нужно пройти вручную"
+  },
+  "settingWarnCaptchaHint": {
+    "message": "Уведомление и запись в лог, если расширение не смогло пройти капчу само"
+  },
+  "settingFocusedTab": {
+    "message": "Переключаться на вкладку голосования"
+  },
+  "settingClickCaptcha": {
+    "message": "Нажимать «Я не робот» автоматически"
+  },
+  "settingClickCaptchaHint": {
+    "message": "Выключите, если капчу у вас решает другое расширение"
+  },
+  "settingRestartOnTimeout": {
+    "message": "Перезапускать зависшее голосование"
+  },
+  "settingCheckInternet": {
+    "message": "Проверять подключение к интернету"
+  },
+  "settingCheckInternetHint": {
+    "message": "Без подключения голосование откладывается до его появления"
+  },
+  "welcomeTitle": {
+    "message": "Как это работает"
+  },
+  "welcomeStep1": {
+    "message": "Вставьте ссылку на проект"
+  },
+  "welcomeStep1Hint": {
+    "message": "Откройте свой сервер на сайте-рейтинге и скопируйте адрес страницы"
+  },
+  "welcomeStep2": {
+    "message": "Разрешите доступ к сайту"
+  },
+  "welcomeStep2Hint": {
+    "message": "Браузер один раз спросит разрешение открывать этот рейтинг"
+  },
+  "welcomeStep3": {
+    "message": "Дальше всё само"
+  },
+  "welcomeStep3Hint": {
+    "message": "VoteFlow голосует по расписанию сайта, время следующего голоса видно во вкладке «Проекты»"
+  },
+  "switchAddModeHint": {
+    "message": "Если ссылка не распознаётся — укажите сайт и ID проекта вручную"
+  },
+  "supportedSites": {
+    "message": "Поддерживаемые сайты"
+  },
+  "sitesFilter": {
+    "message": "Найти сайт"
+  },
+  "addProjectButton": {
+    "message": "Добавить проект"
+  },
+  "linkInvalid": {
+    "message": "Это не похоже на ссылку. Скопируйте адрес страницы целиком, начиная с https://"
+  },
+  "linkUnsupported": {
+    "message": "$SITE$ не поддерживается. Нужна ссылка на страницу проекта на сайте-рейтинге, а не на сайт самого сервера",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkNoProject": {
+    "message": "$SITE$ поддерживается, но в ссылке нет проекта. Откройте страницу своего сервера и скопируйте её адрес",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkRecognized": {
+    "message": "$SITE$, проект $ID$",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "linkRecognizedSite": {
+    "message": "$SITE$ — сайт распознан",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
   "Custom": {
     "message": "Свой запрос (Custom)"
   },
@@ -91,7 +207,7 @@
     "message": "Отключить уведомления о предупреждениях"
   },
   "disabledNotifWarnTooltip": {
-    "message": "Например уведомление о том что вы уже голосовали (Это когда расширение попыталось проголосовать за проект но вы уже сами проголосовали)"
+    "message": "Например, если вы уже проголосовали вручную раньше расширения"
   },
   "disabledNotifError": {
     "message": "Отключить уведомления об ошибках"
@@ -181,7 +297,7 @@
     "message": "Список уже добавленных вами проектов"
   },
   "notAddedAll": {
-    "message": "Проектов пока нет. Добавьте первый на вкладке «Добавить»"
+    "message": "Проектов пока нет"
   },
   "notAdded": {
     "message": "Вы ещё не добавили ни одного проекта на этот топ!"
@@ -900,7 +1016,7 @@
     "message": "Я — опытный пользователь"
   },
   "expertModeTooltip": {
-    "message": "Вам будут доступны расширенные настройки, эта функция предназначена для пользователей которые хорошо разбираются в компьютерах и его тонких технических нюансах."
+    "message": "Открывает тонкие настройки: таймауты, расписание и режимы голосования проектов"
   },
   "link": {
     "message": "Ссылка на рейтинг"
@@ -917,7 +1033,7 @@
     }
   },
   "switchAddMode": {
-    "message": "Ручной режим"
+    "message": "Выбрать сайт из списка"
   },
   "storageUsed": {
     "message": "Использовано места: $value$ $unit$",

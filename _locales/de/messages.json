@@ -1,4 +1,123 @@
 {
+  "groupNotifications": {
+    "message": "Benachrichtigungen"
+  },
+  "groupVoting": {
+    "message": "Abstimmung"
+  },
+  "groupAdvanced": {
+    "message": "Erweitert"
+  },
+  "settingNotifStart": {
+    "message": "Abstimmung gestartet"
+  },
+  "settingNotifInfo": {
+    "message": "Abstimmung erfolgreich"
+  },
+  "settingNotifWarn": {
+    "message": "Warnungen"
+  },
+  "settingNotifError": {
+    "message": "Fehler"
+  },
+  "settingWarnCaptcha": {
+    "message": "Captcha muss manuell gelöst werden"
+  },
+  "settingWarnCaptchaHint": {
+    "message": "Benachrichtigen und protokollieren, wenn die Erweiterung ein Captcha nicht selbst lösen konnte"
+  },
+  "settingFocusedTab": {
+    "message": "Zum Abstimmungs-Tab wechseln"
+  },
+  "settingClickCaptcha": {
+    "message": "„Ich bin kein Roboter“ automatisch anklicken"
+  },
+  "settingClickCaptchaHint": {
+    "message": "Ausschalten, wenn eine andere Erweiterung Captchas löst"
+  },
+  "settingRestartOnTimeout": {
+    "message": "Hängende Abstimmung neu starten"
+  },
+  "settingCheckInternet": {
+    "message": "Internetverbindung prüfen"
+  },
+  "settingCheckInternetHint": {
+    "message": "Ohne Verbindung wartet die Abstimmung, bis sie wieder da ist"
+  },
+  "welcomeTitle": {
+    "message": "So funktioniert es"
+  },
+  "welcomeStep1": {
+    "message": "Projektlink einfügen"
+  },
+  "welcomeStep1Hint": {
+    "message": "Öffnen Sie Ihren Server auf der Bewertungsseite und kopieren Sie die Adresse"
+  },
+  "welcomeStep2": {
+    "message": "Zugriff erlauben"
+  },
+  "welcomeStep2Hint": {
+    "message": "Der Browser fragt einmal nach der Erlaubnis, diese Seite zu öffnen"
+  },
+  "welcomeStep3": {
+    "message": "Der Rest läuft automatisch"
+  },
+  "welcomeStep3Hint": {
+    "message": "VoteFlow stimmt nach dem Zeitplan der Seite ab, die nächste Abstimmung steht im Tab „Projekte“"
+  },
+  "switchAddMode": {
+    "message": "Seite aus Liste wählen"
+  },
+  "switchAddModeHint": {
+    "message": "Wenn der Link nicht erkannt wird, Seite und Projekt-ID manuell angeben"
+  },
+  "supportedSites": {
+    "message": "Unterstützte Seiten"
+  },
+  "sitesFilter": {
+    "message": "Seite suchen"
+  },
+  "addProjectButton": {
+    "message": "Projekt hinzufügen"
+  },
+  "linkInvalid": {
+    "message": "Das sieht nicht wie ein Link aus. Kopieren Sie die vollständige Adresse ab https://"
+  },
+  "linkUnsupported": {
+    "message": "$SITE$ wird nicht unterstützt. Benötigt wird der Link zur Projektseite auf der Bewertungsseite, nicht zur Server-Website",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkNoProject": {
+    "message": "$SITE$ wird unterstützt, aber der Link enthält kein Projekt. Öffnen Sie Ihre Serverseite und kopieren Sie deren Adresse",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
+  "linkRecognized": {
+    "message": "$SITE$, Projekt $ID$",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      },
+      "id": {
+        "content": "$2"
+      }
+    }
+  },
+  "linkRecognizedSite": {
+    "message": "$SITE$ erkannt",
+    "placeholders": {
+      "site": {
+        "content": "$1"
+      }
+    }
+  },
   "editTitle": {
     "message": "Projekt bearbeiten"
   },
@@ -113,7 +232,7 @@
     "description": "Checkbox. Alert notifications"
   },
   "disabledNotifWarnTooltip": {
-    "message": "Zum Beispiel eine Benachrichtigung, dass Sie bereits abgestimmt haben (dies ist der Fall, wenn die Erweiterung versucht hat, für das Projekt abzustimmen, Sie selbst aber bereits abgestimmt haben))",
+    "message": "Zum Beispiel, wenn Sie vor der Erweiterung bereits manuell abgestimmt haben",
     "description": "1234"
   },
   "disabledNotifError": {
@@ -189,7 +308,7 @@
     "description": "Header. Added projects"
   },
   "notAddedAll": {
-    "message": "Noch keine Projekte. Fügen Sie das erste im Tab „Hinzufügen“ hinzu"
+    "message": "Noch keine Projekte"
   },
   "notAdded": {
     "message": "Sie haben noch keine Projekte zu dieser Abstimmungsseite hinzugefügt!",

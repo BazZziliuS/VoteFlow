@@ -41,8 +41,6 @@
     </div>
     <div class="nav-foot">
         <span id="navVersion" class="mono"></span>
-        <a id="versionLabel" target="_blank"
-           href="https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Common-or-MultiVote%3F-What-does-it-mean%3F">Common</a>
     </div>
 </nav>
 
@@ -55,18 +53,29 @@
                 <div class="editSubtitle" style="display: none;"></div>
             </div>
         </header>
+        <div id="welcome" class="card welcome" style="display: none">
+            <h2 class="card-title" data-resource="welcomeTitle"></h2>
+            <ol class="steps">
+                <li><span class="step-num mono">1</span><div><b data-resource="welcomeStep1"></b><span class="hint" data-resource="welcomeStep1Hint"></span></div></li>
+                <li><span class="step-num mono">2</span><div><b data-resource="welcomeStep2"></b><span class="hint" data-resource="welcomeStep2Hint"></span></div></li>
+                <li><span class="step-num mono">3</span><div><b data-resource="welcomeStep3"></b><span class="hint" data-resource="welcomeStep3Hint"></span></div></li>
+            </ol>
+        </div>
         <form id="addProject" class="addProject addProjectExpertManual">
             <div id="emptyDiv"></div>
             <div class="card form-main">
                 <div class="mode-row">
                     <input type="checkbox" name="switchAddMode" id="switchAddMode" class="switchAddMode checkbox">
-                    <label for="switchAddMode" data-resource="switchAddMode"></label>
+                    <label for="switchAddMode" data-resource="switchAddMode">
+                        <span class="hint"><span data-resource="switchAddModeHint"></span></span>
+                    </label>
                 </div>
                 <!--Ссылка-->
                 <div class="input-block">
                     <label data-resource="link" for="link"></label>
                     <input class="input" name="link" id="link" required placeholder="linkPlaceholder" type="text"
                            spellcheck="false" autocomplete="off">
+                    <div id="linkStatus" class="field-status" aria-live="polite"></div>
                 </div>
                 <!--Выбор сайта-->
                 <div style="display: none;" class="input-block">
@@ -271,6 +280,13 @@
                 </div>
             </div>
         </form>
+        <details id="supportedSites" class="card sites-card">
+            <summary><span data-resource="supportedSites"></span> <span id="sitesCount" class="mono muted"></span></summary>
+            <div class="sites-body">
+                <input id="sitesFilter" class="input" type="search" placeholder="sitesFilter" spellcheck="false" autocomplete="off">
+                <div id="sitesList" class="sites-list"></div>
+            </div>
+        </details>
     </section>
 
     <!-- Опции -->
@@ -280,54 +296,64 @@
         </header>
         <div class="userSettings">
             <div class="card">
-                <h2 class="card-title" data-resource="settings"></h2>
+                <h2 class="card-title" data-resource="groupNotifications"></h2>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledNotifStart" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledNotifStart" for="disabledNotifStart"></label>
+                    <input class="checkbox" id="disabledNotifStart" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingNotifStart" for="disabledNotifStart"></label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledNotifInfo" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledNotifInfo" for="disabledNotifInfo"></label>
+                    <input class="checkbox" id="disabledNotifInfo" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingNotifInfo" for="disabledNotifInfo"></label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledNotifWarn" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledNotifWarn" for="disabledNotifWarn">
+                    <input class="checkbox" id="disabledNotifWarn" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingNotifWarn" for="disabledNotifWarn">
                         <span class="hint"><span data-resource="disabledNotifWarnTooltip"></span></span>
                     </label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledNotifError" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledNotifError" for="disabledNotifError"></label>
+                    <input class="checkbox" id="disabledNotifError" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingNotifError" for="disabledNotifError"></label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledCheckInternet" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledCheckInternet" for="disabledCheckInternet"></label>
+                    <input class="checkbox" id="disabledWarnCaptcha" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingWarnCaptcha" for="disabledWarnCaptcha">
+                        <span class="hint"><span data-resource="settingWarnCaptchaHint"></span></span>
+                    </label>
                 </div>
-                <div class="check-block" style="display: none">
-                    <input class="checkbox" id="disabledOneVote" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledOneVote" for="disabledOneVote"></label>
-                </div>
-                <div class="check-block">
-                    <input class="checkbox" id="disabledRestartOnTimeout" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledRestartOnTimeout" for="disabledRestartOnTimeout"></label>
-                </div>
+                <h2 class="card-title card-subtitle" data-resource="groupVoting"></h2>
                 <div class="check-block">
                     <input class="checkbox" id="disabledFocusedTab" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledFocusedTab" for="disabledFocusedTab">
+                    <label data-resource="settingFocusedTab" for="disabledFocusedTab">
                         <span class="hint"><span data-resource="disabledFocusedTabTooltip"></span></span>
                     </label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledWarnCaptcha" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledWarnCaptcha" for="disabledWarnCaptcha">
-                        <span class="hint"><span data-resource="disabledWarnCaptchaTooltip"></span></span>
+                    <input class="checkbox" id="disabledClickCaptcha" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingClickCaptcha" for="disabledClickCaptcha">
+                        <span class="hint"><span data-resource="settingClickCaptchaHint"></span></span>
                     </label>
                 </div>
                 <div class="check-block">
-                    <input class="checkbox" id="disabledClickCaptcha" type="checkbox" name="checkbox"/>
-                    <label data-resource="disabledClickCaptcha" for="disabledClickCaptcha">
-                        <span class="hint"><span data-resource="disabledClickCaptchaTooltip"></span></span>
+                    <input class="checkbox" id="disabledRestartOnTimeout" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingRestartOnTimeout" for="disabledRestartOnTimeout"></label>
+                </div>
+                <div class="check-block">
+                    <input class="checkbox" id="disabledCheckInternet" type="checkbox" name="checkbox" data-invert="true"/>
+                    <label data-resource="settingCheckInternet" for="disabledCheckInternet">
+                        <span class="hint"><span data-resource="settingCheckInternetHint"></span></span>
                     </label>
+                </div>
+                <h2 class="card-title card-subtitle" data-resource="groupAdvanced"></h2>
+                <div class="check-block">
+                    <input class="checkbox" id="expertMode" type="checkbox" name="checkbox"/>
+                    <label data-resource="expertMode" for="expertMode">
+                        <span class="hint"><span data-resource="expertModeTooltip"></span></span>
+                    </label>
+                </div>
+                <div class="check-block" style="display: none">
+                    <input class="checkbox" id="disabledOneVote" type="checkbox" name="checkbox"/>
+                    <label data-resource="disabledOneVote" for="disabledOneVote"></label>
                 </div>
                 <div class="check-block" style="display: none">
                     <input class="checkbox" id="disabledDebug" type="checkbox" name="checkbox"/>
@@ -345,12 +371,6 @@
                     <input class="checkbox" id="disableCloseTabsOnError" type="checkbox" name="checkbox"/>
                     <label data-resource="disableCloseTabsOnError" for="disableCloseTabsOnError">
                         <span class="hint"><span data-resource="debugTooltip"></span></span>
-                    </label>
-                </div>
-                <div class="check-block">
-                    <input class="checkbox" id="expertMode" type="checkbox" name="checkbox"/>
-                    <label data-resource="expertMode" for="expertMode">
-                        <span class="hint"><span data-resource="expertModeTooltip"></span></span>
                     </label>
                 </div>
             </div>
@@ -428,7 +448,10 @@
             </div>
         </header>
         <p id="addedLoading" class="muted" data-resource="load"></p>
-        <p id="notAddedAll" class="empty" data-resource="notAddedAll" style="display: none;"></p>
+        <div class="empty-wrap">
+            <p id="notAddedAll" class="empty" data-resource="notAddedAll" style="display: none;"></p>
+            <button id="emptyAddButton" class="btn btn-primary" type="button"><span class="i i-plus"></span><span data-resource="addProjectButton"></span></button>
+        </div>
         <div class="projectsBlock">
             <div class="buttonBlock"></div>
             <div class="contentBlock"></div>

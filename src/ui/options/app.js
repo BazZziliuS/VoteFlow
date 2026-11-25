@@ -54,19 +54,19 @@ window.addEventListener('load', async () => {
 // Restores select box and checkbox state using the preferences
 async function restoreOptions(first) {
     //Считывает настройки расширение и выдаёт их в html
-    document.getElementById('disabledNotifStart').checked = settings.disabledNotifStart
-    document.getElementById('disabledNotifInfo').checked = settings.disabledNotifInfo
-    document.getElementById('disabledNotifWarn').checked = settings.disabledNotifWarn
-    document.getElementById('disabledNotifError').checked = settings.disabledNotifError
-    document.getElementById('disabledCheckInternet').checked = settings.disabledCheckInternet
-    document.getElementById('disabledOneVote').checked = settings.disabledOneVote
-    document.getElementById('disabledRestartOnTimeout').checked = settings.disabledRestartOnTimeout
-    document.getElementById('disabledFocusedTab').checked = settings.disabledFocusedTab
+    setSettingCheckbox('disabledNotifStart', settings.disabledNotifStart)
+    setSettingCheckbox('disabledNotifInfo', settings.disabledNotifInfo)
+    setSettingCheckbox('disabledNotifWarn', settings.disabledNotifWarn)
+    setSettingCheckbox('disabledNotifError', settings.disabledNotifError)
+    setSettingCheckbox('disabledCheckInternet', settings.disabledCheckInternet)
+    setSettingCheckbox('disabledOneVote', settings.disabledOneVote)
+    setSettingCheckbox('disabledRestartOnTimeout', settings.disabledRestartOnTimeout)
+    setSettingCheckbox('disabledFocusedTab', settings.disabledFocusedTab)
     document.getElementById('timeoutValue').value = settings.timeout
     document.getElementById('timeoutErrorValue').value = settings.timeoutError
     document.getElementById('timeoutVoteValue').value = settings.timeoutVote
-    document.getElementById('disabledWarnCaptcha').checked = settings.disabledWarnCaptcha
-    document.getElementById('disabledClickCaptcha').checked = settings.disabledClickCaptcha
+    setSettingCheckbox('disabledWarnCaptcha', settings.disabledWarnCaptcha)
+    setSettingCheckbox('disabledClickCaptcha', settings.disabledClickCaptcha)
     document.getElementById('disabledDebug').checked = settings.debug
     document.getElementById('disableCloseTabsOnSuccess').checked = settings.disableCloseTabsOnSuccess
     document.getElementById('disableCloseTabsOnError').checked = settings.disableCloseTabsOnError
@@ -135,7 +135,9 @@ async function onMessage(request) {
             updateProjectText(request.value)
         }
     } else if (request.installed) {
-        alert(chrome.i18n.getMessage('firstInstall'))
+        // Первый запуск: вместо системного alert на вкладке «Добавить» показывается карточка «Как это работает»
+        document.getElementById('addTab').click()
+        document.getElementById('link').focus()
     } else if (request.openProject) {
         await initializeFunc
         document.getElementById('addedTab').click()
