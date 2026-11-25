@@ -54,6 +54,12 @@ const manifestPaths = [
 for (const p of manifestPaths) {
     if (!p.includes('*') && !exists(p)) errors.push(`manifest.json: «${p}» — файла нет`)
 }
+// VoteFlow не публикуется в Chrome Web Store: update_url стора вместе с key оригинала заставит Chrome
+// вести название расширения в стор и пытаться «обновить» его до старого Auto Vote Rating
+if (/clients2\.google\.com/.test(manifest.update_url || '')) {
+    errors.push('manifest.json: update_url указывает на Chrome Web Store — уберите его')
+}
+if (!manifest.homepage_url) errors.push('manifest.json: нет homepage_url (ссылка с названия расширения)')
 
 // 3. options.html
 const optionsHtml = read('src/ui/options.html')

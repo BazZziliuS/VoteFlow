@@ -1,4 +1,7 @@
 {
+  "editTitle": {
+    "message": "Редагування проєкту"
+  },
   "Custom": {
     "message": "Власний запит (Custom)"
   },
@@ -46,16 +49,16 @@
     "message": "Швидке додавання"
   },
   "load": {
-    "message": "Загрузка..."
+    "message": "Завантаження"
   },
   "addedButton": {
-    "message": "Додані"
+    "message": "Проєкти"
   },
   "optionsButton": {
-    "message": "Опції"
+    "message": "Налаштування"
   },
   "addTitle": {
-    "message": "Додавання нового проекту"
+    "message": "Новий проєкт"
   },
   "yourNick": {
     "message": "Ваш нікнейм"
@@ -76,10 +79,10 @@
     "message": "Кастомні"
   },
   "optionsExtension": {
-    "message": "Опції розширення"
+    "message": "Налаштування"
   },
   "settings": {
-    "message": "Налаштування"
+    "message": "Основні"
   },
   "disabledNotifStart": {
     "message": "Відключити сповіщення початку голосування"
@@ -136,7 +139,7 @@
     "message": "Встановити"
   },
   "settingsFile": {
-    "message": "Експорт/Імпорт"
+    "message": "Резервна копія та логи"
   },
   "importSettings": {
     "message": "Імпортувати налаштування"
@@ -151,7 +154,7 @@
     "message": "Список вже добавлених вами проектів"
   },
   "notAddedAll": {
-    "message": "Тут поки що ви нічого не добавили"
+    "message": "Проєктів поки немає. Додайте перший на вкладці «Додати»"
   },
   "notAdded": {
     "message": "Ви ще не добавили ні одного проекта на цей топ!"
@@ -196,7 +199,7 @@
     "message": "Видалити"
   },
   "nextVote": {
-    "message": "Наступне голосування після:"
+    "message": "Наступний голос"
   },
   "inPriority": {
     "message": "У пріоритеті"
@@ -369,7 +372,7 @@
     "message": "Введіть ID"
   },
   "developers": {
-    "message": "Розробники:"
+    "message": "Автори"
   },
   "developer": {
     "message": "Розробник:"
@@ -543,13 +546,13 @@
     "message": "У рандомі"
   },
   "soon": {
-    "message": "Скоро..."
+    "message": "скоро"
   },
   "inQueue": {
-    "message": "У черзі на голосування..."
+    "message": "у черзі"
   },
   "now": {
-    "message": "Прямо зараз йде голосування"
+    "message": "голосує зараз"
   },
   "timeout": {
     "message": "Час очікування голосування закінчився"
@@ -626,7 +629,7 @@
     "message": "Задайте годину"
   },
   "advSettings": {
-    "message": "Додаткові параметри:"
+    "message": "Додатково"
   },
   "customTimeOut": {
     "message": "Кастомізувати час наступного голосування (тайм-аут)"

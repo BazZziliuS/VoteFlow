@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- VoteFlow: острая «V» из двух скошенных полос (наследие Auto Vote Rating),
+       вдоль длинного плеча — вторая полоса: голоса идут потоком -->
+  <rect width="128" height="128" rx="28" fill="#1f6fd6"/>
+  <g fill="none" stroke="#fff" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10">
+    <path d="M31 57 L56 95 L89 31" stroke-width="16"/>
+    <path d="M89 76 L107 41" stroke-width="9" stroke-opacity=".55"/>
+  </g>
+</svg>

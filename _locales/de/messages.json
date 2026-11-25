@@ -1,4 +1,7 @@
 {
+  "editTitle": {
+    "message": "Projekt bearbeiten"
+  },
   "Custom": {
     "message": "Eigene Anfrage (Custom)"
   },
@@ -51,19 +54,19 @@
     "description": "Notification. Fast add"
   },
   "load": {
-    "message": "Laden...",
+    "message": "Laden",
     "description": "Notification. Loading message"
   },
   "addedButton": {
-    "message": "Hinzugefügt",
+    "message": "Projekte",
     "description": "Button. Added"
   },
   "optionsButton": {
-    "message": "Optionen",
+    "message": "Einstellungen",
     "description": "Button. Options"
   },
   "addTitle": {
-    "message": "Neues Projekt hinzufügen",
+    "message": "Neues Projekt",
     "description": "Header. Add"
   },
   "yourNick": {
@@ -90,11 +93,11 @@
     "description": "Input. Custom"
   },
   "optionsExtension": {
-    "message": "Erweiterte optionen",
+    "message": "Einstellungen",
     "description": "Header. Options"
   },
   "settings": {
-    "message": "Einstellungen",
+    "message": "Allgemein",
     "description": "Label. Settings"
   },
   "disabledNotifStart": {
@@ -166,7 +169,7 @@
     "description": "Button. Set cooldown"
   },
   "settingsFile": {
-    "message": "Export/Import",
+    "message": "Sicherung und Logs",
     "description": "Label. Export/Import"
   },
   "importSettings": {
@@ -186,7 +189,7 @@
     "description": "Header. Added projects"
   },
   "notAddedAll": {
-    "message": "Sie haben hier noch nichts hinzugefügt"
+    "message": "Noch keine Projekte. Fügen Sie das erste im Tab „Hinzufügen“ hinzu"
   },
   "notAdded": {
     "message": "Sie haben noch keine Projekte zu dieser Abstimmungsseite hinzugefügt!",
@@ -234,7 +237,7 @@
     "message": "Löschen"
   },
   "nextVote": {
-    "message": "Nächste Abstimmung nach:"
+    "message": "Nächste Stimme"
   },
   "inPriority": {
     "message": "In der Priorität"
@@ -407,7 +410,7 @@
     "message": "ID eingeben"
   },
   "developers": {
-    "message": "Entwickler:"
+    "message": "Autoren"
   },
   "developer": {
     "message": "Entwickler:"
@@ -581,13 +584,13 @@
     "message": "Randomisiert"
   },
   "soon": {
-    "message": "Bald..."
+    "message": "bald"
   },
   "inQueue": {
-    "message": "In der Warteschlange für die Abstimmung..."
+    "message": "in der Warteschlange"
   },
   "now": {
-    "message": "Es findet gerade eine Abstimmung statt..."
+    "message": "stimmt gerade ab"
   },
   "timeout": {
     "message": "Die Wartezeit für die Abstimmung ist abgelaufen."
@@ -664,7 +667,7 @@
     "message": "Einstellen der Stunde"
   },
   "advSettings": {
-    "message": "Erweiterte Einstellung:"
+    "message": "Erweitert"
   },
   "customTimeOut": {
     "message": "Anpassen des Zeitpunkts der nächsten Abstimmung (timeout)"

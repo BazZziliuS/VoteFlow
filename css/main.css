@@ -1054,11 +1054,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator,
 .about-brand img {
     width: 48px;
     height: 48px;
-    padding: 8px;
-    border-radius: var(--r-card);
-    background: var(--raised);
-    border: 1px solid var(--line);
-    object-fit: contain;
 }
 
 .about-name {

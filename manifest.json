@@ -60,8 +60,8 @@
       ]
     }
   ],
-  "update_url": "https://clients2.google.com/service/update2/crx",
-  "version": "7.3.2",
+  "homepage_url": "https://github.com/BazZziliuS/VoteFlow",
+  "version": "8.0.0",
   "minimum_chrome_version": "105.0",
   "default_locale": "en"
 }
