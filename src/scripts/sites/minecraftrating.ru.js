@@ -4,11 +4,6 @@ function mrVoteForm() {
     return document.querySelector('#form-vote, #voteForm')
 }
 
-function mrSubmitButton() {
-    const form = mrVoteForm()
-    return document.querySelector('#voteProject, #submitVote') || form?.querySelector('button[type="submit"], input[type="submit"]') || null
-}
-
 // SmartCaptcha именно формы голосования. На странице есть и скрытая форма входа со своей капчей — её не учитываем
 function mrVoteCaptcha() {
     const form = mrVoteForm()
@@ -16,25 +11,66 @@ function mrVoteCaptcha() {
     return form.querySelector('iframe[src*="smartcaptcha"], iframe[src*="captcha-api.yandex.ru"], .smart-captcha')
 }
 
+// Голосование на странице проекта в два шага: «Голосовать» (#voteProject) открывает окно #popup-captcha
+// со SmartCaptcha, а голос отправляет кнопка «Проголосовать» (#submitVote) в этом окне
+function mrPopup() {
+    return document.getElementById('popup-captcha')
+}
+
+let mrOpened = false
 let mrSubmitted = false
 
-function mrSubmit() {
-    if (mrSubmitted) return true
-    const button = mrSubmitButton()
-    if (!button) return false
+// Начинает голосование: открывает окно с капчей или (старая разметка) сразу отправляет голос
+function mrStart() {
+    const open = document.querySelector('#voteProject')
+    if (open) {
+        if (!mrOpened) {
+            mrOpened = true
+            console.log('[minecraftrating] Нажимаем «Голосовать» — открывается окно с капчей')
+            open.click()
+            mrWaitCaptcha()
+        }
+        return true
+    }
+    const button = document.querySelector('#submitVote') || mrVoteForm()?.querySelector('button[type="submit"], input[type="submit"]')
+    return button ? mrFinalSubmit(button) : false
+}
+
+// Отправляет голос кнопкой «Проголосовать» в окне — один раз
+function mrFinalSubmit(button = mrPopup()?.querySelector('#submitVote, button[type="submit"]') || document.querySelector('#submitVote')) {
+    if (mrSubmitted || !button) return false
     mrSubmitted = true
-    console.log('[minecraftrating] Нажимаем «Голосовать»:', button.id || button.className)
+    console.log('[minecraftrating] Нажимаем «Проголосовать»')
     button.click()
     mrWatchResult()
     return true
 }
 
-// После капчи отправляем голос, если сайт не отправил его сам
+// Ждём прохождения капчи в окне: токен в smart-token появляется, кто бы её ни прошёл — расширение, пользователь или невидимо
+function mrWaitCaptcha() {
+    const started = Date.now()
+    let asked = false
+    const timer = setInterval(() => {
+        if (mrSubmitted) {
+            clearInterval(timer)
+            return
+        }
+        const token = mrPopup()?.querySelector('input[name="smart-token"]')?.value
+        if (token) {
+            clearInterval(timer)
+            console.log('[minecraftrating] Капча пройдена')
+            setTimeout(() => mrFinalSubmit(), 500)
+        } else if (!asked && Date.now() - started > 30000) {
+            asked = true
+            chrome.runtime.sendMessage({captcha: true})
+        }
+    }, 1000)
+}
+
+// captchaclicker сообщил о прохождении капчи — нажимаем «Проголосовать», если ещё не нажали
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.captchaPassed === true || message.captchaPassed === 'double') {
-        setTimeout(() => {
-            if (!mrSubmitted && !mrSubmit()) console.error('[minecraftrating] Не найдена кнопка голосования после капчи')
-        }, 1500)
+        setTimeout(() => mrFinalSubmit(), 1500)
     }
 })
 
@@ -119,8 +155,8 @@ async function vote(first) {
         return
     }
 
-    // Обычный случай: капча невидимая, её запустит сам сайт по нажатию «Голосовать»
-    if (!mrSubmit()) {
+    // «Голосовать» открывает окно со SmartCaptcha; после капчи нажимаем «Проголосовать» в окне
+    if (!mrStart()) {
         chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка «Голосовать» (#voteProject)'})
     }
 }
