@@ -13,7 +13,7 @@
 <br>
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-4a95f2)
 ![Chromium 105+](https://img.shields.io/badge/Chromium-105%2B-4a95f2?logo=googlechrome&logoColor=white)
-![Сайтов](https://img.shields.io/badge/%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-139-4a95f2)
+![Сайтов](https://img.shields.io/badge/%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-138-4a95f2)
 
 [Скачать](https://github.com/BazZziliuS/VoteFlow/releases/latest) · [Установка](#установка) · [Поддерживаемые сайты](#поддерживаемые-сайты) · [Сообщить о проблеме](https://github.com/BazZziliuS/VoteFlow/issues/new)
 
@@ -79,45 +79,45 @@
 ## Поддерживаемые сайты
 
 <details>
-<summary>139 сайтов — показать список</summary>
+<summary>138 сайтов — показать список</summary>
 
 | | | | |
 | --- | --- | --- | --- |
-| [16bitmc.net](https://16bitmc.net/) | [liste-serveurs-minecraft.org](https://liste-serveurs-minecraft.org/) | [minecraftpocket-servers.com](https://minecraftpocket-servers.com/) | [serveurs-mc.net](https://serveurs-mc.net/) |
-| [40servidoresmc.es](https://40servidoresmc.es/) | [liste-serveurs.fr](https://liste-serveurs.fr/) | [minecraftrating.ru](https://minecraftrating.ru/) | [serveursminecraft.org](https://serveursminecraft.org/) |
-| [ark-servers.net](https://ark-servers.net/) | [listforge.net](https://listforge.net/) | [minecraftserver.sk](https://minecraftserver.sk/) | [servidoresdeminecraft.es](https://servidoresdeminecraft.es/) |
-| [arma3-servers.net](https://arma3-servers.net/) | [loliland.net](https://loliland.net/) | [minecraftservers.biz](https://minecraftservers.biz/) | [space-engineers.com](https://space-engineers.com/) |
-| [atlas-servers.io](https://atlas-servers.io/) | [loliland.ru](https://loliland.ru/) | [minecraftservers.org](https://minecraftservers.org/) | [squad-servers.com](https://squad-servers.com/) |
-| [atlauncher.com](https://atlauncher.com/) | [magicrust.gg](https://magicrust.gg/) | [minecraftservery.eu](https://minecraftservery.eu/) | [starbound-servers.net](https://starbound-servers.net/) |
-| [attackofthebteamservers.com](https://attackofthebteamservers.com/) | [mc-liste.de](https://mc-liste.de/) | [minecraftsurvivalservers.net](https://minecraftsurvivalservers.net/) | [teamspeak-servers.org](https://teamspeak-servers.org/) |
-| [best-minecraft-servers.co](https://best-minecraft-servers.co/) | [mc-servers.com](https://mc-servers.com/) | [minehut.com](https://minehut.com/) | [technicservers.com](https://technicservers.com/) |
-| [bestservers.com](https://bestservers.com/) | [mclike.com](https://mclike.com/) | [minelist.net](https://minelist.net/) | [tekkitserverlist.com](https://tekkitserverlist.com/) |
-| [bloodrust.com](https://bloodrust.com/) | [mclist.io](https://mclist.io/) | [minerank.com](https://minerank.com/) | [terraria-servers.com](https://terraria-servers.com/) |
-| [botlist.me](https://botlist.me/) | [mcrate.su](https://mcrate.su/) | [mineserv.top](https://mineserv.top/) | [tf2-servers.com](https://tf2-servers.com/) |
-| [conan-exiles.com](https://conan-exiles.com/) | [mcserver-list.eu](https://mcserver-list.eu/) | [mineservers.com](https://mineservers.com/) | [tmonitoring.com](https://tmonitoring.com/) |
-| [counter-strike-servers.net](https://counter-strike-servers.net/) | [mcservers.top](https://mcservers.top/) | [minestatus.net](https://minestatus.net/) | [top-games.net](https://top-games.net/) |
-| [craftbook.cz](https://craftbook.cz/) | [mcservertime.com](https://mcservertime.com/) | [miscreated-servers.com](https://miscreated-servers.com/) | [top-mc-servers.net](https://top-mc-servers.net/) |
-| [craftlist.org](https://craftlist.org/) | [mcservidores.com](https://mcservidores.com/) | [misterlauncher.org](https://misterlauncher.org/) | [top-mmogames.ru](https://top-mmogames.ru/) |
-| [cubeworld-servers.com](https://cubeworld-servers.com/) | [mctop.su](https://mctop.su/) | [mmorpg.top](https://mmorpg.top/) | [top-serveurs.net](https://top-serveurs.net/) |
-| [curseforge.com](https://curseforge.com/) | [minebrowse.com](https://minebrowse.com/) | [mmotop.ru](https://mmotop.ru/) | [top.gg](https://top.gg/) |
-| [czech-craft.eu](https://czech-craft.eu/) | [minecraft-list.cz](https://minecraft-list.cz/) | [mmovote.ru](https://mmovote.ru/) | [top100arena.com](https://top100arena.com/) |
-| [dayz-servers.org](https://dayz-servers.org/) | [minecraft-mp.com](https://minecraft-mp.com/) | [monitoringminecraft.ru](https://monitoringminecraft.ru/) | [topcraft.club](https://topcraft.club/) |
-| [discadia.com](https://discadia.com/) | [minecraft-news.net](https://minecraft-news.net/) | [pixelmon-server-list.com](https://pixelmon-server-list.com/) | [topcraft.ru](https://topcraft.ru/) |
-| [discordbotlist.com](https://discordbotlist.com/) | [minecraft-server-list.com](https://minecraft-server-list.com/) | [pixelmonservers.com](https://pixelmonservers.com/) | [topeaglerservers.com](https://topeaglerservers.com/) |
-| [discords.com](https://discords.com/) | [minecraft-server.eu](https://minecraft-server.eu/) | [planetminecraft.com](https://planetminecraft.com/) | [topg.org](https://topg.org/) |
-| [ecoservers.io](https://ecoservers.io/) | [minecraft-serverlist.com](https://minecraft-serverlist.com/) | [play-minecraft-servers.com](https://play-minecraft-servers.com/) | [topmcservers.com](https://topmcservers.com/) |
-| [emeraldservers.com](https://emeraldservers.com/) | [minecraft-serverlist.net](https://minecraft-serverlist.net/) | [reign-of-kings.net](https://reign-of-kings.net/) | [topminecraftservers.org](https://topminecraftservers.org/) |
-| [empyrion-servers.com](https://empyrion-servers.com/) | [minecraft-servers-list.org](https://minecraft-servers-list.org/) | [rovelstars.com](https://rovelstars.com/) | [topservers.com](https://topservers.com/) |
-| [findmcserver.com](https://findmcserver.com/) | [minecraft-servers.de](https://minecraft-servers.de/) | [rpg-paradize.com](https://rpg-paradize.com/) | [trackyserver.com](https://trackyserver.com/) |
-| [ftbservers.com](https://ftbservers.com/) | [minecraft-servers.ru](https://minecraft-servers.ru/) | [rust-servers.net](https://rust-servers.net/) | [unturned-servers.net](https://unturned-servers.net/) |
-| [gmod-servers.com](https://gmod-servers.com/) | [minecraft-tracker.com](https://minecraft-tracker.com/) | [serverlist.games](https://serverlist.games/) | [valheim-servers.io](https://valheim-servers.io/) |
-| [gtop100.com](https://gtop100.com/) | [minecraft.buzz](https://minecraft.buzz/) | [serverlist101.com](https://serverlist101.com/) | [voxelrank.com](https://voxelrank.com/) |
-| [hotmc.ru](https://hotmc.ru/) | [minecraft.global](https://minecraft.global/) | [serverliste.net](https://serverliste.net/) | [vrising-servers.net](https://vrising-servers.net/) |
-| [hoyolab.com](https://hoyolab.com/) | [minecraft.menu](https://minecraft.menu/) | [serveur-minecraft-vote.fr](https://serveur-minecraft-vote.fr/) | [warface.com](https://warface.com/) |
-| [hurtworld-servers.net](https://hurtworld-servers.net/) | [minecraftbestservers.com](https://minecraftbestservers.com/) | [serveur-minecraft.com](https://serveur-minecraft.com/) | [wargm.ru](https://wargm.ru/) |
-| [hytale-servers.io](https://hytale-servers.io/) | [minecraftiplist.com](https://minecraftiplist.com/) | [serveur-minecraft.fr](https://serveur-minecraft.fr/) | [wurm-unlimited.com](https://wurm-unlimited.com/) |
-| [life-is-feudal.org](https://life-is-feudal.org/) | [minecraftkrant.nl](https://minecraftkrant.nl/) | [serveur-prive.net](https://serveur-prive.net/) | [xtremetop100.com](https://xtremetop100.com/) |
-| [liste-serv-minecraft.fr](https://liste-serv-minecraft.fr/) | [minecraftlist.org](https://minecraftlist.org/) | [serveurliste.com](https://serveurliste.com/) |  |
+| [16bitmc.net](https://16bitmc.net/) | [liste-serveurs-minecraft.org](https://liste-serveurs-minecraft.org/) | [minecraftpocket-servers.com](https://minecraftpocket-servers.com/) | [serveursminecraft.org](https://serveursminecraft.org/) |
+| [40servidoresmc.es](https://40servidoresmc.es/) | [liste-serveurs.fr](https://liste-serveurs.fr/) | [minecraftrating.ru](https://minecraftrating.ru/) | [servidoresdeminecraft.es](https://servidoresdeminecraft.es/) |
+| [ark-servers.net](https://ark-servers.net/) | [listforge.net](https://listforge.net/) | [minecraftserver.sk](https://minecraftserver.sk/) | [space-engineers.com](https://space-engineers.com/) |
+| [arma3-servers.net](https://arma3-servers.net/) | [loliland.net](https://loliland.net/) | [minecraftservers.biz](https://minecraftservers.biz/) | [squad-servers.com](https://squad-servers.com/) |
+| [atlas-servers.io](https://atlas-servers.io/) | [loliland.ru](https://loliland.ru/) | [minecraftservers.org](https://minecraftservers.org/) | [starbound-servers.net](https://starbound-servers.net/) |
+| [atlauncher.com](https://atlauncher.com/) | [magicrust.gg](https://magicrust.gg/) | [minecraftservery.eu](https://minecraftservery.eu/) | [teamspeak-servers.org](https://teamspeak-servers.org/) |
+| [attackofthebteamservers.com](https://attackofthebteamservers.com/) | [mc-liste.de](https://mc-liste.de/) | [minecraftsurvivalservers.net](https://minecraftsurvivalservers.net/) | [technicservers.com](https://technicservers.com/) |
+| [best-minecraft-servers.co](https://best-minecraft-servers.co/) | [mc-servers.com](https://mc-servers.com/) | [minehut.com](https://minehut.com/) | [tekkitserverlist.com](https://tekkitserverlist.com/) |
+| [bestservers.com](https://bestservers.com/) | [mclike.com](https://mclike.com/) | [minelist.net](https://minelist.net/) | [terraria-servers.com](https://terraria-servers.com/) |
+| [bloodrust.com](https://bloodrust.com/) | [mclist.io](https://mclist.io/) | [minerank.com](https://minerank.com/) | [tf2-servers.com](https://tf2-servers.com/) |
+| [botlist.me](https://botlist.me/) | [mcrate.su](https://mcrate.su/) | [mineserv.top](https://mineserv.top/) | [tmonitoring.com](https://tmonitoring.com/) |
+| [conan-exiles.com](https://conan-exiles.com/) | [mcserver-list.eu](https://mcserver-list.eu/) | [mineservers.com](https://mineservers.com/) | [top-games.net](https://top-games.net/) |
+| [counter-strike-servers.net](https://counter-strike-servers.net/) | [mcservers.top](https://mcservers.top/) | [minestatus.net](https://minestatus.net/) | [top-mc-servers.net](https://top-mc-servers.net/) |
+| [craftbook.cz](https://craftbook.cz/) | [mcservertime.com](https://mcservertime.com/) | [miscreated-servers.com](https://miscreated-servers.com/) | [top-mmogames.ru](https://top-mmogames.ru/) |
+| [craftlist.org](https://craftlist.org/) | [mcservidores.com](https://mcservidores.com/) | [misterlauncher.org](https://misterlauncher.org/) | [top-serveurs.net](https://top-serveurs.net/) |
+| [cubeworld-servers.com](https://cubeworld-servers.com/) | [mctop.su](https://mctop.su/) | [mmorpg.top](https://mmorpg.top/) | [top.gg](https://top.gg/) |
+| [curseforge.com](https://curseforge.com/) | [minebrowse.com](https://minebrowse.com/) | [mmotop.ru](https://mmotop.ru/) | [top100arena.com](https://top100arena.com/) |
+| [czech-craft.eu](https://czech-craft.eu/) | [minecraft-list.cz](https://minecraft-list.cz/) | [mmovote.ru](https://mmovote.ru/) | [topcraft.club](https://topcraft.club/) |
+| [dayz-servers.org](https://dayz-servers.org/) | [minecraft-mp.com](https://minecraft-mp.com/) | [monitoringminecraft.ru](https://monitoringminecraft.ru/) | [topcraft.ru](https://topcraft.ru/) |
+| [discadia.com](https://discadia.com/) | [minecraft-news.net](https://minecraft-news.net/) | [pixelmon-server-list.com](https://pixelmon-server-list.com/) | [topeaglerservers.com](https://topeaglerservers.com/) |
+| [discordbotlist.com](https://discordbotlist.com/) | [minecraft-server-list.com](https://minecraft-server-list.com/) | [pixelmonservers.com](https://pixelmonservers.com/) | [topg.org](https://topg.org/) |
+| [discords.com](https://discords.com/) | [minecraft-server.eu](https://minecraft-server.eu/) | [planetminecraft.com](https://planetminecraft.com/) | [topmcservers.com](https://topmcservers.com/) |
+| [ecoservers.io](https://ecoservers.io/) | [minecraft-serverlist.com](https://minecraft-serverlist.com/) | [play-minecraft-servers.com](https://play-minecraft-servers.com/) | [topminecraftservers.org](https://topminecraftservers.org/) |
+| [emeraldservers.com](https://emeraldservers.com/) | [minecraft-serverlist.net](https://minecraft-serverlist.net/) | [reign-of-kings.net](https://reign-of-kings.net/) | [topservers.com](https://topservers.com/) |
+| [empyrion-servers.com](https://empyrion-servers.com/) | [minecraft-servers-list.org](https://minecraft-servers-list.org/) | [rovelstars.com](https://rovelstars.com/) | [trackyserver.com](https://trackyserver.com/) |
+| [findmcserver.com](https://findmcserver.com/) | [minecraft-servers.de](https://minecraft-servers.de/) | [rpg-paradize.com](https://rpg-paradize.com/) | [unturned-servers.net](https://unturned-servers.net/) |
+| [ftbservers.com](https://ftbservers.com/) | [minecraft-servers.ru](https://minecraft-servers.ru/) | [rust-servers.net](https://rust-servers.net/) | [valheim-servers.io](https://valheim-servers.io/) |
+| [gmod-servers.com](https://gmod-servers.com/) | [minecraft-tracker.com](https://minecraft-tracker.com/) | [serverlist.games](https://serverlist.games/) | [voxelrank.com](https://voxelrank.com/) |
+| [gtop100.com](https://gtop100.com/) | [minecraft.buzz](https://minecraft.buzz/) | [serverlist101.com](https://serverlist101.com/) | [vrising-servers.net](https://vrising-servers.net/) |
+| [hotmc.ru](https://hotmc.ru/) | [minecraft.global](https://minecraft.global/) | [serverliste.net](https://serverliste.net/) | [warface.com](https://warface.com/) |
+| [hoyolab.com](https://hoyolab.com/) | [minecraft.menu](https://minecraft.menu/) | [serveur-minecraft-vote.fr](https://serveur-minecraft-vote.fr/) | [wargm.ru](https://wargm.ru/) |
+| [hurtworld-servers.net](https://hurtworld-servers.net/) | [minecraftbestservers.com](https://minecraftbestservers.com/) | [serveur-minecraft.com](https://serveur-minecraft.com/) | [wurm-unlimited.com](https://wurm-unlimited.com/) |
+| [hytale-servers.io](https://hytale-servers.io/) | [minecraftiplist.com](https://minecraftiplist.com/) | [serveur-prive.net](https://serveur-prive.net/) | [xtremetop100.com](https://xtremetop100.com/) |
+| [life-is-feudal.org](https://life-is-feudal.org/) | [minecraftkrant.nl](https://minecraftkrant.nl/) | [serveurliste.com](https://serveurliste.com/) |  |
+| [liste-serv-minecraft.fr](https://liste-serv-minecraft.fr/) | [minecraftlist.org](https://minecraftlist.org/) | [serveurs-mc.net](https://serveurs-mc.net/) |  |
 
 </details>
 

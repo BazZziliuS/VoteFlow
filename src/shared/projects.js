@@ -597,11 +597,13 @@ const allProjects = {
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 5}),
     },
+    // С 2026 года голосовать могут только авторизованные игроки — сайт ввёл это против ботов,
+    // поэтому автоголосование отключено (src/content/sites/serverlist101.com.js)
     'serverlist101.com': {
         pageURL: project => 'https://serverlist101.com/server/' + project.id + '/',
-        voteURL: project => 'https://serverlist101.com/server/' + project.id + '/vote/',
-        projectName: doc => doc.querySelector('.container li h1').textContent,
-        exampleURL: () => ['https://serverlist101.com/server/', '1547', '/vote/'],
+        voteURL: project => 'https://serverlist101.com/vote/' + project.id,
+        projectName: doc => doc.querySelector('h1').textContent,
+        exampleURL: () => ['https://serverlist101.com/vote/', 'oneblock', ''],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 23}),
         alertManualCaptcha: () => true,
@@ -730,14 +732,20 @@ const allProjects = {
         exampleURL: () => ['https://www.trackyserver.com/server/', 'anubismc-486999', ''],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
     },
+    // Серверы адресуются номером (/servers/101) или коротким именем (/mineverse)
     'topmcservers.com': {
-        pageURL: project => 'https://topmcservers.com/server/' + project.id,
-        voteURL: project => 'https://topmcservers.com/server/' + project.id,
-        projectName: doc => doc.querySelector('#server-metadata td').innerText,
-        exampleURL: () => ['https://topmcservers.com/server/', '17', ''],
-        parseURL: url => ({id: url.pathname.split('/')[2]}),
+        pageURL: project =>
+            'https://topmcservers.com/' + (/^\d+$/.test(project.id) ? 'servers/' + project.id : project.id),
+        voteURL: project =>
+            'https://topmcservers.com/' + (/^\d+$/.test(project.id) ? 'servers/' + project.id : project.id) + '/vote',
+        projectName: doc => doc.querySelector('h1').textContent,
+        exampleURL: () => ['https://topmcservers.com/servers/', '101', '/vote'],
+        parseURL: url => {
+            const parts = url.pathname.split('/').filter(Boolean)
+            // /servers/101/vote, старые ссылки /server/17 и /mineverse/vote
+            return {id: parts[0] === 'servers' || parts[0] === 'server' ? parts[1] : parts[0]}
+        },
         timeout: () => ({hour: 0}),
-        optionalNick: () => true, // TODO почему-то нет никнейма, возможно сайт не доделан
     },
     'bestservers.com': {
         pageURL: project => 'https://bestservers.com/server/' + project.id + '/vote',
@@ -1158,14 +1166,6 @@ const allProjects = {
         parseURL: url => ({id: url.pathname.split('/')[1]}),
         timeout: () => ({hours: 3}),
         limitedCountVote: () => true,
-    },
-    'serveur-minecraft.fr': {
-        pageURL: project => 'https://serveur-minecraft.fr/' + project.id,
-        voteURL: project => 'https://serveur-minecraft.fr/' + project.id + '/vote',
-        projectName: doc => doc.querySelector('.server.icon').parentElement.innerText.trim(),
-        exampleURL: () => ['https://serveur-minecraft.fr/', 'server-oneblock-farm2win.525', '/vote'],
-        parseURL: url => ({id: url.pathname.split('/')[1]}),
-        alertManualCaptcha: () => true,
     },
     'mineserv.top': {
         pageURL: project => 'https://mineserv.top/' + project.id,

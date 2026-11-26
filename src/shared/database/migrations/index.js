@@ -109,6 +109,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV19(transaction)
     }
 
+    // Миграция v20: удаление проектов на serveur-minecraft.fr (сайт перезапущен без серверов)
+    if (oldVersion <= 20) {
+        await migrateV20(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

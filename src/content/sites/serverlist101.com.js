@@ -1,26 +1,10 @@
-async function vote(/*first*/) {
-    if (document.querySelector('div.nk-info-box.text-success.nk-info-box-noicon')) {
-        chrome.runtime.sendMessage({successfully: true})
-        return
-    }
-    if (document.querySelector('div.container div.col-lg-5').textContent.includes('already voted')) {
-        chrome.runtime.sendMessage({later: true})
-        return
-    }
-    if (document.querySelector('div.nk-info-box.text-danger.nk-info-box-noicon')) {
-        const request = {}
-        request.message = document.querySelector('div.nk-info-box.text-danger.nk-info-box-noicon').textContent
-        if (request.message.toLowerCase().includes('captcha')) {
-            // None
-        } else {
-            chrome.runtime.sendMessage(request)
-            return
-        }
-    }
-
-    const project = await getProject()
-    if (document.querySelector('form[method="POST"] > input[name="username"]')) {
-        document.querySelector('form[method="POST"] > input[name="username"]').value = project.nick
-    }
-    chrome.runtime.sendMessage({captcha: true})
+// Автоголосование отключено: с 2026 года сайт пускает голосовать только авторизованных игроков
+// и прямо пишет, что это защита от ботов и накрутки. Прежняя реализация — в истории git
+async function vote() {
+    chrome.runtime.sendMessage({
+        disabledSite:
+            'сайт разрешает голосовать только после входа в аккаунт — это его защита от ботов. Голосуйте вручную',
+        ignoreReport: true,
+        retryCoolDown: 315576000000, // 10 лет — повторных попыток не будет
+    })
 }
