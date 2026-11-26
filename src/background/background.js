@@ -13,6 +13,7 @@ importScripts('/src/shared/database/migrations/migration-v15.js')
 importScripts('/src/shared/database/migrations/migration-v16.js')
 importScripts('/src/shared/database/migrations/migration-v17.js')
 importScripts('/src/shared/database/migrations/migration-v18.js')
+importScripts('/src/shared/database/migrations/migration-v19.js')
 importScripts('/src/shared/database/migrations/index.js')
 importScripts('/src/shared/database/db-init.js')
 importScripts('/src/shared/main.js')
@@ -53,7 +54,6 @@ self.addEventListener('install', () => {
     importScripts(
         '/src/background/silentvote/mcserver-list.eu_silentvote.js',
         '/src/background/silentvote/misterlauncher.org_silentvote.js',
-        '/src/background/silentvote/serverpact.com_silentvote.js',
         '/src/background/silentvote/bloodrust.com_silentvote.js',
     )
 })

@@ -104,6 +104,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV18(transaction)
     }
 
+    // Миграция v19: удаление проектов на закрытых сайтах (serverpact, minecraftsurvivalservers.com, infinitybots.gg)
+    if (oldVersion <= 19) {
+        await migrateV19(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

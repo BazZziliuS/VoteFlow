@@ -308,26 +308,6 @@ const allProjects = {
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 23}),
     },
-    'serverpact.com': {
-        pageURL: project => 'https://www.serverpact.com/vote-' + project.id,
-        voteURL: project => 'https://www.serverpact.com/vote-' + project.id,
-        projectName: doc => doc.querySelector('h1.sp-title').textContent.trim().replace('Vote for ', ''),
-        exampleURL: () => ['https://www.serverpact.com/vote-', '26492123', ''],
-        URLMain: () => 'serverpact.com',
-        parseURL: url => ({id: url.pathname.split('/')[1].replace('vote-', '')}),
-        timeout: () => ({hours: 11, minutes: 7}),
-        oneProject: () => 1,
-        notFound: doc =>
-            doc.querySelector('div.container > div.row > div > center') != null &&
-            doc
-                .querySelector('div.container > div.row > div > center')
-                .textContent.includes('This server does not exist'),
-        silentVote: () => true,
-        notRequiredCaptcha: () => true,
-    },
-    'serverpact.nl': {},
-    'minecraftserverlijst.nl': {},
-    'minecraftserverlist.eu': {},
     'minecraftiplist.com': {
         pageURL: project => 'https://www.minecraftiplist.com/server/' + project.id,
         voteURL: project => 'https://www.minecraftiplist.com/server/' + project.id + '/vote',
@@ -388,7 +368,7 @@ const allProjects = {
             }
         },
         projectName: doc => doc.querySelector('div.top-description h1').textContent,
-        exampleURL: () => ['https://top-serveurs.net/minecraft/', 'icesword-pvpfaction-depuis-2014-crack-on', ''],
+        exampleURL: () => ['https://top-serveurs.net/minecraft/', 'evolucraft', ''],
         URLMain: () => 'top-games.net',
         parseURL: url => {
             const project = {}
@@ -676,7 +656,7 @@ const allProjects = {
         pageURL: project => 'https://minecraftservery.eu/server/' + project.id,
         voteURL: project => 'https://minecraftservery.eu/server/' + project.id,
         projectName: doc => doc.querySelector('div.container div.box h1.title').textContent,
-        exampleURL: () => ['https://minecraftservery.eu/server/', '105', ''],
+        exampleURL: () => ['https://minecraftservery.eu/server/', '8-bit-anarchy', ''],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hours: 2}),
         limitedCountVote: () => true,
@@ -726,7 +706,7 @@ const allProjects = {
             return 'https://' + project.lang + '/' + serverlist + '/' + project.id + '/vote'
         },
         projectName: doc => doc.querySelector('div.s_HeadTitle h1').firstChild.textContent.trim(),
-        exampleURL: () => ['https://www.minecraftkrant.nl/serverlijst/', 'torchcraft', '/vote'],
+        exampleURL: () => ['https://www.minecraftkrant.nl/server/', 'pikanetwork', '/vote'],
         URLMain: () => 'minecraftkrant.nl',
         parseURL: url => {
             const project = {}
@@ -734,7 +714,7 @@ const allProjects = {
             project.id = url.pathname.split('/')[2]
             return project
         },
-        exampleURLLang: () => ['https://www.', 'minecraftkrant.nl', '/serverlijst/torchcraft/vote'],
+        exampleURLLang: () => ['https://www.', 'minecraftkrant.nl', '/server/pikanetwork/vote'],
         defaultLand: () => 'www.minecraftkrant.nl',
         langList: () =>
             new Map([
@@ -971,7 +951,7 @@ const allProjects = {
         pageURL: project => 'https://' + project.game + '/server/' + project.id + '/vote',
         voteURL: project => 'https://' + project.game + '/server/' + project.id + '/vote',
         projectName: doc => doc.querySelector('#title h1').textContent,
-        exampleURL: () => ['https://mineservers.com/server/', 'jvvHdPJy', '/vote'],
+        exampleURL: () => ['https://mineservers.com/server/', 'X8QRnEwe', '/vote'],
         URLMain: () => 'mineservers.com',
         parseURL: url => ({game: url.hostname, id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 0}),
@@ -997,7 +977,7 @@ const allProjects = {
         pageURL: project => 'https://atlauncher.com/servers/server/' + project.id + '/vote',
         voteURL: project => 'https://atlauncher.com/servers/server/' + project.id + '/vote',
         projectName: doc => doc.querySelector('ol li:nth-child(3)').textContent.trim(),
-        exampleURL: () => ['https://atlauncher.com/servers/server/', 'KineticNetworkSkyfactory4', '/vote'],
+        exampleURL: () => ['https://atlauncher.com/servers/server/', 'BacoNetworksModdedNetwork', '/vote'],
         parseURL: url => ({id: url.pathname.split('/')[3]}),
         timeout: () => ({hours: 24}),
     },
@@ -1249,16 +1229,6 @@ const allProjects = {
         exampleURL: () => ['https://servidoresdeminecraft.es/server/vote/', 'gRQ7HvE8/play.minelatino.com', ''],
         parseURL: url => ({id: url.pathname.split('/')[3] + '/' + url.pathname.split('/')[4]}),
     },
-    'minecraftsurvivalservers.com': {
-        pageURL: project => 'https://minecraftsurvivalservers.com/server/' + project.id,
-        voteURL: project => 'https://minecraftsurvivalservers.com/vote/' + project.id,
-        projectName: () => {
-            // Сайт отдаёт на fetch заготовку страницы без содержимого — названия в ней нет
-            return ''
-        },
-        exampleURL: () => ['https://minecraftsurvivalservers.com/vote/', '248-rede-revo', ''],
-        parseURL: url => ({id: url.pathname.split('/')[2]}),
-    },
     'minecraft.global': {
         pageURL: project => 'https://minecraft.global/server/' + project.id,
         voteURL: project => 'https://minecraft.global/server/' + project.id + '/vote',
@@ -1445,7 +1415,7 @@ const allProjects = {
         pageURL: project => 'https://www.40servidoresmc.es/' + project.id,
         voteURL: project => 'https://www.40servidoresmc.es/' + project.id + '-votar',
         projectName: doc => doc.querySelector('div.caracteristicas div.tabla-head h2').innerText.trim(),
-        exampleURL: () => ['https://www.40servidoresmc.es/', 'astraly', '-votar'],
+        exampleURL: () => ['https://www.40servidoresmc.es/', 'minelatino', '-votar'],
         parseURL: url => ({id: url.pathname.split('/')[1].replaceAll('-votar', '')}),
     },
     'top-mc-servers.net': {
@@ -1460,7 +1430,7 @@ const allProjects = {
         pageURL: project => 'https://minecraft-serverlist.com/server/' + project.id,
         voteURL: project => 'https://minecraft-serverlist.com/server/' + project.id + '/vote',
         projectName: doc => doc.querySelector('h1.server-page__title').innerText.trim(),
-        exampleURL: () => ['https://minecraft-serverlist.com/server/', '517', '/vote'],
+        exampleURL: () => ['https://minecraft-serverlist.com/server/', '2', '/vote'],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         oneProject: () => 3,
     },
@@ -1508,7 +1478,7 @@ const allProjects = {
         voteURL: project =>
             'https://' + project.game + '.rovelstars.com/' + project.listing + '/' + project.id + '/vote',
         projectName: doc => doc.querySelector('.hero-body h1.title').innerText.trim(),
-        exampleURL: () => ['https://discord.rovelstars.com/bots/', '778697286950715413', '/vote'],
+        exampleURL: () => ['https://discord.rovelstars.com/bots/', 'rovelbot', '/vote'],
         parseURL: url => {
             const project = {}
             project.game = url.hostname.split('.')[0]
@@ -1517,24 +1487,14 @@ const allProjects = {
             return project
         },
         timeout: () => ({hours: 24}),
-        exampleURLListing: () => ['https://discord.rovelstars.com/', 'bots', '/778697286950715413/vote'],
+        exampleURLListing: () => ['https://discord.rovelstars.com/', 'bots', '/rovelbot/vote'],
         defaultListing: () => 'bots',
         listingList: () => new Map([['bots', 'Bots']]),
-        exampleURLGame: () => ['https://', 'discord', '.rovelstars.com/bots/778697286950715413/vote'],
+        exampleURLGame: () => ['https://', 'discord', '.rovelstars.com/bots/rovelbot/vote'],
         defaultGame: () => 'discord',
         gameList: () => new Map([['discord', 'Discord']]),
         notRequiredNick: () => true,
         notRequiredCaptcha: () => true,
-        needAdditionalOrigins: () => ['https://discord.com/oauth2/*'],
-    },
-    'infinitybots.gg': {
-        pageURL: project => 'https://infinitybots.gg/bot/' + project.id,
-        voteURL: project => 'https://infinitybots.gg/bot/' + project.id + '/vote',
-        projectName: doc => doc.querySelector('title').innerText.trim().replaceAll(' | Infinity Bots', ''),
-        exampleURL: () => ['https://infinitybots.gg/bot/', '1047520294685909158', '/vote'],
-        parseURL: url => ({id: url.pathname.split('/')[2]}),
-        timeout: () => ({hours: 6}),
-        notRequiredNick: () => true,
         needAdditionalOrigins: () => ['https://discord.com/oauth2/*'],
     },
     'botlist.me': {
@@ -1570,7 +1530,7 @@ const allProjects = {
         pageURL: project => 'https://play-minecraft-servers.com/minecraft-servers/' + project.id + '/',
         voteURL: project => 'https://play-minecraft-servers.com/minecraft-servers/' + project.id + '/?tab=vote',
         projectName: doc => doc.querySelector('.server-title h2').innerText,
-        exampleURL: () => ['https://play-minecraft-servers.com/minecraft-servers/', 'opblocks', '/?tab=vote'],
+        exampleURL: () => ['https://play-minecraft-servers.com/minecraft-servers/', 'netherite', '/?tab=vote'],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
         timeout: () => ({hour: 0}),
         notRequiredCaptcha: () => true,
@@ -1683,10 +1643,6 @@ allProjects['unturned-servers.net'] = allProjects['listforge.net']
 allProjects['vrising-servers.net'] = allProjects['listforge.net']
 allProjects['valheim-servers.io'] = allProjects['listforge.net']
 allProjects['wurm-unlimited.com'] = allProjects['listforge.net']
-
-allProjects['serverpact.nl'] = allProjects['serverpact.com']
-allProjects['minecraftserverlijst.nl'] = allProjects['serverpact.com']
-allProjects['minecraftserverlist.eu'] = allProjects['serverpact.com']
 
 allProjects['top-serveurs.net'] = allProjects['top-games.net']
 

@@ -132,3 +132,24 @@ test('migrateV18 удаляет проекты закрытых сайтов mc-
     const allProjects = loadScripts(['src/shared/projects.js']).get('allProjects')
     for (const site of ctx.get('REMOVED_SITES_V18')) assert.equal(allProjects[site], undefined, site)
 })
+
+test('migrateV19 удаляет проекты serverpact, minecraftsurvivalservers.com и infinitybots.gg', async () => {
+    const cleared = []
+    const chrome = {alarms: {clear: name => cleared.push(name)}}
+    const ctx = loadScripts(['src/shared/database/migrations/migration-v19.js'], {chrome, self: {chrome}})
+    const tx = fakeTransaction([
+        {key: 1, rating: 'serverpact.com'},
+        {key: 2, rating: 'minecraftserverlijst.nl'},
+        {key: 3, rating: 'infinitybots.gg'},
+        // Похожий домен — другой, работающий сайт
+        {key: 4, rating: 'minecraftsurvivalservers.net'},
+        {key: 5, rating: 'minecraftsurvivalservers.com'},
+    ])
+    assert.equal(await ctx.migrateV19(tx), 4)
+    assert.deepEqual([...tx.store.keys()], [4])
+    assert.deepEqual(cleared.sort(), ['1', '2', '3', '5'])
+
+    const allProjects = loadScripts(['src/shared/projects.js']).get('allProjects')
+    for (const site of ctx.get('REMOVED_SITES_V19')) assert.equal(allProjects[site], undefined, site)
+    assert.ok(allProjects['minecraftsurvivalservers.net'], 'minecraftsurvivalservers.net остаётся')
+})
