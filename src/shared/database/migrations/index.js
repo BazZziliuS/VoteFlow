@@ -99,6 +99,11 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
         await migrateV17(transaction)
     }
 
+    // Миграция v18: удаление проектов на закрытых сайтах (mc-lists.org, minecraftservers100.com)
+    if (oldVersion <= 18) {
+        await migrateV18(transaction)
+    }
+
     // Проверка и создание todayStats если отсутствует
     if (!result.todayStats) {
         const other = transaction.objectStore('other')

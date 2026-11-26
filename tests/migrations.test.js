@@ -115,3 +115,20 @@ test('migrateV17 снимает блокировку v14 с проектов McT
     assert.equal(tx.store.get(2).error, 'Обычная ошибка')
     assert.equal(tx.store.get(3).time, Infinity)
 })
+
+test('migrateV18 удаляет проекты закрытых сайтов mc-lists.org и minecraftservers100.com', async () => {
+    const cleared = []
+    const chrome = {alarms: {clear: name => cleared.push(name)}}
+    const ctx = loadScripts(['src/shared/database/migrations/migration-v18.js'], {chrome, self: {chrome}})
+    const tx = fakeTransaction([
+        {key: 1, rating: 'mc-lists.org'},
+        {key: 2, rating: 'minecraftservers100.com'},
+        {key: 3, rating: 'minecraftrating.ru'},
+    ])
+    assert.equal(await ctx.migrateV18(tx), 2)
+    assert.deepEqual([...tx.store.keys()], [3])
+    assert.deepEqual(cleared.sort(), ['1', '2'])
+
+    const allProjects = loadScripts(['src/shared/projects.js']).get('allProjects')
+    for (const site of ctx.get('REMOVED_SITES_V18')) assert.equal(allProjects[site], undefined, site)
+})

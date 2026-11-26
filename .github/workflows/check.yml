@@ -44,6 +44,9 @@ jobs:
       - name: Changelog is up to date
         run: node scripts/changelog.js --check
 
+      - name: README site list matches projects.js
+        run: node scripts/readme-sites.js --check
+
       - name: Integrity check (paths, site scripts, locales)
         run: node scripts/check-manifest.js
 

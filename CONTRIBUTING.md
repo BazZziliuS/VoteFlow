@@ -25,6 +25,7 @@ npm run check # линтер, целостность, журнал измене�
 | `npm run test:ui` | Тест страницы настроек в headless Chrome |
 | `npm run sites` | Проверка доступности сайтов-рейтингов |
 | `npm run changelog` | Пересобрать `CHANGELOG.md` из `docs/releases/*.md` |
+| `npm run readme` | Пересобрать список сайтов в README из `projects.js` |
 | `npm run vendor` | Пересобрать `libs/` из пакетов npm (после обновления idb или linkedom) |
 | `npm run build` | Собрать расширение в `build/VoteFlow` |
 | `npm run release -- <patch\|minor\|major>` | Подготовить выпуск (см. ниже) |
@@ -141,7 +142,9 @@ ID расширения задаётся полем `key` в `manifest.json`. Н
 
 ## Новый сайт
 
-Как добавить сайт, описано в [CLAUDE.md](CLAUDE.md#adding-support-for-new-sites): запись в `src/shared/projects.js`, скрипт `src/content/sites/<домен>.js`, при необходимости — тихий режим. `npm test` проверит разбор ссылки и интервал для нового сайта, `npm run check` — что скрипт существует. Обновите число сайтов в README.
+Как добавить сайт, описано в [CLAUDE.md](CLAUDE.md#adding-support-for-new-sites): запись в `src/shared/projects.js`, скрипт `src/content/sites/<домен>.js`, при необходимости — тихий режим. `npm test` проверит разбор ссылки и интервал для нового сайта, `npm run check` — что скрипт существует. Список сайтов в README обновит `npm run readme`.
+
+Закрытый сайт удаляется миграцией базы, как в `migration-v18.js`: проекты пользователей на нём удаляются вместе с будильниками, а сайт убирается из `projects.js`, скриптов, README (`npm run readme`) и `PRIVACY.md`.
 
 ## Лицензия
 

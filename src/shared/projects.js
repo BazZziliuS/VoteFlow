@@ -750,14 +750,6 @@ const allProjects = {
         exampleURL: () => ['https://www.trackyserver.com/server/', 'anubismc-486999', ''],
         parseURL: url => ({id: url.pathname.split('/')[2]}),
     },
-    'mc-lists.org': {
-        pageURL: project => 'https://mc-lists.org/' + project.id + '/vote',
-        voteURL: project => 'https://mc-lists.org/' + project.id + '/vote',
-        projectName: doc => doc.querySelector('div.header > div.ui.container').textContent.trim(),
-        exampleURL: () => ['https://mc-lists.org/', 'server-luxurycraft.1818', '/vote'],
-        parseURL: url => ({id: url.pathname.split('/')[1]}),
-        timeout: () => ({hours: 12}),
-    },
     'topmcservers.com': {
         pageURL: project => 'https://topmcservers.com/server/' + project.id,
         voteURL: project => 'https://topmcservers.com/server/' + project.id,
@@ -974,14 +966,6 @@ const allProjects = {
         projectName: doc => doc.querySelector('table.info th').textContent.trim(),
         exampleURL: () => ['https://best-minecraft-servers.co/', 'server-hypixel-network.30', '/vote'],
         parseURL: url => ({id: url.pathname.split('/')[1]}),
-    },
-    'minecraftservers100.com': {
-        pageURL: project => 'https://minecraftservers100.com/vote/' + project.id,
-        voteURL: project => 'https://minecraftservers100.com/vote/' + project.id,
-        projectName: doc => doc.querySelector('div.page-header').textContent.trim().replace('Vote for ', ''),
-        exampleURL: () => ['https://minecraftservers100.com/vote/', '2340', ''],
-        parseURL: url => ({id: url.pathname.split('/')[2]}),
-        timeout: () => ({hours: 24}),
     },
     'mineservers.com': {
         pageURL: project => 'https://' + project.game + '/server/' + project.id + '/vote',

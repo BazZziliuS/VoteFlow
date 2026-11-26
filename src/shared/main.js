@@ -17,7 +17,7 @@ let openedProjects = new Map()
 let onLine
 
 // Версия схемы IndexedDB 'avr'. Поднимается вместе с новой миграцией в database/migrations/
-const DB_VERSION = 18
+const DB_VERSION = 19
 
 self.addEventListener('error', event => handleUnhandledError(event, dbLogs))
 self.addEventListener('unhandledrejection', event => handleUnhandledError(event, dbLogs))
