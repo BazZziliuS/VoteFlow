@@ -1,0 +1,5 @@
+# Коммиты, которые только переформатируют код. git blame и GitHub пропускают их:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: Prettier на весь код, no-var и prefer-const
+757a3abc53e96ba98004a70a975a076dc3616550
