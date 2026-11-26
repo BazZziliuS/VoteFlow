@@ -21,7 +21,7 @@ async function checkInternetConnection(project, settings, db, onLine) {
 
     // Если браузер сообщает что нет соединения, но мы думали что оно есть
     if (!navigator.onLine && onLine) {
-        // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
+        // В service worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
         await createSafeAlarm('checkVote', Date.now() + TIME.MIN_ALARM_DELAY, null)
 
         sendNotification(
@@ -68,7 +68,7 @@ async function checkInternetRestoration(settings, db, onLine) {
     }
 
     // Соединения по-прежнему нет, планируем повторную проверку
-    // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
+    // В service worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
     await createSafeAlarm('checkVote', Date.now() + TIME.MIN_ALARM_DELAY, null)
     return {shouldReturn: true, newOnLineStatus: null}
 }

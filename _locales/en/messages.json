@@ -1369,5 +1369,8 @@
   },
   "stopped": {
     "message": "Stopped"
+  },
+  "dbNewerVersion": {
+    "message": "The database was created by a newer version of VoteFlow. Install the latest version of the extension — your data will be kept"
   }
 }

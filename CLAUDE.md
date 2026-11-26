@@ -35,7 +35,7 @@ Folders are split by **where the code runs** (details: docs/ARCHITECTURE.md):
 │   │   └── sites/           # DOMAIN.js — one voting script per site
 │   ├── shared/              # loaded by the service worker AND the UI pages
 │   │   ├── projects.js      # configuration for all supported sites (allProjects)
-│   │   ├── main.js          # opens the DB (idb.openDB('avr', N)), shared functions
+│   │   ├── main.js          # opens the DB (DB_VERSION), shared state and functions
 │   │   └── database/        # db-init, database-helpers, migrations/ (migration-vN.js + index.js)
 │   └── ui/
 │       ├── options.html     # settings page (styles/main.css, styles/icons.css)

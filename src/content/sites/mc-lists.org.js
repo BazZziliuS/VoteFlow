@@ -32,8 +32,7 @@ async function vote() {
         return
     }
 
-    // Капча была раньше
-    // if (first) return
+    // Капчи на сайте больше нет — голосуем сразу
 
     const project = await getProject()
     document.querySelector('input[name="username"]').value = project.nick

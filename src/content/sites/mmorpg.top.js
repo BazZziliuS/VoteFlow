@@ -51,9 +51,8 @@ const timer = setInterval(() => {
             if (message.includes('засчитан')) {
                 clearInterval(timer)
                 chrome.runtime.sendMessage({successfully: true})
-            } /* else {//Какую-ту чушь (рекламу) туда суют поэтому игнорируем, ListForge 2.0 момент
-                chrome.runtime.sendMessage({message})
-            }*/
+            }
+            // Остальной текст в блоке сообщений — реклама ListForge, его игнорируем
         }
     } catch (e) {
         clearInterval(timer)

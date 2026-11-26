@@ -6,9 +6,7 @@ async function vote(first) {
 
     if (first) return
 
-    // TODO почему-то нет никнейма, возможно сайт не доделан
-    // const project = await getProject('TopMCServersCom')
-    // document.querySelector('input[name="username"]').value = project.nick
+    // Поля для ника на сайте нет — голос отправляется без него
     document.querySelector('#server-metadata').nextElementSibling.querySelector('button').click()
 }
 

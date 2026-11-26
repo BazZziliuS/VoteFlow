@@ -63,7 +63,6 @@ document.querySelectorAll('[placeholder]').forEach(function (el) {
     el.placeholder = message
 })
 document.getElementById('nick').setAttribute('placeholder', chrome.i18n.getMessage('enterNick'))
-// document.getElementById('donate').setAttribute('href', chrome.i18n.getMessage('donate'))
 document.querySelector('#load div').textContent = chrome.i18n.getMessage('load')
 
 // Переключатели настроек с data-invert="true" показывают включённую функцию,

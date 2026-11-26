@@ -28,10 +28,7 @@ async function vote(first) {
         } else if (text.includes('ous avez déjà voté')) {
             chrome.runtime.sendMessage({later: true})
             return
-        } /* else {
-            chrome.runtime.sendMessage({message: text})
-            return
-        }*/
+        }
     }
 
     const project = await getProject()

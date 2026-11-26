@@ -177,7 +177,7 @@ async function injectCaptchaScripts(tabId, frameId, project, settings, debug, ur
 
     // Проверка статуса вкладки перед отправкой сообщения
     const tab = await chrome.tabs.get(tabId)
-    // TODO костыльная совместимость с Kiwi Browser, данный браузер в tab.status отдаёт undefined
+    // Совместимость с Kiwi Browser: он в tab.status отдаёт undefined
     // не работоспособность данной проверки может привести к тому что капча может быть решена раньше чем страница загружена
     if (tab.status != null && tab.status !== 'complete') return
 

@@ -88,12 +88,12 @@ docs/                      документация и заметки к вер�
 
 ## База данных
 
-- IndexedDB `avr`, версия — в `src/shared/main.js` (`idb.openDB('avr', N)`)
+- IndexedDB `avr`, версия — константа `DB_VERSION` в `src/shared/main.js`, на 1 больше номера последней миграции (проверяет `npm run check`)
 - Новая миграция:
   1. Создайте `src/shared/database/migrations/migration-vN.js` с функцией `migrateVN(transaction)`
   2. Вызовите её в `migrations/index.js` (`if (oldVersion <= N)`)
   3. Подключите файл в `background.js`, `options.html` и `popup.html` в том же порядке
-  4. Поднимите версию базы в `main.js` и добавьте тест в `tests/migrations.test.js`
+  4. Поднимите `DB_VERSION` в `main.js` и добавьте тест в `tests/migrations.test.js`
 - Миграция не должна терять данные пользователя
 
 ## Сборка и выпуск

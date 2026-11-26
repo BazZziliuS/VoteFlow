@@ -15,6 +15,5 @@ async function vote(first) {
 
     if (first) return
 
-    // const project = await getProject('Top100ArenaCom')
     document.querySelector('form button[type="submit"]').click()
 }

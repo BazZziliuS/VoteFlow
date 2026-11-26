@@ -155,6 +155,6 @@ function scheduleQueueCleanup(project, openedProjects, timeout, db, processVoteQ
         removeQueue()
     }, timeout)
 
-    // TODO мы не можем быть уверены что setTimeout в Service Worker 100% отработает, поэтому мы на всякий случай создаём chrome.alarm
+    // setTimeout в service worker может не сработать, если он уснёт, — дублируем его будильником chrome.alarms
     createSafeAlarm('checkVote', Date.now() + timeout, project)
 }

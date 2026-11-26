@@ -29,7 +29,6 @@ async function vote(first) {
             }, 1000)
         } else if (button.textContent === 'Login to upvote') {
             button.click()
-            // return
         } else {
             //Из полученного текста достаёт все цифры в Array List
             const numbers = button.textContent.match(/\d+/g).map(Number)

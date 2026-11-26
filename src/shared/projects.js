@@ -1269,8 +1269,7 @@ const allProjects = {
         pageURL: project => 'https://minecraftsurvivalservers.com/server/' + project.id,
         voteURL: project => 'https://minecraftsurvivalservers.com/vote/' + project.id,
         projectName: () => {
-            // Хрень какая-то, в fetch запросе отсылается не страница а предзагрузка
-            // return doc.querySelector('div.items-center > span.text-xl.font-semibold').textContent.trim()
+            // Сайт отдаёт на fetch заготовку страницы без содержимого — названия в ней нет
             return ''
         },
         exampleURL: () => ['https://minecraftsurvivalservers.com/vote/', '248-rede-revo', ''],

@@ -384,7 +384,6 @@ async function checkAll(first) {
     //Если мы находимся на странице проверки CloudFlare https://i.imgur.com/BVk3z6y.png
     // TODO CloudFlare выдаёт пустую страницу и сообщает браузеру типо всё загружено. Всё что там известно это то что указано в селекторе ниже, возможны конфликты с сайтами (мониторингами)
     if (document.querySelector('div.main-wrapper > div.main-content')) {
-        // if (document.querySelector('div.main-wrapper div.main-content #challenge-body-text') || document.querySelector('div.main-wrapper div.main-content #challenge-running') || document.querySelector('div.main-wrapper div.main-content #challenge-success')) {
         return
     }
 
@@ -657,6 +656,6 @@ function isUsedTranslator() {
     return false
 }
 
-// TODO возвращаем хоть какой-то результат в background при executeScript во избежании ошибки "Could not establish connection. Receiving end does not exist"
+// Возвращаем хоть какой-то результат в background при executeScript во избежании ошибки "Could not establish connection. Receiving end does not exist"
 // noinspection BadExpressionStatementJS
 true

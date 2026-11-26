@@ -77,12 +77,10 @@ const timer = setInterval(async () => {
             request.message = msg.innerText
             if (request.message.includes('уже проголосовали')) {
                 clearInterval(timer)
-                // await wait(Math.floor(Math.random() * 9000 + 1000))
                 chrome.runtime.sendMessage({later: true})
             } else if (request.message.includes('Голос принят')) {
                 clearInterval(timer)
-                // TODO кринж кринжа, сайт уведомление об успешном голосовании отображает буквально на секунду, ничего дибильнее придумать автор сайта не может
-                // await wait(Math.floor(Math.random() * 9000 + 1000))
+                // Сообщение об успехе сайт показывает около секунды — проверяем его каждую секунду
                 chrome.runtime.sendMessage({successfully: true})
             } else if (request.message.includes('Авторизация')) {
                 clearInterval(timer)

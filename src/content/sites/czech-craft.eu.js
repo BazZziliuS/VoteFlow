@@ -1,87 +1,9 @@
-/* eslint-disable no-unreachable -- голосование отключено из-за риска бана, код ниже оставлен до восстановления */
-async function vote(first) {
-    // TODO ban
-    const request = {}
-    request.disabledSite = 'There is a high risk of being blocked for auto-voting, vote on this site manually'
-    request.ignoreReport = true
-    request.retryCoolDown = 315576000000
-    chrome.runtime.sendMessage(request)
-    return
-
-    if (document.querySelector('div.alert.alert-danger')) {
-        chrome.runtime.sendMessage({message: document.querySelector('div.alert.alert-danger').textContent.trim()})
-        return
-    }
-
-    if (
-        document.querySelector('div.alert.alert-error:last-of-type') ||
-        document.querySelector('div.alert.alert-error')
-    ) {
-        const request = {}
-        const error =
-            document.querySelector('div.alert.alert-error:last-of-type') ||
-            document.querySelector('div.alert.alert-error')
-        request.message = error.innerText
-        if (
-            request.message.includes('Již si hlasoval') ||
-            request.message.includes('Nyní nemůžeš hlasovat. Zkus to prosím znovu')
-        ) {
-            if (request.message.match(/\d+/g)) {
-                const numbers = request.message.match(/\d+/g).map(Number)
-                const date = new Date()
-                chrome.runtime.sendMessage({
-                    later: Date.UTC(
-                        date.getFullYear(),
-                        date.getMonth(),
-                        date.getDate(),
-                        numbers[0] - 2 /*На czech-craft время указано в часовом поясе UTC +2*/,
-                        numbers[1],
-                        numbers[2],
-                    ),
-                })
-            } else {
-                chrome.runtime.sendMessage({later: true})
-            }
-        } else {
-            if (request.message.includes('Nastala chyba')) {
-                request.ignoreReport = true
-            }
-            chrome.runtime.sendMessage(request)
-        }
-        return
-    }
-
-    if (document.querySelector('span.form-error')) {
-        const request = {}
-        request.message = document.querySelector('span.form-error').textContent
-        if (request.message.includes('Nick obsahuje nepovolené znaky')) {
-            request.ignoreReport = true
-            request.retryCoolDown = 604800000
-            chrome.runtime.sendMessage(request)
-            return
-        } else if (request.message.includes('field is required')) {
-            // None
-        } else {
-            if (
-                request.message.includes('response parameter is missing') ||
-                request.message.includes('response parameter is invalid')
-            ) {
-                request.ignoreReport = true
-            }
-            chrome.runtime.sendMessage(request)
-            return
-        }
-    }
-
-    if (document.querySelector('div.alert.alert-success') != null) {
-        chrome.runtime.sendMessage({successfully: true})
-        return
-    }
-
-    if (first) return
-
-    const project = await getProject()
-    document.getElementById('username').value = project.nick
-    document.getElementById('privacy').checked = true
-    document.querySelector('form[method="post"] > button.button').click()
+// Автоголосование на сайте отключено: высокий риск блокировки аккаунта за автоматизацию.
+// Прежняя реализация — в истории git
+async function vote() {
+    chrome.runtime.sendMessage({
+        disabledSite: 'There is a high risk of being blocked for auto-voting, vote on this site manually',
+        ignoreReport: true,
+        retryCoolDown: 315576000000, // 10 лет — повторных попыток не будет
+    })
 }

@@ -289,10 +289,6 @@ function generateBtnListRating(rating, count) {
     ul.setAttribute('data-rating-tab', rating)
     ul.classList.add('listcontent')
     ul.style.display = 'none'
-    //  const div = document.createElement('div')
-    //  div.setAttribute('data-resource', 'notAdded')
-    //  div.textContent = chrome.i18n.getMessage('notAdded')
-    //  ul.append(div)
     if (!allProjects[rating].notRequiredCaptcha?.()) {
         const label = document.createElement('label')
         label.setAttribute('data-resource', 'passageCaptcha')

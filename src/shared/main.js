@@ -16,11 +16,14 @@ let dbLogs
 let openedProjects = new Map()
 let onLine
 
+// Версия схемы IndexedDB 'avr'. Поднимается вместе с новой миграцией в database/migrations/
+const DB_VERSION = 18
+
 self.addEventListener('error', event => handleUnhandledError(event, dbLogs))
 self.addEventListener('unhandledrejection', event => handleUnhandledError(event, dbLogs))
 
 //Инициализация настроек расширения
-async function initializeConfig(background, version) {
+async function initializeConfig(background) {
     // Открываем базу данных логов
     if (!dbLogs) {
         dbLogs = await openLogsDatabase()
@@ -30,7 +33,7 @@ async function initializeConfig(background, version) {
 
     // Открываем основную базу данных
     try {
-        db = await idb.openDB('avr', version ? version : 18, {
+        db = await idb.openDB('avr', DB_VERSION, {
             upgrade: (db, oldVersion, newVersion, transaction) => {
                 return runDatabaseUpgrade(
                     db,
@@ -43,19 +46,9 @@ async function initializeConfig(background, version) {
             },
         })
     } catch (error) {
-        // На случай если это версия MultiVote
-        if (error.name === 'VersionError') {
-            if (version) {
-                handleDatabaseError({target: {source: {name: 'avr'}, error}}, false, background)
-                return
-            }
-            console.log(
-                'Ошибка версии базы данных, возможно вы на версии MultiVote, пытаемся загрузить настройки версии MultiVote',
-            )
-            await initializeConfig(background, 150)
-            return
-        }
-        handleDatabaseError({target: {source: {name: 'avr'}, error}}, false, background)
+        // База новее кода: расширение откатили на старую версию поверх новой
+        const reported = error.name === 'VersionError' ? new Error(chrome.i18n.getMessage('dbNewerVersion')) : error
+        handleDatabaseError({target: {source: {name: 'avr'}, error: reported}}, false, background)
         return
     }
 

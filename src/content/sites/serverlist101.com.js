@@ -23,12 +23,4 @@ async function vote(/*first*/) {
         document.querySelector('form[method="POST"] > input[name="username"]').value = project.nick
     }
     chrome.runtime.sendMessage({captcha: true})
-
-    // if (first) return
-    //
-    // if (document.querySelector('form[method="POST"] > input[name="username"]')) {
-    //     const project = await getProject('ServerList101')
-    //     document.querySelector('form[method="POST"] > input[name="username"]').value = project.nick
-    // }
-    // document.querySelector('form[method="POST"] > input[type="submit"]').click()
 }

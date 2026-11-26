@@ -160,8 +160,4 @@ self['silentVote_loliland.ru'] = async function (project) {
             )
         }
     }
-
-    // socket.onerror = function(error) {
-    //     endVote({message: 'Ошибка с веб сокетом, ' + error.toString(), url: socket.url}, null, project)
-    // }
 }

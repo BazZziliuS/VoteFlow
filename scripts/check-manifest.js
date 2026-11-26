@@ -116,6 +116,15 @@ for (const page of htmlPages) {
             errors.push(`${file}: миграции подключены не так, как лежат в ${dir}. Нужно: ${expected.join(', ')}`)
         }
     }
+    // Версия базы = номер последней миграции + 1 (миграция vN переводит базу с N на N+1)
+    const lastMigration = Math.max(...expected.map(order).filter(Number.isFinite))
+    const dbVersion = Number(read('src/shared/main.js').match(/^const DB_VERSION = (\d+)/m)?.[1])
+    if (dbVersion !== lastMigration + 1) {
+        errors.push(
+            `src/shared/main.js: DB_VERSION = ${dbVersion}, а последняя миграция — v${lastMigration}; нужно ${lastMigration + 1}`,
+        )
+    }
+
     const index = read(`${dir}/index.js`)
     for (const file of expected.filter(f => f !== 'index.js')) {
         const fn = read(`${dir}/${file}`).match(/^async function (migrateV[\w]+)\(/m)?.[1]
@@ -157,6 +166,23 @@ for (const [domain, config] of Object.entries(allProjects)) {
                 `projects.js: «${domain}» включает silentVote, но отдельного _silentvote-скрипта нет (проверьте общий обработчик)`,
             )
         }
+    }
+}
+
+// 4а. Скрипты сайтов без записи в projects.js никогда не внедряются — это мёртвый код
+{
+    const knownScripts = new Set()
+    for (const [domain, config] of Object.entries(allProjects)) {
+        knownScripts.add(domain)
+        try {
+            if (config.URLMain) knownScripts.add(config.URLMain())
+        } catch {}
+    }
+    for (const file of fs.readdirSync(path.join(root, 'src/content/sites'))) {
+        // <домен>_world.js — часть скрипта сайта, внедряемая в мир страницы
+        const site = file.replace(/\.js$/, '').replace(/_world$/, '')
+        if (!knownScripts.has(site))
+            errors.push(`src/content/sites/${file}: сайта «${site}» нет в projects.js — скрипт не используется`)
     }
 }
 

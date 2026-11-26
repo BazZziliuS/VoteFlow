@@ -45,7 +45,8 @@ importScripts('/src/background/browser/listener-manager.js')
 importScripts('/src/background/browser/notification-handlers.js')
 importScripts('/src/background/browser/badge.js')
 
-// TODO отложенный importScripts пока не работают, подробнее https://bugs.chromium.org/p/chromium/issues/detail?id=1198822
+// Service worker разрешает importScripts только до установки (https://crbug.com/1198822):
+// скрипты тихого режима подключаются здесь, а не по требованию
 self.addEventListener('install', () => {
     importScripts('/libs/linkedom.js')
     importScripts(
@@ -138,7 +139,8 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
     processVoteQueue()
 })
 
-// TODO костыльное решение бага https://bugs.chromium.org/p/chromium/issues/detail?id=471524
+// После сна компьютера будильники срабатывают с опозданием или пропускаются (https://crbug.com/471524):
+// при возвращении пользователя проверяем очередь сами
 chrome.idle.onStateChanged.addListener(async function (newState) {
     if (newState === 'active') {
         // noinspection JSIgnoredPromiseFromCall
