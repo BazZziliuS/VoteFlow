@@ -68,30 +68,6 @@ function topcraftWatchCaptchaToken(modal) {
 
 let topcraftSubmitted = false
 
-function topcraftSubmit(modal) {
-    if (topcraftSubmitted) return
-    const form = modal.querySelector('form')
-    const submit = form?.querySelector('button[type="submit"], input[type="submit"]')
-        || modal.querySelector('.modal-footer .btn-primary, .modal-footer button')
-    if (!submit) {
-        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка отправки голоса'})
-        return
-    }
-    topcraftSubmitted = true
-    console.log(TOPCRAFT_LOG, 'Отправляем голос')
-    topcraftClickTrusted(submit)
-    watchTopcraftResult(modal)
-}
-
-function topcraftClickTrusted(element) {
-    const verifyUUID = crypto.randomUUID()
-    window.portIsTrusted.dataset.avrId = verifyUUID
-    window.portIsTrusted.dataset.ITtype = 'click'
-    element.dispatchEvent(new CustomEvent('mousedown', {detail: {avrId: verifyUUID, eventName: 'MouseEvent', eventType: 'mousedown', isTrusted: true, detail: 1}}))
-    element.click()
-    window.portIsTrusted.dataset.ITtype = null
-}
-
 async function vote(first) {
     // Страница ошибки после проверки Cloudflare
     const summary = document.getElementById('summary')
@@ -228,6 +204,88 @@ function watchTopcraftResult(modal) {
             chrome.runtime.sendMessage({message: chrome.i18n.getMessage('topcraftNoResponse')})
         }
     }, 500)
+}
+
+function topcraftUnhookButton(btn) {
+    if (!btn) return
+    try { delete btn.click } catch {}
+    try {
+        Object.defineProperty(btn, 'click', {
+            value: () => HTMLElement.prototype.click.call(btn),
+            writable: true, configurable: true
+        })
+    } catch {}
+}
+
+function topcraftMapError(text) {
+    const map = {
+        incorrect_nick: 'В нике можно использовать буквы, цифры, точку, дефис и подчёркивание.',
+        incorrect_votifier_nick: 'Для голосования за этот сервер введите ник длиной до 16 символов.',
+        incorrect_votifier_v1_nick: 'Для этого сервера нужен ник от 3 до 16 символов. Допустимы латинские буквы, цифры, точка, дефис и подчёркивание.',
+        incorrect_google_recaptcha: 'Не удалось пройти проверку. Пройдите её ещё раз перед голосованием.',
+        incorrect_google_recaptcha_service: 'Проверка временно недоступна. Попробуйте позже.',
+        error: 'Голос не принят. Обновите страницу и попробуйте снова.',
+        g: 'Не удалось принять голос с вашего IP-адреса. Если вы используете VPN или прокси, отключите его и попробуйте снова.'
+    }
+    return map[String(text).trim()] || 'Не удалось отправить голос. Обновите страницу и попробуйте снова.'
+}
+
+async function topcraftSubmit(modal) {
+    if (topcraftSubmitted) return
+    const form = modal.querySelector('form')
+    if (!form) {
+        chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена форма в окне голосования'})
+        return
+    }
+
+    // Кнопку разблокируем на случай, если понадобится клик в fallback-ветке
+    const btn = form.querySelector('button[type="submit"], input[type="submit"]')
+    topcraftUnhookButton(btn)
+
+    // Токен SmartCaptcha появляется в скрытом поле после решения капчи
+    const token = modal.querySelector('input[name="smart-token"]')?.value
+    if (!token) {
+        // Капча не пройдена — не отправляем, ждём captchaclicker / token-watcher
+        console.log(TOPCRAFT_LOG, 'Нет smart-token — ждём прохождения капчи')
+        chrome.runtime.sendMessage({captcha: true})
+        return
+    }
+
+    topcraftSubmitted = true
+    console.log(TOPCRAFT_LOG, 'Отправляем голос напрямую (обход isTrusted)')
+
+    const fd = new FormData(form)
+    fd.set('smart-token', token)
+    // vv (fingerprint) и event (base64 от jQuery-события) сервер не валидирует жёстко —
+    // убираем, чтобы не зависеть от FingerprintJS и их обёртки
+    fd.delete('vv')
+    fd.delete('event')
+    fd.set('vv', '')
+    fd.set('event', btoa('{}'))
+
+    try {
+        const res = await fetch('/projects/vote/', {
+            method: 'POST',
+            body: new URLSearchParams(fd),
+            credentials: 'same-origin',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        const retryAfter = Number(res.headers.get('Retry-After'))
+        const text = await res.text()
+
+        let result
+        if (Number.isFinite(retryAfter) && retryAfter > 0) {
+            result = 'Достигнут дневной лимит. Снова можно проголосовать в 00:00 мск.'
+        } else if (res.ok) {
+            result = 'Голос учтён.'
+        } else {
+            result = topcraftMapError(text)
+        }
+        handleTopcraftResult(result)
+    } catch (e) {
+        topcraftSubmitted = false
+        chrome.runtime.sendMessage({message: 'Не удалось отправить голос. ' + (e?.message || e)})
+    }
 }
 
 // Результат может прийти и без нашего клика (например, если голос отправил сам пользователь)
