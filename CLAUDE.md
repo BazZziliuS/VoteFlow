@@ -85,6 +85,7 @@ Content scripts communicate with background via:
 - `{later: timestamp|true}` - set next vote time (or use default timeout)
 - `{errorVoteNoElement: message}` - element not found error
 - `{message: text}` - general status message
+- `{message: text, stopVoting: true}` - the site detected automation and threatens an account ban: the project stops (`time = Infinity`, no alarm, shown as «Остановлено») until the user restarts it. `isAutomationWarning(text)` in api.js detects such texts; intercepted `alert`s are checked automatically. Never work around a site's anti-automation checks
 - `{silentVote: true}` - silent vote completed, will open tab for actual voting
 
 ## Adding Support for New Sites

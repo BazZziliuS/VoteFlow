@@ -1093,7 +1093,7 @@
   "here": {
     "message": "here"
   },
-  "notRegVK":{
+  "notRegVK": {
     "message": "VKontakte authorization error: Registration is not completed (it looks like the phone number is not specified)"
   },
   "version": {
@@ -1363,5 +1363,11 @@
   },
   "never": {
     "message": "Never"
+  },
+  "votingStopped": {
+    "message": "Automatic voting stopped so your account is not put at risk: vote on the site manually. To resume, use “Restart voting” on the project"
+  },
+  "stopped": {
+    "message": "Stopped"
   }
 }

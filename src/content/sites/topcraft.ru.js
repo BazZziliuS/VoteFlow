@@ -197,7 +197,9 @@ function handleTopcraftResult(text) {
     const lower = text.toLowerCase()
     if (topcraftIncludes(lower, TOPCRAFT_RESULTS.pending)) return false
     console.log(TOPCRAFT_LOG, 'Результат:', text)
-    if (topcraftIncludes(lower, TOPCRAFT_RESULTS.later)) {
+    if (isAutomationWarning(text)) {
+        chrome.runtime.sendMessage({message: text, stopVoting: true, ignoreReport: true})
+    } else if (topcraftIncludes(lower, TOPCRAFT_RESULTS.later)) {
         chrome.runtime.sendMessage({later: true})
     } else if (topcraftIncludes(lower, TOPCRAFT_RESULTS.success)) {
         chrome.runtime.sendMessage({successfully: true})

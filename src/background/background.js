@@ -569,18 +569,26 @@ async function endVote(request, sender, project) {
         // Форматируем сообщение об ошибке
         const message = formatErrorMessage(request, chrome)
 
-        // Вычисляем cooldown для retry
-        const retryCoolDown = calculateErrorCooldown(request, project, settings)
+        if (request.stopVoting) {
+            // Сайт запрещает автоматизацию: повторные попытки только приблизят блокировку аккаунта.
+            // Проект ждёт, пока пользователь не перезапустит его сам (кнопка «Перезапустить»)
+            project.time = Infinity
+            project.error = message
+            sendMessage = message + '. ' + chrome.i18n.getMessage('votingStopped')
+        } else {
+            // Вычисляем cooldown для retry
+            const retryCoolDown = calculateErrorCooldown(request, project, settings)
 
-        // Применяем рандомизацию к cooldown
-        const finalCooldown = applyRandomization(retryCoolDown, project)
+            // Применяем рандомизацию к cooldown
+            const finalCooldown = applyRandomization(retryCoolDown, project)
 
-        // Устанавливаем время следующей попытки
-        project.time = Date.now() + finalCooldown
-        project.error = message
+            // Устанавливаем время следующей попытки
+            project.time = Date.now() + finalCooldown
+            project.error = message
 
-        // Форматируем финальное сообщение
-        sendMessage = message + '. ' + chrome.i18n.getMessage('errorNextVote', (Math.round(finalCooldown / 1000 / 60 * 100) / 100).toString())
+            // Форматируем финальное сообщение
+            sendMessage = message + '. ' + chrome.i18n.getMessage('errorNextVote', (Math.round(finalCooldown / 1000 / 60 * 100) / 100).toString())
+        }
 
         // Логируем и отправляем уведомление
         console.error(getProjectPrefix(project, true), sendMessage + ', ' + chrome.i18n.getMessage('timeStamp') + ' ' + project.time)

@@ -70,7 +70,8 @@ async function createNextAttemptAlarmIfNeeded(project, opened, settings) {
 async function scheduleProjectAlarm(project) {
     await chrome.alarms.clear('nextAttempt_' + project.key)
 
-    if (project.time == null || project.time <= Date.now()) {
+    // null — голосовать сейчас, Infinity — автоголосование остановлено (stopVoting)
+    if (project.time == null || project.time <= Date.now() || !Number.isFinite(project.time)) {
         return
     }
 

@@ -66,6 +66,7 @@ docs/                      документация и заметки к вер�
 | `{captcha: true}` | капчу нужно пройти вручную, вкладка остаётся открытой |
 | `{errorVoteNoElement: text}` | не найден элемент страницы — скорее всего, сайт изменился |
 | `{message: text, ignoreReport?, retryCoolDown?}` | ошибка с текстом для пользователя |
+| `{message: text, stopVoting: true}` | сайт распознал автоматизацию и грозит блокировкой: проект останавливается (`time = Infinity`) до ручного «Перезапустить голосование» |
 
 Отправляйте конкретное время в `later`, если сайт его показывает: `{later: true}` без истории голосов даёт повтор сразу же.
 
@@ -80,6 +81,7 @@ docs/                      документация и заметки к вер�
 | `wait(ms)` | пауза |
 | `waitForElement(selector, timeout)` | дождаться элемента |
 | `isVisibleElement(el)` | элемент виден на странице |
+| `isAutomationWarning(text)` | текст — предупреждение сайта о блокировке за автоматизацию (такие `alert` api.js распознаёт сам) |
 | `waitTurnstileToken()` / `watchTurnstileToken()` | дождаться токена Cloudflare Turnstile |
 
 Пример и шаблон нового сайта — в [CLAUDE.md](../CLAUDE.md#adding-support-for-new-sites).

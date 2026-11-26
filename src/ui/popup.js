@@ -48,6 +48,7 @@ function renderToday() {
 function statusText(project, state) {
     if (state === 'now') return chrome.i18n.getMessage('now')
     if (state === 'queue') return chrome.i18n.getMessage('inQueue')
+    if (project.time === Infinity) return chrome.i18n.getMessage('stopped')
     if (project.time && project.time > Date.now()) return formatRelative(project.time)
     if (state === 'error') return chrome.i18n.getMessage('popupError')
     return chrome.i18n.getMessage('soon')

@@ -1036,7 +1036,7 @@
   "here": {
     "message": "hier"
   },
-  "notRegVK":{
+  "notRegVK": {
     "message": "Die Registrierung dieses Kontos ist nicht abgeschlossen (Telefonnummer ist nicht angegeben)"
   },
   "version": {
@@ -1056,5 +1056,11 @@
   },
   "projectDeleted": {
     "message": "Das Projekt wurde vom Benutzer gelöscht"
+  },
+  "votingStopped": {
+    "message": "Automatisches Abstimmen wurde gestoppt, um Ihr Konto nicht zu gefährden: stimmen Sie auf der Seite manuell ab. Fortsetzen über „Neu starten“ beim Projekt"
+  },
+  "stopped": {
+    "message": "Gestoppt"
   }
 }

@@ -31,7 +31,9 @@ async function addProjectList(project, preBend) {
         document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent = String(count + 1)
         updateNavCount()
 
-        if (project.time != null && project.time > Date.now()) {
+        if (project.time === Infinity) {
+            // Автоголосование остановлено (stopVoting) — ни будильника, ни проверки очереди
+        } else if (project.time != null && project.time > Date.now()) {
             let create = true
             const alarms = await chrome.alarms.getAll()
             for (const alarm of alarms) {
@@ -451,7 +453,10 @@ async function updateProjectText(project) {
         let state = 'scheduled'
         let text = chrome.i18n.getMessage('soon')
         let time = null
-        if (!(project.time == null || project.time === '') && Date.now() < project.time) {
+        if (project.time === Infinity) {
+            text = chrome.i18n.getMessage('stopped')
+            state = 'error'
+        } else if (!(project.time == null || project.time === '') && Date.now() < project.time) {
             time = project.time
             text = new Date(project.time).toLocaleString().replace(',', '')
         } else {

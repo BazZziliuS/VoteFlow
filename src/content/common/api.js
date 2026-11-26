@@ -30,7 +30,12 @@ async function run() {
 
     if (window.portAlert) {
         window.portAlert.addEventListener('state', event => {
-            chrome.runtime.sendMessage({message: event.detail.message})
+            const message = String(event.detail.message ?? '')
+            if (isAutomationWarning(message)) {
+                chrome.runtime.sendMessage({message, stopVoting: true, ignoreReport: true})
+            } else {
+                chrome.runtime.sendMessage({message})
+            }
         })
     }
 
@@ -511,6 +516,16 @@ function parseCooldown(text, bufferMs = 30000) {
     }
     if (seconds == null) return null
     return Date.now() + seconds * 1000 + bufferMs
+}
+
+// Сайт распознал автоматизацию и предупреждает о блокировке аккаунта. Такие предупреждения не обходим:
+// скрипт сайта отправляет {stopVoting: true}, и фон останавливает автоголосование проекта
+const AUTOMATION_WARNINGS = ['использование автоматизации', 'используйте сайт вручную', 'автоматизированн',
+    'automated voting', 'automation detected', 'bot detected', 'please vote manually']
+
+function isAutomationWarning(text) {
+    const lower = String(text ?? '').toLowerCase()
+    return AUTOMATION_WARNINGS.some(phrase => lower.includes(phrase))
 }
 
 function isVisibleElement(elem) {

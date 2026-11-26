@@ -148,3 +148,16 @@ const cooldownCases = {
 for (const [text, seconds] of Object.entries(cooldownCases)) {
     test(`parseCooldown(${JSON.stringify(text)})`, () => assert.equal(parseCooldown(text), seconds))
 }
+
+test('isAutomationWarning: предупреждения сайтов о блокировке за автоматизацию', () => {
+    const start = apiSource.indexOf('const AUTOMATION_WARNINGS')
+    const end = apiSource.indexOf('\n}\n', apiSource.indexOf('function isAutomationWarning(', start)) + 2
+    const ctx = vm.createContext({String})
+    vm.runInContext(apiSource.slice(start, end) + '\nthis.isAutomationWarning = isAutomationWarning', ctx)
+    const warning = 'Пожалуйста, используйте сайт вручную. Использование автоматизации может привести к блокировке вашего аккаунта. ' +
+        'При повторении нарушений ваш аккаунт (ID: 123) будет заблокирован без права восстановления.'
+    assert.equal(ctx.isAutomationWarning(warning), true)
+    for (const text of ['Спасибо за голос!', 'Вы уже голосовали сегодня', 'Аккаунт заблокирован', 'Некорректный ник', '', undefined]) {
+        assert.equal(ctx.isAutomationWarning(text), false, String(text))
+    }
+})
