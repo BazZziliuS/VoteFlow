@@ -149,41 +149,8 @@ async function main() {
 
     const jsonIndex = process.argv.indexOf('--json')
     if (jsonIndex > 0) fs.writeFileSync(process.argv[jsonIndex + 1], JSON.stringify(results, null, 2))
-    const markdownIndex = process.argv.indexOf('--markdown')
-    if (markdownIndex > 0) fs.writeFileSync(process.argv[markdownIndex + 1], markdownReport(results, order, titles))
-}
-
-// Отчёт для задачи «Состояние сайтов» на GitHub (.github/workflows/sites.yml)
-function markdownReport(results, order, titles) {
-    const needsAttention = [
-        'parked',
-        'dns',
-        'not-found',
-        'redirect',
-        'timeout',
-        'network',
-        'http-error',
-        'stale-example',
-    ]
-    const lines = [
-        `Проверка ${new Date().toISOString().slice(0, 10)}: ${results.length} сайтов, работает ${results.filter(r => r.status === 'ok').length}, ` +
-            `за защитой от ботов ${results.filter(r => r.status === 'protected').length}.`,
-        '',
-        'Один сбой ещё не значит, что сайт закрыт: перед удалением перепроверьте вручную. Как удалять — в CONTRIBUTING.md («Новый сайт»).',
-    ]
-    for (const status of order.filter(s => needsAttention.includes(s))) {
-        const group = results.filter(r => r.status === status).sort((a, b) => a.domain.localeCompare(b.domain))
-        if (!group.length) continue
-        lines.push('', `### ${titles[status]}: ${group.length}`, '')
-        for (const r of group) {
-            const detail = r.error || `${r.code}${r.finalUrl && r.finalUrl !== r.url ? ' → ' + r.finalUrl : ''}`
-            lines.push(`- **${r.domain}** — \`${detail.replace(/`/g, "'").slice(0, 160)}\``)
-        }
-    }
-    if (!results.some(r => needsAttention.includes(r.status))) lines.push('', 'Проблем не найдено.')
-    return lines.join('\n') + '\n'
 }
 
 if (require.main === module) main()
 
-module.exports = {isParkedPage, markdownReport}
+module.exports = {isParkedPage}

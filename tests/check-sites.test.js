@@ -1,7 +1,7 @@
 // Распознавание закрытых сайтов в scripts/check-sites.js
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const {isParkedPage, markdownReport} = require('../scripts/check-sites.js')
+const {isParkedPage} = require('../scripts/check-sites.js')
 
 test('страницы парковки и продажи домена', () => {
     for (const html of [
@@ -22,19 +22,4 @@ test('обычные страницы рейтингов не считаются
     ]) {
         assert.equal(isParkedPage(html), false, html)
     }
-})
-
-test('отчёт перечисляет только сайты, требующие внимания', () => {
-    const report = markdownReport(
-        [
-            {domain: 'closed.example', status: 'parked', code: 200, url: 'https://closed.example/'},
-            {domain: 'fine.example', status: 'ok'},
-            {domain: 'cf.example', status: 'protected'},
-        ],
-        ['parked', 'protected', 'ok'],
-        {parked: 'Домен продаётся', protected: 'Защита', ok: 'Работает'},
-    )
-    assert.match(report, /closed\.example/)
-    assert.doesNotMatch(report, /fine\.example|cf\.example/)
-    assert.match(report, /работает 1, за защитой от ботов 1/)
 })
