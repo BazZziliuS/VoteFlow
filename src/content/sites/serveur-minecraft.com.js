@@ -3,7 +3,10 @@ async function vote(first) {
         chrome.runtime.sendMessage({successfully: true})
         return
     }
-    if (document.querySelector('div.row p').textContent && document.querySelector('div.row p').textContent.includes('Vous avez déjà voté pour ce serveur')) {
+    if (
+        document.querySelector('div.row p').textContent &&
+        document.querySelector('div.row p').textContent.includes('Vous avez déjà voté pour ce serveur')
+    ) {
         chrome.runtime.sendMessage({later: true})
         return
     }

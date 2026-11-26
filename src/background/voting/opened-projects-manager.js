@@ -12,7 +12,7 @@ function createOpenedProject(project, settings) {
     const opened = {
         key: project.key,
         rating: project.rating,
-        countInject: 0
+        countInject: 0,
     }
 
     if (project.randomize) {
@@ -22,7 +22,7 @@ function createOpenedProject(project, settings) {
     if (!settings.disabledRestartOnTimeout) {
         const retryCoolDown = project.randomize
             ? Math.floor(Math.random() * TIME.MAX_RANDOMIZE_COOLDOWN + TIME.MIN_RANDOMIZE_COOLDOWN)
-            : (settings.timeoutVote || 900000)
+            : settings.timeoutVote || 900000
 
         opened.nextAttempt = Date.now() + retryCoolDown
     }
@@ -57,9 +57,11 @@ function isTimeoutExpired(openedValue) {
  * @returns {boolean} true если есть конфликт
  */
 function hasConflict(project, openedValue, settings) {
-    return project.rating === openedValue.rating ||
-           (openedValue.randomize && project.randomize) ||
-           settings.disabledOneVote
+    return (
+        project.rating === openedValue.rating ||
+        (openedValue.randomize && project.randomize) ||
+        settings.disabledOneVote
+    )
 }
 
 /**
@@ -100,7 +102,10 @@ function findOpenedProject(openedProjects, projectKey) {
  */
 function createQueuedProject(opened, timeout, project) {
     if (project.randomize) {
-        timeout += Math.floor(Math.random() * (TIME.MAX_PROJECT_RANDOMIZATION - TIME.MIN_PROJECT_RANDOMIZATION) + TIME.MIN_PROJECT_RANDOMIZATION)
+        timeout += Math.floor(
+            Math.random() * (TIME.MAX_PROJECT_RANDOMIZATION - TIME.MIN_PROJECT_RANDOMIZATION) +
+                TIME.MIN_PROJECT_RANDOMIZATION,
+        )
     }
 
     opened.timeoutQueue = Date.now() + timeout
@@ -136,7 +141,7 @@ function cleanupExpiredQueue(openedProjects) {
  * @returns {Promise<boolean>} true если нужно прервать выполнение
  */
 async function handleProjectConflicts(project, openedProjects, settings, db) {
-    for (let [tab, value] of openedProjects) {
+    for (const [tab, value] of openedProjects) {
         if (hasConflict(project, value, settings)) {
             if (!canRestart(tab, value, settings)) {
                 return true // Прерываем выполнение
@@ -149,10 +154,15 @@ async function handleProjectConflicts(project, openedProjects, settings, db) {
             // Своя транзакция: переданная могла закрыться, пока вызывающий код ждал API браузера
             const projectTimeout = await db.get('projects', value.key)
             if (!value.nextAttempt) {
-                console.warn(getProjectPrefix(projectTimeout, true), 'nextAttempt is undefined, maybe it\'s an error')
+                console.warn(getProjectPrefix(projectTimeout, true), "nextAttempt is undefined, maybe it's an error")
             }
             console.warn(getProjectPrefix(projectTimeout, true), chrome.i18n.getMessage('timeout'))
-            sendNotification(getProjectPrefix(projectTimeout, false), chrome.i18n.getMessage('timeout'), 'warn', 'openProject_' + project.key)
+            sendNotification(
+                getProjectPrefix(projectTimeout, false),
+                chrome.i18n.getMessage('timeout'),
+                'warn',
+                'openProject_' + project.key,
+            )
 
             if (!settings.disableCloseTabsOnError) {
                 tryCloseTab(tab, projectTimeout, 0)

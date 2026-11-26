@@ -17,7 +17,12 @@ async function vote(first) {
         })
     }
 
-    if (document.querySelector('a[href="https://mmotop.ru/users/sign_in"]') || document.querySelector('a[href="/users/sign_in"]') || document.querySelector('form[action="/users/sign_in"]') || document.querySelector('form#new_user')) {
+    if (
+        document.querySelector('a[href="https://mmotop.ru/users/sign_in"]') ||
+        document.querySelector('a[href="/users/sign_in"]') ||
+        document.querySelector('form[action="/users/sign_in"]') ||
+        document.querySelector('form#new_user')
+    ) {
         chrome.runtime.sendMessage({auth: true})
         return
     }
@@ -33,7 +38,10 @@ async function vote(first) {
         if (request.message.includes('Голос принят') || request.message.includes('vote accepted')) {
             chrome.runtime.sendMessage({successfully: true})
             return
-        } else if (request.message.includes('Signed in successfully') || request.message.includes('Вы успешно зарегистрировались')) {
+        } else if (
+            request.message.includes('Signed in successfully') ||
+            request.message.includes('Вы успешно зарегистрировались')
+        ) {
             // None
         } else {
             if (request.message.includes('Quaptcha check fail')) {
@@ -77,7 +85,10 @@ async function vote(first) {
     }
 
     if (document.querySelector('.vote-content .payment_select')) {
-        chrome.runtime.sendMessage({message: 'Авто-голосование не доступно на платном голосовании, не вмешивайтесь в процесс авто-голосования!', ignoreReport: true})
+        chrome.runtime.sendMessage({
+            message: 'Авто-голосование не доступно на платном голосовании, не вмешивайтесь в процесс авто-голосования!',
+            ignoreReport: true,
+        })
         return
     }
 
@@ -94,23 +105,23 @@ async function vote(first) {
             clientX: slider.getBoundingClientRect().left,
             clientY: slider.getBoundingClientRect().top,
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         })
         const mouseMoveEvent = new MouseEvent('mousemove', {
             clientX: slider.getBoundingClientRect().left + 999,
             clientY: slider.getBoundingClientRect().top,
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         })
         const mouseUpEvent = new MouseEvent('mouseup', {
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         })
         slider.dispatchEvent(mouseDownEvent)
         slider.dispatchEvent(mouseMoveEvent)
         slider.dispatchEvent(mouseUpEvent)
 
-        if (document.querySelector("div.g-recaptcha > div > div > iframe")) {
+        if (document.querySelector('div.g-recaptcha > div > div > iframe')) {
             return
         }
     }
@@ -123,7 +134,11 @@ async function vote(first) {
     const ordinalWorld = project.ordinalWorld - 1
     const world = document.querySelectorAll('#world > div > table > tbody > tr')[ordinalWorld]
     if (!world) {
-        chrome.runtime.sendMessage({message: 'Мир под номером ' + project.ordinalWorld + ' не найден, проверьте правильность указанного номера мира', ignoreReport: true})
+        chrome.runtime.sendMessage({
+            message:
+                'Мир под номером ' + project.ordinalWorld + ' не найден, проверьте правильность указанного номера мира',
+            ignoreReport: true,
+        })
         return
     } else {
         world.click()

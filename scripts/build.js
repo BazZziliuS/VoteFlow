@@ -20,7 +20,8 @@ for (const entry of [...EXTENSION, ...DOCUMENTS]) {
 
 let files = 0
 const count = dir => {
-    for (const e of fs.readdirSync(dir, {withFileTypes: true})) e.isDirectory() ? count(path.join(dir, e.name)) : files++
+    for (const e of fs.readdirSync(dir, {withFileTypes: true}))
+        e.isDirectory() ? count(path.join(dir, e.name)) : files++
 }
 count(out)
 const {version} = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'))

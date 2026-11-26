@@ -20,7 +20,7 @@ async function vote(first) {
     document.querySelector('form.vote button[type="submit"]').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         const resp = document.querySelector('#response')
         if (resp && resp.style.display !== 'none') {

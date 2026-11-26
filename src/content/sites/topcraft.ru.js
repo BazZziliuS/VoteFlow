@@ -6,13 +6,36 @@
 const TOPCRAFT_LOG = '[TopCraft]'
 
 const TOPCRAFT_RESULTS = {
-    later: ['уже голосовали', 'уже проголосовали', 'сможете проголосовать', 'вы сегодня голосовали',
-        'вы сегодня проголосовали', 'голос уже был учтен', 'голос уже был учтён', 'следующий голос'],
-    success: ['за ваш голос', 'спасибо за голос', 'голос принят', 'голос засчитан', 'голос учтён',
-        'голос учтен', 'вы проголосовали', 'успех', 'успешн'],
+    later: [
+        'уже голосовали',
+        'уже проголосовали',
+        'сможете проголосовать',
+        'вы сегодня голосовали',
+        'вы сегодня проголосовали',
+        'голос уже был учтен',
+        'голос уже был учтён',
+        'следующий голос',
+    ],
+    success: [
+        'за ваш голос',
+        'спасибо за голос',
+        'голос принят',
+        'голос засчитан',
+        'голос учтён',
+        'голос учтен',
+        'вы проголосовали',
+        'успех',
+        'успешн',
+    ],
     // Ошибки, о которых не нужно сообщать разработчику: их исправляет сам пользователь
-    userErrors: ['некорректный ник', 'базе данных спамеров', 'базу данных спамеров', 'ошибка авторизации',
-        'капча временно не работает', 'аккаунт заблокирован'],
+    userErrors: [
+        'некорректный ник',
+        'базе данных спамеров',
+        'базу данных спамеров',
+        'ошибка авторизации',
+        'капча временно не работает',
+        'аккаунт заблокирован',
+    ],
     // Не результат, а подсказка формы — ждём дальше
     pending: ['поставьте галочку', 'обязательное поле', 'пройдите проверку', 'подтвердите, что вы не робот'],
 }
@@ -29,15 +52,17 @@ function topcraftVoteModal() {
 function topcraftNeedsLogin() {
     const voteLink = document.querySelector('#vote:not(.modal), [data-bs-target="#vote"]')
     return Boolean(
-        document.querySelector('a#vote[data-bs-target="#loginModal"]')
-        || (!topcraftVoteModal() && voteLink?.getAttribute('data-bs-target') === '#loginModal')
+        document.querySelector('a#vote[data-bs-target="#loginModal"]') ||
+        (!topcraftVoteModal() && voteLink?.getAttribute('data-bs-target') === '#loginModal'),
     )
 }
 
 function topcraftHasCaptcha(container) {
-    return Boolean(container.querySelector(
-        'iframe[src*="captcha"], iframe[src*="recaptcha"], iframe[src*="smartcaptcha"], .g-recaptcha, .h-captcha, .smart-captcha, [data-sitekey], input[name="smart-token"]'
-    ))
+    return Boolean(
+        container.querySelector(
+            'iframe[src*="captcha"], iframe[src*="recaptcha"], iframe[src*="smartcaptcha"], .g-recaptcha, .h-captcha, .smart-captcha, [data-sitekey], input[name="smart-token"]',
+        ),
+    )
 }
 
 // Yandex SmartCaptcha в окне голосования может дорисоваться после открытия окна — ждём её до 5 секунд
@@ -71,8 +96,9 @@ let topcraftSubmitted = false
 function topcraftSubmit(modal) {
     if (topcraftSubmitted) return
     const form = modal.querySelector('form')
-    const submit = form?.querySelector('button[type="submit"], input[type="submit"]')
-        || modal.querySelector('.modal-footer .btn-primary, .modal-footer button')
+    const submit =
+        form?.querySelector('button[type="submit"], input[type="submit"]') ||
+        modal.querySelector('.modal-footer .btn-primary, .modal-footer button')
     if (!submit) {
         chrome.runtime.sendMessage({errorVoteNoElement: 'Не найдена кнопка отправки голоса'})
         return
@@ -87,7 +113,11 @@ function topcraftClickTrusted(element) {
     const verifyUUID = crypto.randomUUID()
     window.portIsTrusted.dataset.avrId = verifyUUID
     window.portIsTrusted.dataset.ITtype = 'click'
-    element.dispatchEvent(new CustomEvent('mousedown', {detail: {avrId: verifyUUID, eventName: 'MouseEvent', eventType: 'mousedown', isTrusted: true, detail: 1}}))
+    element.dispatchEvent(
+        new CustomEvent('mousedown', {
+            detail: {avrId: verifyUUID, eventName: 'MouseEvent', eventType: 'mousedown', isTrusted: true, detail: 1},
+        }),
+    )
     element.click()
     window.portIsTrusted.dataset.ITtype = null
 }
@@ -131,7 +161,11 @@ async function vote(first) {
         }
         console.log(TOPCRAFT_LOG, 'Не выполнен вход, автовход через VK не удался')
         // Повтор раз в час, а не каждые 15 минут: без входа результат не изменится
-        chrome.runtime.sendMessage({message: chrome.i18n.getMessage('topcraftLogin'), ignoreReport: true, retryCoolDown: 60 * 60 * 1000})
+        chrome.runtime.sendMessage({
+            message: chrome.i18n.getMessage('topcraftLogin'),
+            ignoreReport: true,
+            retryCoolDown: 60 * 60 * 1000,
+        })
         return
     }
 
@@ -156,7 +190,9 @@ async function vote(first) {
     }
 
     const project = await getProject()
-    const nickInput = form.querySelector('input[name="nick"], input[name="nickname"], input[name*="nick" i], input[type="text"]:not([type="hidden"])')
+    const nickInput = form.querySelector(
+        'input[name="nick"], input[name="nickname"], input[name*="nick" i], input[type="text"]:not([type="hidden"])',
+    )
     if (nickInput && project.nick && nickInput.value !== project.nick) {
         nickInput.value = project.nick
         nickInput.dispatchEvent(new Event('input', {bubbles: true}))
@@ -165,7 +201,7 @@ async function vote(first) {
 
     // С капчей (Yandex SmartCaptcha) ждём её прохождения: captchaclicker пришлёт captchaPassed и api.js вызовет vote(false),
     // а наблюдатель за токеном отправит голос, если капчу прошли иначе
-    if (first && (topcraftHasCaptcha(modal) || await topcraftWaitCaptcha(modal))) {
+    if (first && (topcraftHasCaptcha(modal) || (await topcraftWaitCaptcha(modal)))) {
         console.log(TOPCRAFT_LOG, 'Ждём прохождения капчи')
         topcraftWatchCaptchaToken(modal)
         setTimeout(() => {
@@ -184,7 +220,9 @@ function readTopcraftResult(modal) {
     const sources = [
         document.querySelector('[data-page-toast].show .toast-body'),
         document.querySelector('div.tooltip-inner'),
-        modal?.querySelector('.alert:not(.d-none), .invalid-feedback:not(:empty), .form-text.text-danger, [role="alert"]'),
+        modal?.querySelector(
+            '.alert:not(.d-none), .invalid-feedback:not(:empty), .form-text.text-danger, [role="alert"]',
+        ),
     ]
     for (const element of sources) {
         const text = element?.textContent.trim()

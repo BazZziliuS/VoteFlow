@@ -1,0 +1,14 @@
+# Сторонний код: собирается scripts/vendor.js или взят из чужого проекта как есть
+libs/
+src/content/common/audio_captcha.js
+# Генерируется и правится скриптами
+CHANGELOG.md
+package-lock.json
+node_modules/
+build/
+# Тексты и разметка — не форматируются автоматически
+*.md
+*.html
+*.css
+_locales/
+.github/

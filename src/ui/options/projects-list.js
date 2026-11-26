@@ -116,7 +116,7 @@ async function addProjectList(project, preBend) {
 
     //Слушатель кнопки "Удалить" на проект
     // Удаление в два клика: первый клик просит подтверждение, второй в течение 3 секунд удаляет
-    img2.addEventListener('click', async (event) => {
+    img2.addEventListener('click', async event => {
         if (event.target.disabled) return
         if (!img2.classList.contains('confirming')) {
             img2.classList.add('confirming')
@@ -133,14 +133,14 @@ async function addProjectList(project, preBend) {
         event.target.disabled = false
     })
     //Слушатель кнопка "Перезапустить голосование" на проект
-    img0.addEventListener('click', async (event) => {
+    img0.addEventListener('click', async event => {
         if (event.target.disabled) return
         event.target.disabled = true
         project = await db.get('projects', project.key)
         let timer = setTimeout(() => lagServiceWorker(event), 5000)
         try {
             // noinspection JSVoidFunctionReturnValueUsed
-            let message = await chrome.runtime.sendMessage({projectRestart: project})
+            const message = await chrome.runtime.sendMessage({projectRestart: project})
             // noinspection JSIncompatibleTypesComparison
             if (message === 'confirmNow' || message === 'confirmQueue') {
                 clearTimeout(timer)
@@ -234,7 +234,11 @@ async function updateModalStats(project, toggle) {
         toggleModal('stats')
         project = await db.get('projects', project.key)
     } else {
-        if (!document.getElementById('stats').classList.contains('active') || document.getElementById('stats' + project.key) == null) return
+        if (
+            !document.getElementById('stats').classList.contains('active') ||
+            document.getElementById('stats' + project.key) == null
+        )
+            return
     }
     let text = project.rating
     if (project.nick && project.nick !== '') text += ' – ' + project.nick
@@ -246,14 +250,27 @@ async function updateModalStats(project, toggle) {
     }
     document.querySelector('.statsSubtitle').textContent = text
     document.querySelector('.statsSubtitle').id = 'stats' + project.key
-    document.querySelector('td[data-resource="statsSuccessVotes"]').nextElementSibling.textContent = project.stats.successVotes
-    document.querySelector('td[data-resource="statsMonthSuccessVotes"]').nextElementSibling.textContent = project.stats.monthSuccessVotes
-    document.querySelector('td[data-resource="statsLastMonthSuccessVotes"]').nextElementSibling.textContent = project.stats.lastMonthSuccessVotes
-    document.querySelector('td[data-resource="statsErrorVotes"]').nextElementSibling.textContent = project.stats.errorVotes
-    document.querySelector('td[data-resource="statsLaterVotes"]').nextElementSibling.textContent = project.stats.laterVotes
-    document.querySelector('td[data-resource="statsLastSuccessVote"]').nextElementSibling.textContent = project.stats.lastSuccessVote ? new Date(project.stats.lastSuccessVote).toLocaleString().replace(',', '') : 'None'
-    document.querySelector('td[data-resource="statsLastAttemptVote"]').nextElementSibling.textContent = project.stats.lastAttemptVote ? new Date(project.stats.lastAttemptVote).toLocaleString().replace(',', '') : 'None'
-    document.querySelector('td[data-resource="statsAdded"]').nextElementSibling.textContent = project.stats.added ? new Date(project.stats.added).toLocaleString().replace(',', '') : 'None'
+    document.querySelector('td[data-resource="statsSuccessVotes"]').nextElementSibling.textContent =
+        project.stats.successVotes
+    document.querySelector('td[data-resource="statsMonthSuccessVotes"]').nextElementSibling.textContent =
+        project.stats.monthSuccessVotes
+    document.querySelector('td[data-resource="statsLastMonthSuccessVotes"]').nextElementSibling.textContent =
+        project.stats.lastMonthSuccessVotes
+    document.querySelector('td[data-resource="statsErrorVotes"]').nextElementSibling.textContent =
+        project.stats.errorVotes
+    document.querySelector('td[data-resource="statsLaterVotes"]').nextElementSibling.textContent =
+        project.stats.laterVotes
+    document.querySelector('td[data-resource="statsLastSuccessVote"]').nextElementSibling.textContent = project.stats
+        .lastSuccessVote
+        ? new Date(project.stats.lastSuccessVote).toLocaleString().replace(',', '')
+        : 'None'
+    document.querySelector('td[data-resource="statsLastAttemptVote"]').nextElementSibling.textContent = project.stats
+        .lastAttemptVote
+        ? new Date(project.stats.lastAttemptVote).toLocaleString().replace(',', '')
+        : 'None'
+    document.querySelector('td[data-resource="statsAdded"]').nextElementSibling.textContent = project.stats.added
+        ? new Date(project.stats.added).toLocaleString().replace(',', '')
+        : 'None'
 }
 
 function generateBtnListRating(rating, count) {
@@ -272,16 +289,19 @@ function generateBtnListRating(rating, count) {
     ul.setAttribute('data-rating-tab', rating)
     ul.classList.add('listcontent')
     ul.style.display = 'none'
-//  const div = document.createElement('div')
-//  div.setAttribute('data-resource', 'notAdded')
-//  div.textContent = chrome.i18n.getMessage('notAdded')
-//  ul.append(div)
-    if (!(allProjects[rating].notRequiredCaptcha?.())) {
+    //  const div = document.createElement('div')
+    //  div.setAttribute('data-resource', 'notAdded')
+    //  div.textContent = chrome.i18n.getMessage('notAdded')
+    //  ul.append(div)
+    if (!allProjects[rating].notRequiredCaptcha?.()) {
         const label = document.createElement('label')
         label.setAttribute('data-resource', 'passageCaptcha')
         label.classList.add('callout', 'warn')
         label.textContent = chrome.i18n.getMessage('passageCaptcha')
-        const link = createExternalLink('https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Guide-how-to-automate-the-passage-of-captcha-(reCAPTCHA-and-hCaptcha)', chrome.i18n.getMessage('here'))
+        const link = createExternalLink(
+            'https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Guide-how-to-automate-the-passage-of-captcha-(reCAPTCHA-and-hCaptcha)',
+            chrome.i18n.getMessage('here'),
+        )
         link.setAttribute('data-resource', 'here')
         label.append(link)
         ul.append(label)
@@ -345,7 +365,8 @@ async function removeProjectList(project, editing, event) {
         updateNavCount()
 
         if (!editing) {
-            const count = Number(document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent) - 1
+            const count =
+                Number(document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent) - 1
             if (count <= 0) {
                 document.querySelector('[data-rating-tab="' + project.rating + '"]').remove()
                 document.querySelector('[data-rating-button="' + project.rating + '"]').remove()
@@ -356,7 +377,8 @@ async function removeProjectList(project, editing, event) {
                 }
             } else {
                 li.remove()
-                document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent = String(count)
+                document.querySelector('[data-rating-button="' + project.rating + '"] > span').textContent =
+                    String(count)
             }
         } else {
             li.remove()
@@ -403,16 +425,12 @@ function selectFirstRating() {
 
 //Переключение между списками добавленных проектов
 async function listSelect(event, tabs) {
-    let listcontent, selectsite
-
-    listcontent = document.getElementsByClassName('listcontent')
-    for (let x = 0; x < listcontent.length; x++) {
-        listcontent[x].style.display = 'none'
+    // Скрываем списки всех сайтов и снимаем выделение с их кнопок
+    for (const ratingList of document.querySelectorAll('.listcontent')) {
+        ratingList.style.display = 'none'
     }
-
-    selectsite = document.getElementsByClassName('selectsite')
-    for (let x = 0; x < selectsite.length; x++) {
-        selectsite[x].className = selectsite[x].className.replace(' activeList', '')
+    for (const ratingButton of document.querySelectorAll('.selectsite')) {
+        ratingButton.classList.remove('activeList')
     }
 
     document.querySelector('[data-rating-tab="' + tabs + '"]').style.display = 'flex'
@@ -423,7 +441,7 @@ async function listSelect(event, tabs) {
     // одновременно с переходом к проекту из уведомления), дожидаемся её, а не возвращаемся с пустым списком
     if (!list.loading && list.childElementCount === 0) {
         list.loading = (async () => {
-            let div = document.createElement('div')
+            const div = document.createElement('div')
             div.setAttribute('data-resource', 'load')
             div.textContent = chrome.i18n.getMessage('load')
             list.append(div)
@@ -438,7 +456,9 @@ async function listSelect(event, tabs) {
             }
             div.remove()
         })()
-        list.loading.finally(() => { list.loading = null })
+        list.loading.finally(() => {
+            list.loading = null
+        })
     }
     if (list.loading) await list.loading
 }
@@ -487,16 +507,19 @@ async function updateProjectText(project) {
         const tags = []
         if (project.priority) tags.push(chrome.i18n.getMessage('inPriority'))
         if (project.randomize) tags.push(chrome.i18n.getMessage('inRandomize'))
-        if (project.rating !== 'Custom' && (project.timeout != null || project.timeoutHour != null)) tags.push(chrome.i18n.getMessage('customTimeOut2'))
+        if (project.rating !== 'Custom' && (project.timeout != null || project.timeoutHour != null))
+            tags.push(chrome.i18n.getMessage('customTimeOut2'))
         if (project.lastDayMonth) tags.push(chrome.i18n.getMessage('lastDayMonth2'))
         if (project.silentMode) tags.push(chrome.i18n.getMessage('enabledSilentVoteSilent'))
         if (project.emulateMode) tags.push(chrome.i18n.getMessage('enabledSilentVoteNoSilent'))
-        el.querySelector('.tags').replaceChildren(...tags.map(tagText => {
-            const tag = document.createElement('span')
-            tag.classList.add('tag')
-            tag.textContent = tagText
-            return tag
-        }))
+        el.querySelector('.tags').replaceChildren(
+            ...tags.map(tagText => {
+                const tag = document.createElement('span')
+                tag.classList.add('tag')
+                tag.textContent = tagText
+                return tag
+            }),
+        )
 
         renderNextVote(el.querySelector('.textNextVote'), time, text)
 

@@ -55,7 +55,7 @@ function handleLimitedCountVote(project, allProjects, time) {
             0,
             project.priority ? 0 : 10,
             0,
-            0
+            0,
         )
         return {needSetTime: false, time: nextDay}
     }
@@ -71,7 +71,7 @@ function handleLimitedCountVote(project, allProjects, time) {
  * @returns {number} Timestamp следующего голосования
  */
 function calculateNextVoteTime(project, request, allProjects) {
-    let time = new Date()
+    const time = new Date()
 
     // Custom проекты или проекты с собственным timeout
     if (usesCustomTimeout(project, request, time)) {
@@ -116,7 +116,10 @@ function calculateCustomTimeout(project, time) {
         }
 
         if (needCalculateDate) {
-            if (time.getHours() > project.timeoutHour || (time.getHours() === project.timeoutHour && time.getMinutes() >= project.timeoutMinute)) {
+            if (
+                time.getHours() > project.timeoutHour ||
+                (time.getHours() === project.timeoutHour && time.getMinutes() >= project.timeoutMinute)
+            ) {
                 if (project.timeoutWeek != null) {
                     date += 7
                 } else if (project.timeoutMonth != null) {
@@ -128,7 +131,15 @@ function calculateCustomTimeout(project, time) {
             }
         }
 
-        time = new Date(time.getFullYear(), month, date, project.timeoutHour, project.timeoutMinute, project.timeoutSecond, project.timeoutMS)
+        time = new Date(
+            time.getFullYear(),
+            month,
+            date,
+            project.timeoutHour,
+            project.timeoutMinute,
+            project.timeoutSecond,
+            project.timeoutMS,
+        )
     } else {
         time.setUTCMilliseconds(time.getUTCMilliseconds() + project.timeout)
     }
@@ -203,7 +214,9 @@ function calculateWeeklyTimeout(project, time, timeoutRating) {
             date += 7
         }
     }
-    time = new Date(Date.UTC(time.getUTCFullYear(), time.getUTCMonth(), date, timeoutRating.hour, (project.priority ? 0 : 10), 0, 0))
+    time = new Date(
+        Date.UTC(time.getUTCFullYear(), time.getUTCMonth(), date, timeoutRating.hour, project.priority ? 0 : 10, 0, 0),
+    )
     return time.getTime()
 }
 
@@ -223,7 +236,7 @@ function calculateMonthlyTimeout(project, time, timeoutRating) {
             date = timeoutRating.month
         }
     }
-    time = new Date(Date.UTC(time.getUTCFullYear(), month, date, timeoutRating.hour, (project.priority ? 0 : 10), 0, 0))
+    time = new Date(Date.UTC(time.getUTCFullYear(), month, date, timeoutRating.hour, project.priority ? 0 : 10, 0, 0))
     return time.getTime()
 }
 
@@ -232,8 +245,10 @@ function calculateMonthlyTimeout(project, time, timeoutRating) {
  * @private
  */
 function calculateDailyTimeout(project, time, timeoutRating) {
-    let date = time.getUTCHours() >= timeoutRating.hour ? time.getUTCDate() + 1 : time.getUTCDate()
-    time = new Date(Date.UTC(time.getUTCFullYear(), time.getUTCMonth(), date, timeoutRating.hour, (project.priority ? 0 : 10), 0, 0))
+    const date = time.getUTCHours() >= timeoutRating.hour ? time.getUTCDate() + 1 : time.getUTCDate()
+    time = new Date(
+        Date.UTC(time.getUTCFullYear(), time.getUTCMonth(), date, timeoutRating.hour, project.priority ? 0 : 10, 0, 0),
+    )
     return time.getTime()
 }
 
@@ -250,7 +265,7 @@ function calculateHourlyTimeout(project, request, time, timeoutRating, allProjec
             time = new Date(project.stats.lastSuccessVote)
         }
 
-        let hours = time.getHours() + timeoutRating.hours
+        const hours = time.getHours() + timeoutRating.hours
         let minutes = time.getMinutes()
         let seconds = time.getSeconds()
         let milliseconds = time.getMilliseconds()

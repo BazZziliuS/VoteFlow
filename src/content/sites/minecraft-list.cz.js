@@ -10,7 +10,10 @@ async function vote(first) {
     if (document.querySelector('.alert.alert-primary')) {
         const request = {}
         request.message = document.querySelector('.alert.alert-primary').textContent.trim()
-        if (request.message.includes('server u nás nemá nakonfigurované hlasování') || request.message.includes('reCaptcha')) {
+        if (
+            request.message.includes('server u nás nemá nakonfigurované hlasování') ||
+            request.message.includes('reCaptcha')
+        ) {
             // None
         } else if (request.message.includes('si hlasoval')) {
             chrome.runtime.sendMessage({later: true})
@@ -41,7 +44,10 @@ async function vote(first) {
     }
     if (document.querySelector('div.content.content-full h1')) {
         const request = {}
-        request.message = document.querySelector('div.content.content-full h1').textContent.trim() + ' ' + document.querySelector('div.content.content-full h2').textContent.trim()
+        request.message =
+            document.querySelector('div.content.content-full h1').textContent.trim() +
+            ' ' +
+            document.querySelector('div.content.content-full h2').textContent.trim()
         if (request.message.includes('ale tato stránka nebyla nalezena')) {
             request.ignoreReport = true
             request.retryCoolDown = 21600000
@@ -54,9 +60,9 @@ async function vote(first) {
         return
     }
     // Ошибки 5xx
-    if (document.querySelector("#main-container div.hero div.text-center h1")) {
+    if (document.querySelector('#main-container div.hero div.text-center h1')) {
         const request = {}
-        request.message = document.querySelector("#main-container div.hero div.text-center h1").parentElement.innerText
+        request.message = document.querySelector('#main-container div.hero div.text-center h1').parentElement.innerText
         request.ignoreReport = true
         chrome.runtime.sendMessage(request)
         return
@@ -71,9 +77,9 @@ async function vote(first) {
     const project = await getProject()
     const username = document.querySelector('input[name="username"]')
     username.value = project.nick
-    
-    username.dispatchEvent(new Event('input', { bubbles: true }));
-    username.dispatchEvent(new Event('change', { bubbles: true }));
+
+    username.dispatchEvent(new Event('input', {bubbles: true}))
+    username.dispatchEvent(new Event('change', {bubbles: true}))
     document.querySelector('#tosgdpr').checked = true
 
     document.querySelector('button[type="submit"].btn.btn-outline-primary').click()

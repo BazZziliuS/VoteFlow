@@ -11,14 +11,14 @@ self['silentVote_hoyolab.com'] = async function (project) {
     }
     const response = await fetch(url, {
         headers: {
-            'accept': 'application/json, text/plain, */*',
+            accept: 'application/json, text/plain, */*',
             'accept-language': 'ru,en;q=0.9,cs;q=0.8,zh-TW;q=0.7,zh;q=0.6',
-            'content-type': 'application/json;charset=UTF-8'
+            'content-type': 'application/json;charset=UTF-8',
         },
         body: body,
         method: 'POST',
         mode: 'cors',
-        credentials: 'include'
+        credentials: 'include',
     })
     const json = await response.json()
     if (json.message === 'OK') {
@@ -29,7 +29,10 @@ self['silentVote_hoyolab.com'] = async function (project) {
         } else {
             const request = {}
             request.message = json.message
-            if (request.message.includes('create a character in game first') || request.message.includes('Not logged in')) {
+            if (
+                request.message.includes('create a character in game first') ||
+                request.message.includes('Not logged in')
+            ) {
                 request.ignoreReport = true
             }
             request.html = JSON.stringify(json)

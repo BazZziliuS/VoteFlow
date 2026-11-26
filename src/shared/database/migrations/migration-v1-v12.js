@@ -15,7 +15,7 @@ async function migrateV1(transaction) {
         errorVotes: 0,
         laterVotes: 0,
         lastSuccessVote: null,
-        lastAttemptVote: null
+        lastAttemptVote: null,
     }
     const store = transaction.objectStore('other')
     await store.put(todayStats, 'todayStats')

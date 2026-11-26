@@ -20,7 +20,7 @@ async function catchTabError(error, project, db) {
         'Could not establish connection. Receiving end does not exist',
         'The message port closed before a response was received',
         'Frame with ID',
-        'was removed'
+        'was removed',
     ]
 
     // Проверяем, не является ли ошибка игнорируемой

@@ -32,7 +32,7 @@ async function migrateV0(db) {
         timeoutVote: 900000,
         disabledWarnCaptcha: false,
         debug: false,
-        expertMode: false
+        expertMode: false,
     }
     await other.add(settings, 'settings')
 
@@ -44,7 +44,7 @@ async function migrateV0(db) {
         laterVotes: 0,
         lastSuccessVote: null,
         lastAttemptVote: null,
-        added: Date.now()
+        added: Date.now(),
     }
 
     const todayStats = {
@@ -52,7 +52,7 @@ async function migrateV0(db) {
         errorVotes: 0,
         laterVotes: 0,
         lastSuccessVote: null,
-        lastAttemptVote: null
+        lastAttemptVote: null,
     }
 
     await other.add(generalStats, 'generalStats')

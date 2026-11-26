@@ -8,12 +8,9 @@ for (const check of document.querySelectorAll('input[name=checkbox]')) {
     check.addEventListener('change', async function (event) {
         event.target.disabled = true
         const value = readSettingCheckbox(this)
-        if (this.id === 'disabledNotifStart')
-            settings.disabledNotifStart = value
-        else if (this.id === 'disabledNotifInfo')
-            settings.disabledNotifInfo = value
-        else if (this.id === 'disabledNotifWarn')
-            settings.disabledNotifWarn = value
+        if (this.id === 'disabledNotifStart') settings.disabledNotifStart = value
+        else if (this.id === 'disabledNotifInfo') settings.disabledNotifInfo = value
+        else if (this.id === 'disabledNotifWarn') settings.disabledNotifWarn = value
         else if (this.id === 'disabledNotifError') {
             if (value && confirm(chrome.i18n.getMessage('confirmDisableErrors'))) {
                 settings.disabledNotifError = value
@@ -24,24 +21,15 @@ for (const check of document.querySelectorAll('input[name=checkbox]')) {
             } else {
                 settings.disabledNotifError = value
             }
-        } else if (this.id === 'disabledCheckInternet')
-            settings.disabledCheckInternet = value
-        else if (this.id === 'disabledOneVote')
-            settings.disabledOneVote = value
-        else if (this.id === 'disabledRestartOnTimeout')
-            settings.disabledRestartOnTimeout = value
-        else if (this.id === 'disabledFocusedTab')
-            settings.disabledFocusedTab = value
-        else if (this.id === 'disabledWarnCaptcha')
-            settings.disabledWarnCaptcha = value
-        else if (this.id === 'disabledClickCaptcha')
-            settings.disabledClickCaptcha = value
-        else if (this.id === 'disabledDebug')
-            settings.debug = value
-        else if (this.id === 'disableCloseTabsOnSuccess')
-            settings.disableCloseTabsOnSuccess = value
-        else if (this.id === 'disableCloseTabsOnError')
-            settings.disableCloseTabsOnError = value
+        } else if (this.id === 'disabledCheckInternet') settings.disabledCheckInternet = value
+        else if (this.id === 'disabledOneVote') settings.disabledOneVote = value
+        else if (this.id === 'disabledRestartOnTimeout') settings.disabledRestartOnTimeout = value
+        else if (this.id === 'disabledFocusedTab') settings.disabledFocusedTab = value
+        else if (this.id === 'disabledWarnCaptcha') settings.disabledWarnCaptcha = value
+        else if (this.id === 'disabledClickCaptcha') settings.disabledClickCaptcha = value
+        else if (this.id === 'disabledDebug') settings.debug = value
+        else if (this.id === 'disableCloseTabsOnSuccess') settings.disableCloseTabsOnSuccess = value
+        else if (this.id === 'disableCloseTabsOnError') settings.disableCloseTabsOnError = value
         else if (this.id === 'expertMode') {
             settings.expertMode = value
             if (this.checked) {
@@ -67,10 +55,13 @@ for (const check of document.querySelectorAll('input[name=checkbox]')) {
                 document.getElementById('addProject').classList.add('addProjectExpertManual')
                 document.getElementById('addProject').classList.remove('addProjectExpert')
                 document.getElementById('advSettingsAdd').style.display = 'none'
-                document.getElementById('advSettingsAdd').querySelectorAll('input[type="checkbox"]').forEach(el => {
-                    el.checked = false
-                    el.dispatchEvent(new Event('change'))
-                })
+                document
+                    .getElementById('advSettingsAdd')
+                    .querySelectorAll('input[type="checkbox"]')
+                    .forEach(el => {
+                        el.checked = false
+                        el.dispatchEvent(new Event('change'))
+                    })
                 if (!document.getElementById('emptyDiv')) {
                     const div = document.createElement('div')
                     div.id = 'emptyDiv'
@@ -89,7 +80,7 @@ for (const check of document.querySelectorAll('input[name=checkbox]')) {
 }
 
 //Слушатель кнопки "Установить" на таймауте
-document.getElementById('timeout').addEventListener('submit', async (event) => {
+document.getElementById('timeout').addEventListener('submit', async event => {
     event.preventDefault()
     event.submitter.disabled = true
     settings.timeout = document.getElementById('timeoutValue').valueAsNumber
@@ -100,7 +91,7 @@ document.getElementById('timeout').addEventListener('submit', async (event) => {
 })
 
 //Слушатель кнопки "Установить" на таймауте при ошибке
-document.getElementById('timeoutError').addEventListener('submit', async (event) => {
+document.getElementById('timeoutError').addEventListener('submit', async event => {
     event.preventDefault()
     event.submitter.disabled = true
     settings.timeoutError = document.getElementById('timeoutErrorValue').valueAsNumber
@@ -111,7 +102,7 @@ document.getElementById('timeoutError').addEventListener('submit', async (event)
 })
 
 //Слушатель кнопки "Установить" на таймауте при голосовании
-document.getElementById('timeoutVote').addEventListener('submit', async (event) => {
+document.getElementById('timeoutVote').addEventListener('submit', async event => {
     event.preventDefault()
     event.submitter.disabled = true
     settings.timeoutVote = document.getElementById('timeoutVoteValue').valueAsNumber
@@ -130,7 +121,7 @@ document.getElementById('file-download').addEventListener('click', async () => {
         settings,
         generalStats,
         todayStats,
-        version: db.version
+        version: db.version,
     }
     allSetting.projects = await db.getAll('projects')
     const text = JSON.stringify(allSetting, null, '\t')
@@ -199,51 +190,55 @@ document.getElementById('logs-clear').addEventListener('click', async () => {
 })
 
 //Слушатель на импорт настроек
-document.getElementById('file-upload').addEventListener('change', async (event) => {
-    createNotif(chrome.i18n.getMessage('importing'), 'hint')
-    try {
-        if (event.target.files.length === 0) return
-        const [file] = event.target.files
-        const data = await new Response(file).json()
+document.getElementById('file-upload').addEventListener(
+    'change',
+    async event => {
+        createNotif(chrome.i18n.getMessage('importing'), 'hint')
+        try {
+            if (event.target.files.length === 0) return
+            const [file] = event.target.files
+            const data = await new Response(file).json()
 
-        const projects = data.projects
+            const projects = data.projects
 
-        const transaction = db.transaction(['projects', 'other'], 'readwrite')
+            const transaction = db.transaction(['projects', 'other'], 'readwrite')
 
-        await transaction.objectStore('projects').clear()
+            await transaction.objectStore('projects').clear()
 
-        let key = 0
-        for (const project of projects) {
-            if (project.key == null) {
-                key++
-                project.key = key
+            let key = 0
+            for (const project of projects) {
+                if (project.key == null) {
+                    key++
+                    project.key = key
+                }
+                await transaction.objectStore('projects').add(project, project.key)
             }
-            await transaction.objectStore('projects').add(project, project.key)
-        }
-        await transaction.objectStore('other').put(data.settings, 'settings')
-        await transaction.objectStore('other').put(data.generalStats, 'generalStats')
-        await transaction.objectStore('other').put(data.todayStats, 'todayStats')
+            await transaction.objectStore('other').put(data.settings, 'settings')
+            await transaction.objectStore('other').put(data.generalStats, 'generalStats')
+            await transaction.objectStore('other').put(data.todayStats, 'todayStats')
 
-        settings = data.settings
-        generalStats = data.generalStats
-        todayStats = data.todayStats
+            settings = data.settings
+            generalStats = data.generalStats
+            todayStats = data.todayStats
 
-        await runDatabaseUpgrade(db, data.version, db.version, transaction, allProjects, getDomainWithoutSubdomain)
+            await runDatabaseUpgrade(db, data.version, db.version, transaction, allProjects, getDomainWithoutSubdomain)
 
-        if (!await checkPermissions(await transaction.objectStore('projects').getAll())) {
-            await db.clear('projects')
+            if (!(await checkPermissions(await transaction.objectStore('projects').getAll()))) {
+                await db.clear('projects')
+                chrome.runtime.sendMessage('reloadAllSettings')
+                await restoreOptions()
+                return
+            }
+
             chrome.runtime.sendMessage('reloadAllSettings')
             await restoreOptions()
-            return
+
+            createNotif(chrome.i18n.getMessage('importingEnd'), 'success')
+        } catch (error) {
+            createNotif(error, 'error')
+        } finally {
+            document.getElementById('file-upload').value = ''
         }
-
-        chrome.runtime.sendMessage('reloadAllSettings')
-        await restoreOptions()
-
-        createNotif(chrome.i18n.getMessage('importingEnd'), 'success')
-    } catch (error) {
-        createNotif(error, 'error')
-    } finally {
-        document.getElementById('file-upload').value = ''
-    }
-}, false)
+    },
+    false,
+)

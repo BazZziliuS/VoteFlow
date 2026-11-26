@@ -10,7 +10,11 @@
  * @returns {Promise<*>} Результат операции
  * @throws {Error} Последняя ошибка, если все попытки исчерпаны
  */
-async function retryOnTabsLock(operation, maxAttempts = LIMITS.MAX_TAB_OPERATION_RETRIES, retryDelay = TIME.TAB_OPERATION_RETRY_DELAY) {
+async function retryOnTabsLock(
+    operation,
+    maxAttempts = LIMITS.MAX_TAB_OPERATION_RETRIES,
+    retryDelay = TIME.TAB_OPERATION_RETRY_DELAY,
+) {
     let lastError
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {

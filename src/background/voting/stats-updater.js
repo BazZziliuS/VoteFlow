@@ -90,7 +90,7 @@ function checkAndUpdateDailyStats(todayStats) {
             errorVotes: 0,
             laterVotes: 0,
             lastSuccessVote: null,
-            lastAttemptVote: Date.now()
+            lastAttemptVote: Date.now(),
         }
     }
     todayStats.lastAttemptVote = Date.now()

@@ -126,7 +126,7 @@ function resetEdit(project) {
 
     if (project) {
         // После сохранения возвращаемся к проекту: ждём загрузки списка его сайта, затем показываем карточку
-        (async () => {
+        ;(async () => {
             document.getElementById('addedTab').click()
             const button = document.querySelector('[data-rating-button="' + project.rating + '"]')
             if (!button) return
@@ -213,7 +213,15 @@ function editProject(project, switchToEdit) {
             }
             // TODO сомнительный код, я не знаю как ещё вынести обратно в input Date без смещений во времени из-за часового пояса
             // https://stackoverflow.com/a/61082536/11235240
-            const hours = new Date(1980, 0, 1, project.timeoutHour, project.timeoutMinute, project.timeoutSecond, project.timeoutMS)
+            const hours = new Date(
+                1980,
+                0,
+                1,
+                project.timeoutHour,
+                project.timeoutMinute,
+                project.timeoutSecond,
+                project.timeoutMS,
+            )
             hours.setMinutes(hours.getMinutes() - hours.getTimezoneOffset())
             document.getElementById('hour').value = hours.toISOString().slice(11, 23)
         }
@@ -268,7 +276,7 @@ function editProject(project, switchToEdit) {
 }
 
 //Слушатель кнопки "Добавить"
-document.getElementById('append').addEventListener('submit', async (event) => {
+document.getElementById('append').addEventListener('submit', async event => {
     event.preventDefault()
     event.submitter.disabled = true
     let domain, funcRating
@@ -392,12 +400,15 @@ document.getElementById('append').addEventListener('submit', async (event) => {
             laterVotes: 0,
             lastSuccessVote: null,
             lastAttemptVote: null,
-            added: Date.now()
+            added: Date.now(),
         }
     }
 
     if (settings.expertMode || project.rating === 'Custom') {
-        if (document.getElementById('scheduleTimeCheckbox').checked && document.getElementById('scheduleTime').value !== '') {
+        if (
+            document.getElementById('scheduleTimeCheckbox').checked &&
+            document.getElementById('scheduleTime').value !== ''
+        ) {
             project.time = new Date(document.getElementById('scheduleTime').value).getTime()
         } else {
             project.time = null
@@ -461,7 +472,7 @@ document.getElementById('append').addEventListener('submit', async (event) => {
         if (document.getElementById('randomize').checked) {
             project.randomize = {
                 min: document.getElementById('randomizeMin').valueAsNumber,
-                max: document.getElementById('randomizeMax').valueAsNumber
+                max: document.getElementById('randomizeMax').valueAsNumber,
             }
         }
     }
@@ -475,7 +486,7 @@ document.getElementById('append').addEventListener('submit', async (event) => {
             event.submitter.disabled = false
             return
         }
-//      project.id = body
+        //      project.id = body
         project.body = body
         project.responseURL = document.getElementById('responseURL').value
 
@@ -485,7 +496,7 @@ document.getElementById('append').addEventListener('submit', async (event) => {
     if (event.submitter.id === 'submitEditProject') {
         if (document.getElementById('priority').checked && !project.priority) {
             project.priority = true
-            if (!await removeProjectList(project, true, event)) {
+            if (!(await removeProjectList(project, true, event))) {
                 event.submitter.disabled = false
                 return
             }
@@ -500,7 +511,7 @@ document.getElementById('append').addEventListener('submit', async (event) => {
             await addProjectList(project, true)
         } else if (!document.getElementById('priority').checked && project.priority) {
             delete project.priority
-            if (!await removeProjectList(project, true, event)) {
+            if (!(await removeProjectList(project, true, event))) {
                 event.submitter.disabled = false
                 return
             }
@@ -536,7 +547,7 @@ async function addProject(project, element) {
 
     //Получение бонусов на проектах где требуется подтвердить получение бонуса
     let secondBonusText
-    let secondBonusButton = document.createElement('button')
+    const secondBonusButton = document.createElement('button')
     secondBonusButton.type = 'button'
     secondBonusButton.textContent = chrome.i18n.getMessage('lets')
     /*if (project.id == 'mythicalworld' || project.id == 5323 || project.id == 1654 || project.id == 6099) {
@@ -544,7 +555,7 @@ async function addProject(project, element) {
         secondBonusButton.id = 'secondBonusMythicalWorld'
         secondBonusButton.className = 'secondBonus'
     } else*/
-    if (project.id === 'victorycraft' || project.id === "8179" || project.id === "4729") {
+    if (project.id === 'victorycraft' || project.id === '8179' || project.id === '4729') {
         secondBonusText = chrome.i18n.getMessage('secondBonus', 'VictoryCraft')
         secondBonusButton.id = 'secondBonusVictoryCraft'
         secondBonusButton.className = 'secondBonus'
@@ -562,23 +573,34 @@ async function addProject(project, element) {
     if (!document.getElementById('disableCheckProjects').checked) {
         if (project.id == null || allProjects[project.rating].oneProject?.() > 0) {
             // noinspection JSUnresolvedFunction
-            let found = await db.countFromIndex('projects', 'rating', project.rating)
+            const found = await db.countFromIndex('projects', 'rating', project.rating)
             if (found >= allProjects[project.rating].oneProject?.()) {
-                createNotif(chrome.i18n.getMessage('oneProject', [project.rating, String(allProjects[project.rating].oneProject?.())]), 'error', {element})
+                createNotif(
+                    chrome.i18n.getMessage('oneProject', [
+                        project.rating,
+                        String(allProjects[project.rating].oneProject?.()),
+                    ]),
+                    'error',
+                    {element},
+                )
                 return
             }
         } else {
             // noinspection JSUnresolvedFunction
-            let found = await db.countFromIndex('projects', 'rating, id', [project.rating, project.id])
+            const found = await db.countFromIndex('projects', 'rating, id', [project.rating, project.id])
             if (found > 0) {
                 const message = chrome.i18n.getMessage('alreadyAdded')
                 if (!secondBonusText) {
                     createNotif(message, 'success', {element})
                 } else {
-                    createNotif([message, document.createElement('br'), secondBonusText, secondBonusButton], 'success', {
-                        delay: 30000,
-                        element
-                    })
+                    createNotif(
+                        [message, document.createElement('br'), secondBonusText, secondBonusButton],
+                        'success',
+                        {
+                            delay: 30000,
+                            element,
+                        },
+                    )
                 }
                 addProjectsBonus(project, element)
                 return
@@ -586,8 +608,7 @@ async function addProject(project, element) {
         }
     }
 
-
-    if (!await checkPermissions([project])) return
+    if (!(await checkPermissions([project]))) return
 
     if (!(document.getElementById('disableCheckProjects').checked || project.rating === 'Custom')) {
         createNotif(chrome.i18n.getMessage('checkHasProject'), 'hint', {element})
@@ -619,15 +640,18 @@ async function addProject(project, element) {
         } else if (response.redirected) {
             createNotif(chrome.i18n.getMessage('notFoundProjectRedirect', response.url), 'error', {element})
             return
-        } else if (response.status === 503 || response.status === 403) { // Игнорируем проверку CloudFlare
+        } else if (response.status === 503 || response.status === 403) {
+            // Игнорируем проверку CloudFlare
             //None
         } else if (!response.ok) {
-            createNotif(chrome.i18n.getMessage('notConnect', [project.rating, String(response.status)]), 'error', {element})
+            createNotif(chrome.i18n.getMessage('notConnect', [project.rating, String(response.status)]), 'error', {
+                element,
+            })
             return
         }
 
-        let html = await response.text()
-        let doc = new DOMParser().parseFromString(html, 'text/html')
+        const html = await response.text()
+        const doc = new DOMParser().parseFromString(html, 'text/html')
 
         try {
             const notFound = allProjects[project.rating].notFound?.(doc, project)
@@ -651,7 +675,7 @@ async function addProject(project, element) {
         //Проверка авторизации ВКонтакте
         if (allProjects[project.rating].needAdditionalOrigins?.(project)?.includes?.('*://*.vk.com/*')) {
             createNotif(chrome.i18n.getMessage('checkAuthVK'), 'hint', {element})
-            let url2 = authVKUrls.get(project.rating)
+            const url2 = authVKUrls.get(project.rating)
             let response2
             try {
                 response2 = await fetch(url2, {redirect: 'manual', credentials: 'include'})
@@ -690,7 +714,11 @@ async function addProject(project, element) {
                 })
                 return
             } else if (response2.status !== 0) {
-                createNotif(chrome.i18n.getMessage('notConnect', [extractHostname(response.url), String(response2.status)]), 'error', {element})
+                createNotif(
+                    chrome.i18n.getMessage('notConnect', [extractHostname(response.url), String(response2.status)]),
+                    'error',
+                    {element},
+                )
                 return
             }
             createNotif(chrome.i18n.getMessage('checkAuthVKSuccess'), 'hint', {element})
@@ -700,7 +728,17 @@ async function addProject(project, element) {
     await addProjectList(project)
 
     // noinspection JSUnresolvedVariable
-    if (!settings.operaAttention && (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' || (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) && !(allProjects[project.rating].notRequiredCaptcha?.(project) || allProjects[project.rating].alertManualCaptcha?.())) {
+    if (
+        !settings.operaAttention &&
+        (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' ||
+            (!!window.opr && !!opr.addons) ||
+            !!window.opera ||
+            navigator.userAgent.indexOf(' OPR/') >= 0) &&
+        !(
+            allProjects[project.rating].notRequiredCaptcha?.(project) ||
+            allProjects[project.rating].alertManualCaptcha?.()
+        )
+    ) {
         settings.operaAttention = true
         db.put('other', settings, 'settings')
     }
@@ -741,33 +779,35 @@ async function addProject(project, element) {
 
 //Получение бонусов на проектах где требуется подтвердить получение бонуса
 function addProjectsBonus(project, element) {
-//  if (project.id == 'mythicalworld' || project.id == 5323 || project.id == 1654 || project.id == 6099) {
-//      document.getElementById('secondBonusMythicalWorld').addEventListener('click', async()=>{
-//          let response = await fetch('https://mythicalworld.su/bonus')
-//          if (!response.ok) {
-//              createNotif(chrome.i18n.getMessage('notConnect', [response.url, String(response.status)]), 'error', {element})
-//              return
-//          } else if (response.redirected) {
-//              createNotif(chrome.i18n.getMessage('redirectedSecondBonus', response.url), 'error', {element})
-//              return
-//          }
-//          await addProject('Custom', 'MythicalWorldBonus1Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=1&item=1","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonus2Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=2&item=2","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonus3Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=3&item=4","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonus4Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=4&item=7","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonus5Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=5&item=9","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonus6Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=6&item=11","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//          await addProject('Custom', 'MythicalWorldBonusMith', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"type=1&bonus=1&value=5","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
-//      })
+    //  if (project.id == 'mythicalworld' || project.id == 5323 || project.id == 1654 || project.id == 6099) {
+    //      document.getElementById('secondBonusMythicalWorld').addEventListener('click', async()=>{
+    //          let response = await fetch('https://mythicalworld.su/bonus')
+    //          if (!response.ok) {
+    //              createNotif(chrome.i18n.getMessage('notConnect', [response.url, String(response.status)]), 'error', {element})
+    //              return
+    //          } else if (response.redirected) {
+    //              createNotif(chrome.i18n.getMessage('redirectedSecondBonus', response.url), 'error', {element})
+    //              return
+    //          }
+    //          await addProject('Custom', 'MythicalWorldBonus1Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=1&item=1","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonus2Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=2&item=2","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonus3Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=3&item=4","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonus4Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=4&item=7","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonus5Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=5&item=9","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonus6Day', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"give=6&item=11","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //          await addProject('Custom', 'MythicalWorldBonusMith', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://mythicalworld.su/bonus","referrerPolicy":"no-referrer-when-downgrade","body":"type=1&bonus=1&value=5","method":"POST","mode":"cors"}', null, 'https://mythicalworld.su/bonus', {ms: 86400000}, priorityOption, null)
+    //      })
     /*  } else */
-    if (project.id === 'victorycraft' || project.id === "8179" || project.id === "4729") {
+    if (project.id === 'victorycraft' || project.id === '8179' || project.id === '4729') {
         document.getElementById('secondBonusVictoryCraft').addEventListener('click', async event => {
             event.target.disabled = true
-            let vict = {
+            const vict = {
                 rating: 'Custom',
                 nick: '',
                 id: 'VictoryCraft ' + chrome.i18n.getMessage('dailyBonus'),
-                body: JSON.parse('{"headers": {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language": "ru,en-US;q=0.9,en;q=0.8","content-type": "application/x-www-form-urlencoded","sec-fetch-dest": "document","sec-fetch-mode": "navigate","sec-fetch-site": "same-origin","sec-fetch-user": "?1","upgrade-insecure-requests": "1"},"body": "give_daily_posted=1&token=%7Btoken%7D&return=%252F","method": "POST"}'),
+                body: JSON.parse(
+                    '{"headers": {"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language": "ru,en-US;q=0.9,en;q=0.8","content-type": "application/x-www-form-urlencoded","sec-fetch-dest": "document","sec-fetch-mode": "navigate","sec-fetch-site": "same-origin","sec-fetch-user": "?1","upgrade-insecure-requests": "1"},"body": "give_daily_posted=1&token=%7Btoken%7D&return=%252F","method": "POST"}',
+                ),
                 time: null,
                 responseURL: 'https://victorycraft.ru/?do=cabinet&loc=bonuses',
                 timeoutHour: 0,
@@ -782,8 +822,8 @@ function addProjectsBonus(project, element) {
                     laterVotes: 0,
                     lastSuccessVote: null,
                     lastAttemptVote: null,
-                    added: Date.now()
-                }
+                    added: Date.now(),
+                },
             }
             await addProject(vict, element)
             //await addProject('Custom', 'VictoryCraft Голосуйте минимум в 2х рейтингах в день', '{"credentials":"include","headers":{"accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9","accept-language":"ru,en;q=0.9,en-US;q=0.8","cache-control":"max-age=0","content-type":"application/x-www-form-urlencoded","sec-fetch-dest":"document","sec-fetch-mode":"navigate","sec-fetch-site":"same-origin","sec-fetch-user":"?1","upgrade-insecure-requests":"1"},"referrer":"https://victorycraft.ru/?do=cabinet&loc=vote","referrerPolicy":"no-referrer-when-downgrade","body":"receive_month_bonus_posted=1&reward_id=1&token=%7Btoken%7D","method":"POST","mode":"cors"}', {ms: 604800000}, 'https://victorycraft.ru/?do=cabinet&loc=vote', null, priorityOption, null)
@@ -832,7 +872,10 @@ async function checkPermissions(projects, element) {
                     return true
                 }
             } catch (error) {
-                if (!error.message.includes('must be called during a user gesture') && !error.message.includes('may only be called from a user input handler')) {
+                if (
+                    !error.message.includes('must be called during a user gesture') &&
+                    !error.message.includes('may only be called from a user input handler')
+                ) {
                     createNotif(error, 'error', {element})
                     return false
                 }
@@ -890,7 +933,17 @@ function getUrlProjects(element) {
     const url = new URL(document.location.href)
     for (let [key, value] of url.searchParams) {
         if (key === 'top') key = 'rating' // TODO временный код
-        if (key === 'rating' || key === 'nick' || key === 'id' || key === 'game' || key === 'listing' || key === 'lang' || key === 'maxCountVote' || key === 'ordinalWorld' || key === 'addition') {
+        if (
+            key === 'rating' ||
+            key === 'nick' ||
+            key === 'id' ||
+            key === 'game' ||
+            key === 'listing' ||
+            key === 'lang' ||
+            key === 'maxCountVote' ||
+            key === 'ordinalWorld' ||
+            key === 'addition'
+        ) {
             if (key !== 'rating' && !project.rating) continue
 
             if (key === 'rating' && Object.keys(project).length > 0) {
@@ -903,7 +956,7 @@ function getUrlProjects(element) {
                     laterVotes: 0,
                     lastSuccessVote: null,
                     lastAttemptVote: null,
-                    added: Date.now()
+                    added: Date.now(),
                 }
                 if (allProjects[project.rating].URLMain) {
                     const domain2 = allProjects[project.rating].URLMain?.()
@@ -953,7 +1006,7 @@ function getUrlProjects(element) {
             laterVotes: 0,
             lastSuccessVote: null,
             lastAttemptVote: null,
-            added: Date.now()
+            added: Date.now(),
         }
         if (allProjects[project.rating].URLMain) {
             const domain2 = allProjects[project.rating].URLMain?.()
@@ -971,7 +1024,8 @@ async function fastAdd() {
     if (document.location.href.includes('addFastProject')) {
         toggleModal('addFastProject')
         const searchParams = new URL(document.location.href).searchParams
-        if (searchParams.get('name')) document.querySelector('[data-resource="fastAdd"]').textContent = searchParams.get('name')
+        if (searchParams.get('name'))
+            document.querySelector('[data-resource="fastAdd"]').textContent = searchParams.get('name')
         const listFastAdd = document.querySelector('#addFastProject > div.content > .message')
         listFastAdd.textContent = ''
 
@@ -1040,7 +1094,7 @@ async function fastAdd() {
         html2.append(div2)
         listFastAdd.append(html2)
         listFastAdd.scrollTop = listFastAdd.scrollHeight
-        if (!await checkPermissions(projects, status2)) {
+        if (!(await checkPermissions(projects, status2))) {
             const buttonRetry = document.createElement('button')
             buttonRetry.classList.add('btn')
             buttonRetry.textContent = chrome.i18n.getMessage('retry')
@@ -1115,18 +1169,19 @@ async function addCustom() {
 async function openPopup(url, onClose) {
     const width = 900
     const height = 700
-    const left = parseInt(Math.max(0, (screen.width - width) / 2) + (screen.availLeft | 0))
-        , top = parseInt(Math.max(0, (screen.height - height) / 2) + (screen.availTop | 0))
+    const left = parseInt(Math.max(0, (screen.width - width) / 2) + (screen.availLeft | 0)),
+        top = parseInt(Math.max(0, (screen.height - height) / 2) + (screen.availTop | 0))
     let close = 'setSelfAsOpener'
     // noinspection JSUnresolvedVariable
-    if (typeof InstallTrigger !== 'undefined') {//Костыль с FireFox
+    if (typeof InstallTrigger !== 'undefined') {
+        //Костыль с FireFox
         //FireFox зачем-то решил это называть allowScriptsToClose когда в Chrome это называется setSelfAsOpener, как же это "удобно"
         close = 'allowScriptsToClose'
     }
     const tab = await chrome.windows.create({type: 'popup', url, [close]: true, top, left, width, height})
     const tabID = tab.tabs[0].id
     if (onClose) {
-        function onRemoved(tabId/*, removeInfo*/) {
+        function onRemoved(tabId /*, removeInfo*/) {
             if (tabID === tabId) {
                 onClose()
                 chrome.tabs.onRemoved.removeListener(onRemoved)
@@ -1197,7 +1252,14 @@ function linkChanged(event, reset) {
         document.getElementById('rewardAttention').removeAttribute('style')
     }
     // noinspection JSUnresolvedVariable
-    if (!settings.operaAttention && (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' || (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) && !(funcRating.notRequiredCaptcha?.(project) || funcRating.alertManualCaptcha?.())) {
+    if (
+        !settings.operaAttention &&
+        (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' ||
+            (!!window.opr && !!opr.addons) ||
+            !!window.opera ||
+            navigator.userAgent.indexOf(' OPR/') >= 0) &&
+        !(funcRating.notRequiredCaptcha?.(project) || funcRating.alertManualCaptcha?.())
+    ) {
         document.getElementById('operaAttention').removeAttribute('style')
     }
 }
@@ -1249,7 +1311,8 @@ function ratingChanged(event, reset) {
         document.getElementById('voteMode').disabled = true
         document.getElementById('voteMode').checked = false
         document.getElementById('voteMode').dispatchEvent(new Event('change'))
-        if (!document.getElementById('customTimeOut').checked) document.getElementById('selectTime').parentElement.style.display = 'none'
+        if (!document.getElementById('customTimeOut').checked)
+            document.getElementById('selectTime').parentElement.style.display = 'none'
         document.getElementById('customBody').parentElement.style.display = 'none'
         document.getElementById('responseURL').parentElement.style.display = 'none'
         laterChooseManual = false
@@ -1279,8 +1342,8 @@ function ratingChanged(event, reset) {
         return
     }
 
-    let rating = this.value
-    let funcRating = allProjects[rating]
+    const rating = this.value
+    const funcRating = allProjects[rating]
 
     if (!funcRating) return
     laterChooseManual = true
@@ -1303,13 +1366,18 @@ function ratingChanged(event, reset) {
     }
 
     if (funcRating.URLMain?.() && this.value !== funcRating.URLMain()) {
-        if (funcRating.exampleURLGame && !funcRating.defaultGame) document.getElementById('chooseGame').value = this.value
+        if (funcRating.exampleURLGame && !funcRating.defaultGame)
+            document.getElementById('chooseGame').value = this.value
         this.value = funcRating.URLMain()
     }
     if (funcRating.exampleURLGame) {
         document.getElementById('chooseGame').parentElement.removeAttribute('style')
         document.getElementById('chooseGame').name = 'chooseGame_' + this.value
-        if (funcRating.defaultGame && !editingProject && !funcRating.gameList().has(document.getElementById('chooseGame').value)) {
+        if (
+            funcRating.defaultGame &&
+            !editingProject &&
+            !funcRating.gameList().has(document.getElementById('chooseGame').value)
+        ) {
             document.getElementById('chooseGame').value = funcRating.defaultGame()
         }
         document.getElementById('urlGameTooltip1').textContent = funcRating.exampleURLGame()[0]
@@ -1329,7 +1397,11 @@ function ratingChanged(event, reset) {
     if (funcRating.exampleURLListing) {
         document.getElementById('chooseListing').parentElement.removeAttribute('style')
         document.getElementById('chooseListing').name = 'chooseListing_' + rating
-        if (funcRating.defaultListing && !editingProject && !funcRating.listingList().has(document.getElementById('chooseListing').value)) {
+        if (
+            funcRating.defaultListing &&
+            !editingProject &&
+            !funcRating.listingList().has(document.getElementById('chooseListing').value)
+        ) {
             document.getElementById('chooseListing').value = funcRating.defaultListing()
         }
         document.getElementById('chooseListing').dispatchEvent(new Event('change'))
@@ -1350,7 +1422,11 @@ function ratingChanged(event, reset) {
     if (funcRating.langList) {
         document.getElementById('chooseLang').parentElement.removeAttribute('style')
         document.getElementById('chooseLang').name = 'chooseLang_' + rating
-        if (funcRating.defaultLand && !editingProject && !funcRating.langList().has(document.getElementById('chooseLang').value)) {
+        if (
+            funcRating.defaultLand &&
+            !editingProject &&
+            !funcRating.langList().has(document.getElementById('chooseLang').value)
+        ) {
             document.getElementById('chooseLang').value = funcRating.defaultLand()
         }
         const langList = document.getElementById('langList')
@@ -1386,7 +1462,11 @@ function ratingChanged(event, reset) {
     }
 
     // noinspection JSUnresolvedVariable
-    if (!settings.operaAttention && navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' && !(funcRating.notRequiredCaptcha?.() || funcRating.alertManualCaptcha?.())) {
+    if (
+        !settings.operaAttention &&
+        navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' &&
+        !(funcRating.notRequiredCaptcha?.() || funcRating.alertManualCaptcha?.())
+    ) {
         document.getElementById('operaAttention').removeAttribute('style')
     }
 
@@ -1497,18 +1577,22 @@ document.getElementById('link').addEventListener('input', updateLinkStatus)
 
 //Список поддерживаемых сайтов с поиском
 function renderSupportedSites() {
-    const sites = Object.keys(allProjects).filter(site => site !== 'Custom').sort()
+    const sites = Object.keys(allProjects)
+        .filter(site => site !== 'Custom')
+        .sort()
     document.getElementById('sitesCount').textContent = String(sites.length)
     const list = document.getElementById('sitesList')
-    list.replaceChildren(...sites.map(site => {
-        const link = document.createElement('a')
-        link.className = 'site-chip'
-        link.href = 'https://' + site + '/'
-        link.target = '_blank'
-        link.rel = 'noopener'
-        link.textContent = site
-        return link
-    }))
+    list.replaceChildren(
+        ...sites.map(site => {
+            const link = document.createElement('a')
+            link.className = 'site-chip'
+            link.href = 'https://' + site + '/'
+            link.target = '_blank'
+            link.rel = 'noopener'
+            link.textContent = site
+            return link
+        }),
+    )
 }
 
 renderSupportedSites()

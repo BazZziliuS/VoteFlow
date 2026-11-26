@@ -14,7 +14,10 @@ async function tryOpenTab(options, project, attempt) {
     try {
         return await chrome.tabs.create(options)
     } catch (error) {
-        if (error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' && attempt < LIMITS.MAX_TAB_OPERATION_RETRIES) {
+        if (
+            error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' &&
+            attempt < LIMITS.MAX_TAB_OPERATION_RETRIES
+        ) {
             await wait(TIME.TAB_OPERATION_RETRY_DELAY)
             return await tryOpenTab(options, project, ++attempt)
         }
@@ -36,7 +39,10 @@ async function tryCloseTab(tabId, project, attempt) {
     try {
         await chrome.tabs.remove(tabId)
     } catch (error) {
-        if (error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' && attempt < LIMITS.MAX_TAB_OPERATION_RETRIES) {
+        if (
+            error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' &&
+            attempt < LIMITS.MAX_TAB_OPERATION_RETRIES
+        ) {
             await wait(TIME.TAB_OPERATION_RETRY_DELAY)
             await tryCloseTab(tabId, project, ++attempt)
             return
@@ -60,7 +66,10 @@ async function tryGroupTabs(options, attempt) {
     try {
         return await chrome.tabs.group(options)
     } catch (error) {
-        if (error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' && attempt < LIMITS.MAX_TAB_OPERATION_RETRIES) {
+        if (
+            error.message === 'Tabs cannot be edited right now (user may be dragging a tab).' &&
+            attempt < LIMITS.MAX_TAB_OPERATION_RETRIES
+        ) {
             await wait(TIME.TAB_OPERATION_RETRY_DELAY)
             return await tryGroupTabs(options, ++attempt)
         }
@@ -75,7 +84,8 @@ async function tryGroupTabs(options, attempt) {
  * @returns {Promise<boolean>} true если окно доступно, false при ошибке
  */
 async function checkWindow(project) {
-    const windows = await chrome.windows.getAll()
+    const windows = await chrome.windows
+        .getAll()
         .catch(error => console.warn(chrome.i18n.getMessage('errorOpenTab', error.message)))
     if (!windows?.length) {
         try {
@@ -146,7 +156,7 @@ async function handleTabGrouping(tab, currentGroupId, promiseGroup, project, get
         return {
             groupId: newGroupId !== null ? newGroupId : currentGroupId,
             notSupported: false,
-            promiseGroup: newPromiseGroup
+            promiseGroup: newPromiseGroup,
         }
     } catch (error) {
         if (error.message === 'Tabs cannot be edited right now (user may be dragging a tab).') {

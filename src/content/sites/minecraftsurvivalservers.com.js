@@ -8,7 +8,7 @@ async function vote(first) {
     document.querySelector('#recaptcha').nextElementSibling.firstChild.click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (checkPopup()) {
             clearInterval(timer)

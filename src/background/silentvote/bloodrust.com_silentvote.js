@@ -17,9 +17,9 @@ self['silentVote_bloodrust.com'] = async function (project) {
         console.log('[bloodrust.com-silent] Шаг 1: Проверка календаря вайпов')
         const wipeResponse = await fetch('https://core.bloodrust.com/public/wipe-calendar', {
             headers: {
-                'accept': 'application/json, text/plain, */*'
+                accept: 'application/json, text/plain, */*',
             },
-            method: 'GET'
+            method: 'GET',
         })
 
         if (!wipeResponse.ok) {
@@ -28,14 +28,17 @@ self['silentVote_bloodrust.com'] = async function (project) {
         }
 
         const wipeData = await wipeResponse.json()
-        console.log('[bloodrust.com-silent] Получено дней в календаре:', Array.isArray(wipeData) ? wipeData.length : 'не массив')
+        console.log(
+            '[bloodrust.com-silent] Получено дней в календаре:',
+            Array.isArray(wipeData) ? wipeData.length : 'не массив',
+        )
 
         // Find wipe in next 24 hours from now
         const now = new Date()
         console.log('[bloodrust.com-silent] Текущее время:', now.toLocaleString('ru-RU'))
 
         let recentWipe = null
-        let allWipes = []
+        const allWipes = []
 
         if (Array.isArray(wipeData)) {
             // Collect all wipes with their dates
@@ -53,7 +56,7 @@ self['silentVote_bloodrust.com'] = async function (project) {
                             allWipes.push({
                                 wipe,
                                 date: wipeDate,
-                                hoursDiff
+                                hoursDiff,
                             })
                         }
                     }
@@ -94,7 +97,7 @@ self['silentVote_bloodrust.com'] = async function (project) {
         console.log('[bloodrust.com-silent] Шаг 2: Парсинг Telegram канала')
 
         const telegramResponse = await fetch('https://t.me/s/bloodrust', {
-            method: 'GET'
+            method: 'GET',
         })
 
         if (!telegramResponse.ok) {
@@ -111,7 +114,8 @@ self['silentVote_bloodrust.com'] = async function (project) {
         console.log('[bloodrust.com-silent] Поиск промокодов по ID сообщений...')
 
         // First, let's find all message blocks with simpler regex
-        const simpleMessageRegex = /<div[^>]*class="[^"]*tgme_widget_message[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi
+        const simpleMessageRegex =
+            /<div[^>]*class="[^"]*tgme_widget_message[^"]*"[^>]*>([\s\S]*?)<\/div>\s*<\/div>\s*<\/div>/gi
         const messageBlocks = html.matchAll(simpleMessageRegex)
 
         let messageCount = 0
@@ -126,11 +130,17 @@ self['silentVote_bloodrust.com'] = async function (project) {
             const messageId = linkMatch ? parseInt(linkMatch[1], 10) : 0
 
             // Extract message text
-            const textMatch = messageHtml.match(/<div[^>]*class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/)
+            const textMatch = messageHtml.match(
+                /<div[^>]*class="[^"]*tgme_widget_message_text[^"]*"[^>]*>([\s\S]*?)<\/div>/,
+            )
             if (!textMatch) continue
 
             const messageText = textMatch[1]
-            const cleanText = messageText.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, '').trim()
+            const cleanText = messageText
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/&nbsp;/g, ' ')
+                .replace(/&#\d+;/g, '')
+                .trim()
 
             // Try to find promo code
             const promoMatch = cleanText.match(PROMO_REGEX)
@@ -140,10 +150,15 @@ self['silentVote_bloodrust.com'] = async function (project) {
                 foundPromoCodes.push({
                     code: foundCode,
                     messageId: messageId,
-                    text: cleanText.substring(0, 100)
+                    text: cleanText.substring(0, 100),
                 })
 
-                console.log('[bloodrust.com-silent] Найден промокод:', foundCode, 'ID сообщения:', messageId || 'не найден')
+                console.log(
+                    '[bloodrust.com-silent] Найден промокод:',
+                    foundCode,
+                    'ID сообщения:',
+                    messageId || 'не найден',
+                )
 
                 // Keep track of the promo code with highest message ID (newest)
                 if (messageId > 0 && messageId > highestMessageId) {
@@ -157,7 +172,12 @@ self['silentVote_bloodrust.com'] = async function (project) {
         console.log('[bloodrust.com-silent] Найдено промокодов:', foundPromoCodes.length)
 
         if (promoCode) {
-            console.log('[bloodrust.com-silent] ✓ Выбран самый свежий промокод:', promoCode, 'ID сообщения:', highestMessageId)
+            console.log(
+                '[bloodrust.com-silent] ✓ Выбран самый свежий промокод:',
+                promoCode,
+                'ID сообщения:',
+                highestMessageId,
+            )
         } else if (foundPromoCodes.length > 0) {
             // Fallback: if no message IDs found, take the last promo code in the HTML (likely newest)
             promoCode = foundPromoCodes[foundPromoCodes.length - 1].code
@@ -218,7 +238,7 @@ self['silentVote_bloodrust.com'] = async function (project) {
 
         // Store promo code in silentResponseBody so content script can use it
         silentResponseBody['bloodrust.com'] = {
-            promoCode: promoCode
+            promoCode: promoCode,
         }
 
         // Save used promo code
@@ -234,7 +254,6 @@ self['silentVote_bloodrust.com'] = async function (project) {
         }
 
         endVote({silentVote: true}, null, project)
-
     } catch (error) {
         console.error('[bloodrust.com-silent] Критическая ошибка:', error)
         endVote({message: 'Ошибка: ' + error.message}, null, project)

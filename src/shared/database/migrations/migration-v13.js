@@ -121,7 +121,7 @@ function getOldRatingNames() {
         ['ListeServMinecraftFr', 'liste-serv-minecraft.fr'],
         ['PlayMinecraftServersCom', 'play-minecraft-servers.com'],
         ['MinecraftMenu', 'minecraft.menu'],
-        ['Custom', 'Custom']
+        ['Custom', 'Custom'],
     ])
 }
 
@@ -144,7 +144,14 @@ async function migrateV13(transaction, allProjects, getDomainWithoutSubdomain) {
         const voteURL = allProjects[domain]?.voteURL?.(project)
 
         if (!domain || !voteURL) {
-            console.warn('When updating the database, it was not possible to find information on rating, additional information:', JSON.stringify(project), 'domain', domain, 'voteURL', voteURL)
+            console.warn(
+                'When updating the database, it was not possible to find information on rating, additional information:',
+                JSON.stringify(project),
+                'domain',
+                domain,
+                'voteURL',
+                voteURL,
+            )
             await cursor.delete()
             cursor = await cursor.continue()
             continue
@@ -167,11 +174,13 @@ async function migrateV13(transaction, allProjects, getDomainWithoutSubdomain) {
         }
 
         // Переименование поля game в listing для определенных рейтингов
-        if (project.rating === 'minecraftrating.ru' ||
+        if (
+            project.rating === 'minecraftrating.ru' ||
             project.rating === 'top.gg' ||
             project.rating === 'discordbotlist.com' ||
             project.rating === 'discords.com' ||
-            project.rating === 'misterlauncher.org') {
+            project.rating === 'misterlauncher.org'
+        ) {
             project.listing = project.game
             delete project.game
         } else if (project.rating === 'minecraftkrant.nl') {
@@ -183,15 +192,21 @@ async function migrateV13(transaction, allProjects, getDomainWithoutSubdomain) {
         }
 
         // Блокировка закрытых проектов
-        if (((project.rating === 'topcraft.club' || project.rating === 'topcraft.ru') && project.id === '7666') ||
-            (project.id === 'arago' && (project.rating === 'minecraftrating.ru' || project.rating === 'tmonitoring.com'))) {
+        if (
+            ((project.rating === 'topcraft.club' || project.rating === 'topcraft.ru') && project.id === '7666') ||
+            (project.id === 'arago' &&
+                (project.rating === 'minecraftrating.ru' || project.rating === 'tmonitoring.com'))
+        ) {
             project.error = chrome.i18n.getMessage('disabledSite', 'Проект закрыт')
             project.time = Infinity
         }
 
         // Блокировка craftlist.org
         if (project.rating === 'craftlist.org') {
-            project.error = chrome.i18n.getMessage('disabledSite', 'There is a high risk of being blocked for auto-voting, vote on this site manually')
+            project.error = chrome.i18n.getMessage(
+                'disabledSite',
+                'There is a high risk of being blocked for auto-voting, vote on this site manually',
+            )
             project.time = Infinity
         }
 

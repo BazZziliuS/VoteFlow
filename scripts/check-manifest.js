@@ -29,14 +29,18 @@ const sourceFiles = walk('src').filter(f => f.endsWith('.js'))
 // 1. importScripts
 for (const file of sourceFiles) {
     // Комментарии пропускаем: в них бывают примеры путей
-    const text = read(file).split('\n').filter(line => !/^\s*(\/\/|\*)/.test(line)).join('\n')
+    const text = read(file)
+        .split('\n')
+        .filter(line => !/^\s*(\/\/|\*)/.test(line))
+        .join('\n')
     for (const call of text.matchAll(/importScripts\(([^)]*)\)/g)) {
         // Каждый аргумент: проверяем первую строку. Если путь склеивается с переменной, проверяем только префикс
         for (const arg of call[1].split(',')) {
             const m = arg.match(/^\s*'([^']+)'(\s*\+)?/)
             if (!m) continue
             const [, literal, concatenated] = m
-            if (!literal.startsWith('/')) errors.push(`${file}: importScripts('${literal}') — путь должен начинаться с /`)
+            if (!literal.startsWith('/'))
+                errors.push(`${file}: importScripts('${literal}') — путь должен начинаться с /`)
             else if (!concatenated && !exists(literal)) errors.push(`${file}: importScripts('${literal}') — файла нет`)
         }
     }
@@ -64,8 +68,12 @@ if (!manifest.homepage_url) errors.push('manifest.json: нет homepage_url (с�
 // Версия одна на проект: manifest.json и package.json поднимаются вместе (npm run release)
 {
     const pkg = JSON.parse(read('package.json'))
-    if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) errors.push(`manifest.json: версия «${manifest.version}» не в формате X.Y.Z`)
-    if (pkg.version !== manifest.version) errors.push(`версии расходятся: manifest.json ${manifest.version}, package.json ${pkg.version} — используйте npm run release`)
+    if (!/^\d+\.\d+\.\d+$/.test(manifest.version))
+        errors.push(`manifest.json: версия «${manifest.version}» не в формате X.Y.Z`)
+    if (pkg.version !== manifest.version)
+        errors.push(
+            `версии расходятся: manifest.json ${manifest.version}, package.json ${pkg.version} — используйте npm run release`,
+        )
 }
 
 // 3. HTML-страницы интерфейса (options.html, popup.html): все подключённые файлы существуют
@@ -86,12 +94,21 @@ for (const page of htmlPages) {
 // а index.js вызывает каждую. Иначе база откроется по-разному в фоне и в окне настроек
 {
     const dir = 'src/shared/database/migrations'
-    const order = f => f === 'index.js' ? Infinity : Number(f.match(/^migration-v(\d+)/)?.[1] ?? -1)
-    const expected = fs.readdirSync(path.join(root, dir)).filter(f => f.endsWith('.js')).sort((a, b) => order(a) - order(b))
+    const order = f => (f === 'index.js' ? Infinity : Number(f.match(/^migration-v(\d+)/)?.[1] ?? -1))
+    const expected = fs
+        .readdirSync(path.join(root, dir))
+        .filter(f => f.endsWith('.js'))
+        .sort((a, b) => order(a) - order(b))
     const listed = (text, re) => [...text.matchAll(re)].map(m => m[1])
     const sources = {
-        'src/background/background.js': listed(read('src/background/background.js'), /importScripts\('\/src\/shared\/database\/migrations\/([^']+)'\)/g),
-        'src/ui/options.html': listed(read('src/ui/options.html'), /src="\.\.\/shared\/database\/migrations\/([^"]+)"/g),
+        'src/background/background.js': listed(
+            read('src/background/background.js'),
+            /importScripts\('\/src\/shared\/database\/migrations\/([^']+)'\)/g,
+        ),
+        'src/ui/options.html': listed(
+            read('src/ui/options.html'),
+            /src="\.\.\/shared\/database\/migrations\/([^"]+)"/g,
+        ),
         'src/ui/popup.html': listed(read('src/ui/popup.html'), /src="\.\.\/shared\/database\/migrations\/([^"]+)"/g),
     }
     for (const [file, list] of Object.entries(sources)) {
@@ -110,7 +127,7 @@ for (const page of htmlPages) {
 const sandbox = {console, URL}
 vm.createContext(sandbox)
 vm.runInContext(read('src/shared/projects.js'), sandbox, {filename: 'projects.js'})
-const allProjects = sandbox.allProjects
+const allProjects = vm.runInContext('allProjects', sandbox)
 const background = read('src/background/background.js')
 for (const [domain, config] of Object.entries(allProjects)) {
     if (domain === 'Custom') continue
@@ -118,18 +135,27 @@ for (const [domain, config] of Object.entries(allProjects)) {
     if (Object.keys(config).length === 0) continue
     const main = config.URLMain?.() || domain
     let silent = false
-    try { silent = !!config.silentVote?.({}) } catch { silent = true }
+    try {
+        silent = !!config.silentVote?.({})
+    } catch {
+        silent = true
+    }
     if (!exists(`src/content/sites/${main}.js`) && !silent) {
         errors.push(`projects.js: «${domain}» — нет скрипта src/content/sites/${main}.js`)
     }
     if (silent) {
         // Тихий режим загружает скрипт основного домена: ratingMain || rating
         const silentFile = `src/background/silentvote/${main}_silentvote.js`
-        const generic = background.includes(`silentVote_${main}`) || read('src/background/voting/silent-vote-handler.js').includes(`'${main}'`)
+        const generic =
+            background.includes(`silentVote_${main}`) ||
+            read('src/background/voting/silent-vote-handler.js').includes(`'${main}'`)
         if (exists(silentFile)) {
-            if (!background.includes(silentFile)) errors.push(`background.js: ${silentFile} не подключён через importScripts`)
+            if (!background.includes(silentFile))
+                errors.push(`background.js: ${silentFile} не подключён через importScripts`)
         } else if (!generic) {
-            warnings.push(`projects.js: «${domain}» включает silentVote, но отдельного _silentvote-скрипта нет (проверьте общий обработчик)`)
+            warnings.push(
+                `projects.js: «${domain}» включает silentVote, но отдельного _silentvote-скрипта нет (проверьте общий обработчик)`,
+            )
         }
     }
 }
@@ -140,15 +166,21 @@ for (const [domain, config] of Object.entries(allProjects)) {
     const readme = read('README.md')
     const badge = readme.match(/badge\/%D1%81%D0%B0%D0%B9%D1%82%D0%BE%D0%B2-(\d+)-/)?.[1]
     const summary = readme.match(/<summary>(\d+) сайтов/)?.[1]
-    for (const [where, value] of [['бейдж «сайтов»', badge], ['заголовок списка сайтов', summary]]) {
-        if (value && Number(value) !== siteCount) errors.push(`README.md: ${where} — ${value}, а в projects.js ${siteCount} сайтов`)
+    for (const [where, value] of [
+        ['бейдж «сайтов»', badge],
+        ['заголовок списка сайтов', summary],
+    ]) {
+        if (value && Number(value) !== siteCount)
+            errors.push(`README.md: ${where} — ${value}, а в projects.js ${siteCount} сайтов`)
     }
 }
 
 // 5. Ключи локализации
 const locales = Object.fromEntries(['ru', 'en'].map(l => [l, JSON.parse(read(`_locales/${l}/messages.json`))]))
 const usedKeys = new Map()
-const addKey = (key, where) => { if (!usedKeys.has(key)) usedKeys.set(key, where) }
+const addKey = (key, where) => {
+    if (!usedKeys.has(key)) usedKeys.set(key, where)
+}
 for (const [key, where] of htmlKeys) addKey(key, where)
 for (const m of optionsHtml.matchAll(/placeholder="([A-Za-z]\w+)"/g)) addKey(m[1], 'src/ui/options.html (placeholder)')
 for (const file of sourceFiles) {
@@ -168,7 +200,9 @@ for (const [key, where] of usedKeys) {
 
 for (const w of warnings) console.warn('⚠ ' + w)
 for (const e of errors) console.error('✗ ' + e)
-console.log(`\nПроверено: ${sourceFiles.length} js-файлов, ${Object.keys(allProjects).length} сайтов, ${usedKeys.size} ключей локализации`)
+console.log(
+    `\nПроверено: ${sourceFiles.length} js-файлов, ${Object.keys(allProjects).length} сайтов, ${usedKeys.size} ключей локализации`,
+)
 if (errors.length) {
     console.error(`Ошибок: ${errors.length}`)
     process.exit(1)

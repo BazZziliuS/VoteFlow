@@ -11,7 +11,7 @@ async function vote(first) {
     document.querySelector('.likedislike .like').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         const notif = document.querySelector('#jGrowl')
         if (notif && notif.textContent.length > 0) {

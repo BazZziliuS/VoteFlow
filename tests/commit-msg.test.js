@@ -14,8 +14,9 @@ test('верные сообщения', () => {
         'fix(ui): VK ID ждёт загрузки страницы',
         'fix(opera): Opera — кнопки не вылезают за окно',
         'fix(captcha): Яндекс сменил домен капчи',
-        'Merge branch \'dev\' into refactor',
-    ]) assert.deepEqual(lint(message), [], message)
+        "Merge branch 'dev' into refactor",
+    ])
+        assert.deepEqual(lint(message), [], message)
 })
 
 test('неверные сообщения', () => {
@@ -30,6 +31,9 @@ test('неверные сообщения', () => {
     }
     for (const [message, expected] of Object.entries(cases)) {
         const errors = lint(message)
-        assert.ok(errors.some(e => e.includes(expected)), `${message} → ${JSON.stringify(errors)}`)
+        assert.ok(
+            errors.some(e => e.includes(expected)),
+            `${message} → ${JSON.stringify(errors)}`,
+        )
     }
 })

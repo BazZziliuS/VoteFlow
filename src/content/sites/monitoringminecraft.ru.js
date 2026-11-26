@@ -1,7 +1,10 @@
 async function vote(first) {
     if (first === false) return
 
-    if (document.querySelector('body') != null && document.querySelector('body').textContent.includes('Вы слишком часто обновляете страницу. Умерьте пыл.')) {
+    if (
+        document.querySelector('body') != null &&
+        document.querySelector('body').textContent.includes('Вы слишком часто обновляете страницу. Умерьте пыл.')
+    ) {
         await wait(15000)
         window.location.reload()
         return
@@ -25,7 +28,10 @@ async function vote(first) {
         } else if (request.message.includes('Вы успешно проголосовали!')) {
             chrome.runtime.sendMessage({successfully: true})
         } else {
-            if (request.message.includes('Ошибка подключения VK') || request.message.includes('Неправильное имя игрока')) {
+            if (
+                request.message.includes('Ошибка подключения VK') ||
+                request.message.includes('Неправильное имя игрока')
+            ) {
                 request.ignoreReport = true
             }
             chrome.runtime.sendMessage(request)

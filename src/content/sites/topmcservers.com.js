@@ -14,7 +14,7 @@ async function vote(first) {
 
 const timer = setInterval(() => {
     try {
-        if (document.querySelector('#server-metadata').nextElementSibling.innerText.includes('Vote added'))  {
+        if (document.querySelector('#server-metadata').nextElementSibling.innerText.includes('Vote added')) {
             clearInterval(timer)
             chrome.runtime.sendMessage({successfully: true})
         } else if (document.querySelector('.toastify')) {

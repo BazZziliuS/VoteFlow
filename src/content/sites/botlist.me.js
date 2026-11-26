@@ -22,7 +22,9 @@ async function vote(/*first*/) {
 }
 
 function checkAnswer() {
-    const message = document.querySelector('div.b-toaster-slot')?.innerText || document.querySelector('#page-container div.text-center p')?.innerText
+    const message =
+        document.querySelector('div.b-toaster-slot')?.innerText ||
+        document.querySelector('#page-container div.text-center p')?.innerText
     if (message) {
         if (message.includes('vote has been registered')) {
             chrome.runtime.sendMessage({successfully: true})

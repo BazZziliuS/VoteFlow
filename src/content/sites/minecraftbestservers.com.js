@@ -30,8 +30,14 @@ async function vote(first) {
         }
     }
 
-    if (document.querySelector('div.tab[x-show="tab === 1"]')?.innerText.includes('Come back tomorrow to vote in the next period')) {
-        const seconds = parseInt(document.querySelector('[x-data="countdown"][x-init]')?.getAttribute('x-init')?.match(/\d+/)?.[0] || '0')
+    if (
+        document
+            .querySelector('div.tab[x-show="tab === 1"]')
+            ?.innerText.includes('Come back tomorrow to vote in the next period')
+    ) {
+        const seconds = parseInt(
+            document.querySelector('[x-data="countdown"][x-init]')?.getAttribute('x-init')?.match(/\d+/)?.[0] || '0',
+        )
         chrome.runtime.sendMessage({later: seconds > 0 ? Date.now() + seconds * 1000 : true})
         return
     }
@@ -51,9 +57,16 @@ async function vote(first) {
                 } else if (!msg.includes('failed the security challenge')) {
                     chrome.runtime.sendMessage({message: msg})
                 }
-            } else if (document.querySelector('div.tab[x-show="tab === 1"]')?.innerText.includes('Come back tomorrow to vote in the next period')) {
+            } else if (
+                document
+                    .querySelector('div.tab[x-show="tab === 1"]')
+                    ?.innerText.includes('Come back tomorrow to vote in the next period')
+            ) {
                 clearInterval(timer)
-                const seconds = parseInt(document.querySelector('[x-data="countdown"][x-init]')?.getAttribute('x-init')?.match(/\d+/)?.[0] || '0')
+                const seconds = parseInt(
+                    document.querySelector('[x-data="countdown"][x-init]')?.getAttribute('x-init')?.match(/\d+/)?.[0] ||
+                        '0',
+                )
                 chrome.runtime.sendMessage({later: seconds > 0 ? Date.now() + seconds * 1000 : true})
             } else if (document.querySelector('div[class*="bg-green-"][x-data="{ show: true }"]')) {
                 clearInterval(timer)

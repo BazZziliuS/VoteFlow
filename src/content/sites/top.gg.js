@@ -40,7 +40,12 @@ async function vote(first) {
     let countAlreadyVoted = 0
     timer1 = setInterval(() => {
         try {
-            const result = findElement('h1, h2, h3, p, [role="alert"], [role="status"]', ['thanks for voting', 'thank you for voting', 'already voted', 'something went wrong'])
+            const result = findElement('h1, h2, h3, p, [role="alert"], [role="status"]', [
+                'thanks for voting',
+                'thank you for voting',
+                'already voted',
+                'something went wrong',
+            ])
             if (result != null) {
                 if (/thank(s| you) for voting/i.test(result.textContent)) {
                     finish({successfully: true})
@@ -94,9 +99,12 @@ async function vote(first) {
     }, 1000)
 
     // TODO иногда сайт просто зависает на "You must be logged in to vote." или "You will be able to vote after this ad.", просто втупую через некоторое время перезагружаем страницу
-    reloadTimer = setTimeout(() => {
-        document.location.reload()
-    }, Math.floor(Math.random() * (300000 - 420000) + 420000))
+    reloadTimer = setTimeout(
+        () => {
+            document.location.reload()
+        },
+        Math.floor(Math.random() * (300000 - 420000) + 420000),
+    )
 }
 
 function findElement(selector, text) {

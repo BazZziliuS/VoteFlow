@@ -12,16 +12,25 @@ async function vote(first) {
             chrome.runtime.sendMessage({message: text})
         }
     } else if (document.querySelector('div.row > div.col-md-4 > button')) {
-        if (document.querySelector('div.row > div.col-md-4 > button').textContent.includes('already voted') || document.querySelector('div.row > div.col-md-4 > button').textContent.toLowerCase().includes('thanks for voting')) {
+        if (
+            document.querySelector('div.row > div.col-md-4 > button').textContent.includes('already voted') ||
+            document
+                .querySelector('div.row > div.col-md-4 > button')
+                .textContent.toLowerCase()
+                .includes('thanks for voting')
+        ) {
             chrome.runtime.sendMessage({successfully: true})
         } else {
             chrome.runtime.sendMessage({message: document.querySelector('div.row > div.col-md-4 > button').textContent})
         }
     } else {
         //Ожидание загрузки reCATPCHA
-        const timer = setInterval(async ()=>{
+        const timer = setInterval(async () => {
             try {
-                if (document.querySelector('input[name="t"]') != null && document.querySelector('input[name="t"]').value !== '') {
+                if (
+                    document.querySelector('input[name="t"]') != null &&
+                    document.querySelector('input[name="t"]').value !== ''
+                ) {
                     clearInterval(timer)
                     const project = await getProject()
                     document.getElementById('username').value = project.nick

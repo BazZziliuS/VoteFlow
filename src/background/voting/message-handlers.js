@@ -12,10 +12,11 @@
 async function handleReloadCaptcha(sender, settings) {
     const frames = await chrome.webNavigation.getAllFrames({tabId: sender.tab.id})
     for (const frame of frames) {
-        if (frame.url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
+        if (
+            frame.url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
             frame.url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
-            frame.url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/)) {
-
+            frame.url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/)
+        ) {
             function reload() {
                 document.location.reload()
             }
@@ -26,7 +27,7 @@ async function handleReloadCaptcha(sender, settings) {
 
             await chrome.scripting.executeScript({
                 target: {tabId: sender.tab.id, frameIds: [frame.frameId]},
-                func: reload
+                func: reload,
             })
         }
     }
@@ -43,8 +44,10 @@ async function handleCaptchaPassed(request, sender) {
     try {
         await chrome.tabs.sendMessage(sender.tab.id, request)
     } catch (error) {
-        if (!error.message.includes('Could not establish connection. Receiving end does not exist') &&
-            !error.message.includes('The message port closed before a response was received')) {
+        if (
+            !error.message.includes('Could not establish connection. Receiving end does not exist') &&
+            !error.message.includes('The message port closed before a response was received')
+        ) {
             console.warn(error.message)
         }
     }
@@ -85,10 +88,14 @@ function handleHackTimer(request, sender, fakeIdToId) {
  */
 async function triggerTimer(name, sender, fakeId, fakeIdToId) {
     try {
-        await chrome.tabs.sendMessage(sender.tab.id, {HackTimer: true, fakeId}, {
-            documentId: sender.documentId,
-            frameId: sender.frameId
-        })
+        await chrome.tabs.sendMessage(
+            sender.tab.id,
+            {HackTimer: true, fakeId},
+            {
+                documentId: sender.documentId,
+                frameId: sender.frameId,
+            },
+        )
     } catch (error) {
         if (name === 'setInterval') clearInterval(fakeIdToId[fakeId])
         delete fakeIdToId[fakeId]
@@ -175,14 +182,16 @@ async function handleManualActionRequired(request, sender, opened, settings, db)
  * @returns {boolean} true если требуется ручное действие
  */
 function requiresManualAction(request) {
-    return request.captcha ||
-           request.authSteam ||
-           request.discordLogIn ||
-           request.auth ||
-           request.requiredConfirmTOS ||
-           (request.errorCaptcha && !request.restartVote) ||
-           request.restartVote === false ||
-           request.captchaPassed === 'double'
+    return (
+        request.captcha ||
+        request.authSteam ||
+        request.discordLogIn ||
+        request.auth ||
+        request.requiredConfirmTOS ||
+        (request.errorCaptcha && !request.restartVote) ||
+        request.restartVote === false ||
+        request.captchaPassed === 'double'
+    )
 }
 
 /**

@@ -17,13 +17,13 @@ async function vote(first) {
 
     const project = await getProject()
 
-    let voteClicked = false      // we triggered the vote
-    let captchaAlerted = false   // manual-captcha notification already sent
-    let attempts = 0             // number of vote clicks performed
-    let ticks = 0                // loop iterations (1/second)
+    let voteClicked = false // we triggered the vote
+    let captchaAlerted = false // manual-captcha notification already sent
+    let attempts = 0 // number of vote clicks performed
+    let ticks = 0 // loop iterations (1/second)
     const MAX_ATTEMPTS = 3
-    const WAIT_TOKEN_TICKS = 10  // grace period before asking for a manual captcha solve
-    const MAX_TICKS = 120        // safety net if no state is recognized anymore (layout changed again?)
+    const WAIT_TOKEN_TICKS = 10 // grace period before asking for a manual captcha solve
+    const MAX_TICKS = 120 // safety net if no state is recognized anymore (layout changed again?)
 
     // Returns true once a terminal state has been reported (the loop can stop)
     function tick() {
@@ -52,9 +52,14 @@ async function vote(first) {
             }
             // Other errors (IP, proxy/VPN, network, internal error...)
             const request = {message}
-            if ((low.includes('proxy') && low.includes('vpn')) || low.includes('vpn')
-                || low.includes('votre ip') || low.includes('erreur interne')
-                || low.includes('réseau') || low.includes('interne')) {
+            if (
+                (low.includes('proxy') && low.includes('vpn')) ||
+                low.includes('vpn') ||
+                low.includes('votre ip') ||
+                low.includes('erreur interne') ||
+                low.includes('réseau') ||
+                low.includes('interne')
+            ) {
                 request.ignoreReport = true
             }
             chrome.runtime.sendMessage(request)
@@ -62,9 +67,12 @@ async function vote(first) {
         }
 
         // 2. Successful vote (only after our own click)
-        if (voteClicked && (document.querySelector('.ajax-msg .message-success')
-                || document.querySelector('#voteForm[data-vote-cooldown-pending="true"]')
-                || document.querySelector('.message-blured'))) {
+        if (
+            voteClicked &&
+            (document.querySelector('.ajax-msg .message-success') ||
+                document.querySelector('#voteForm[data-vote-cooldown-pending="true"]') ||
+                document.querySelector('.message-blured'))
+        ) {
             chrome.runtime.sendMessage({successfully: true})
             return true
         }
@@ -117,8 +125,9 @@ async function vote(first) {
                     // "Captcha validé" image), or after a grace period if no captcha ever renders
                     // (degrades gracefully -> a genuinely missing captcha is caught by the server's
                     // AJAX error handled above).
-                    const easyVote = form.querySelector('.form-vote-bottom-title strong.on')
-                        || form.querySelector('.field-captcha img')
+                    const easyVote =
+                        form.querySelector('.form-vote-bottom-title strong.on') ||
+                        form.querySelector('.field-captcha img')
                     if (easyVote || ticks >= WAIT_TOKEN_TICKS) {
                         voteClicked = true
                         attempts++
@@ -130,7 +139,11 @@ async function vote(first) {
 
         // Safety net: no state recognized and we are not waiting on a manual captcha
         if (ticks >= MAX_TICKS && !captchaAlerted && !voteClicked) {
-            chrome.runtime.sendMessage({errorVoteNoElement: 'serveur-prive.net: no vote state detected (the site layout may have changed again)', ignoreReport: true})
+            chrome.runtime.sendMessage({
+                errorVoteNoElement:
+                    'serveur-prive.net: no vote state detected (the site layout may have changed again)',
+                ignoreReport: true,
+            })
             return true
         }
 

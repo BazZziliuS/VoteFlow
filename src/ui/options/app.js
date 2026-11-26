@@ -35,7 +35,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('voteMode').dispatchEvent(new Event('change'))
 
     // noinspection JSUnresolvedReference
-    if (!settings.operaAttention2 && (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' || (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0)) {
+    if (
+        !settings.operaAttention2 &&
+        (navigator?.userAgentData?.brands?.[0]?.brand === 'Opera' ||
+            (!!window.opr && !!opr.addons) ||
+            !!window.opera ||
+            navigator.userAgent.indexOf(' OPR/') >= 0)
+    ) {
         toggleModal('notSupportedBrowser')
     } else {
         fastAdd()
@@ -133,7 +139,7 @@ document.querySelector('.burger').addEventListener('click', () => {
 })
 
 //Переключение между вкладками
-document.querySelectorAll('.tablinks').forEach((item) => {
+document.querySelectorAll('.tablinks').forEach(item => {
     item.addEventListener('click', () => {
         if (document.getElementById('load').style.display !== 'none') return
         if (item.classList.contains('active')) return
@@ -143,10 +149,10 @@ document.querySelectorAll('.tablinks').forEach((item) => {
             document.querySelector('nav').classList.remove('active')
         }
 
-        document.querySelectorAll('.tabcontent').forEach((elem) => {
+        document.querySelectorAll('.tabcontent').forEach(elem => {
             elem.style.display = 'none'
         })
-        document.querySelectorAll('.tablinks').forEach((elem) => {
+        document.querySelectorAll('.tablinks').forEach(elem => {
             elem.classList.remove('active')
         })
 
@@ -191,14 +197,18 @@ async function onMessage(request) {
         const project = await db.get('projects', request.openProject)
         // Проект могли удалить, пока висело уведомление
         if (!project) return
-        await listSelect({currentTarget: document.querySelector('[data-rating-button="' + project.rating + '"]')}, project.rating)
+        await listSelect(
+            {currentTarget: document.querySelector('[data-rating-button="' + project.rating + '"]')},
+            project.rating,
+        )
         const card = document.getElementById('projects' + project.key)
         if (!card) return
         card.scrollIntoView({block: 'center'})
         highlight(document.getElementById('projects' + project.key))
         window.history.replaceState(null, null, location.pathname)
     } else if (request.notification) {
-        if (request.notification.type !== 'warn' && request.notification.type !== 'error') request.notification.type = 'hint'
+        if (request.notification.type !== 'warn' && request.notification.type !== 'error')
+            request.notification.type = 'hint'
         let onClick
         if (request.notification.notificationId.startsWith('openTab_')) {
             onClick = async () => {
@@ -218,6 +228,10 @@ async function onMessage(request) {
                 }
             }
         }
-        createNotif([request.notification.title, document.createElement('br'), request.notification.message], request.notification.type, {onClick})
+        createNotif(
+            [request.notification.title, document.createElement('br'), request.notification.message],
+            request.notification.type,
+            {onClick},
+        )
     }
 }

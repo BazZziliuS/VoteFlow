@@ -47,12 +47,16 @@ async function vote(first) {
     }, 1000)
 }
 
-const timer2 = setInterval(()=>{
+const timer2 = setInterval(() => {
     try {
         const result = findElement('h1', ['thank you for voting', 'one more thing...'])
         if (result) {
             clearInterval(timer2)
-            if (result.textContent.toLowerCase().includes('thank you for voting') || (result.parentElement.textContent.toLowerCase().includes('one more thing...') && result.parentElement.textContent.toLowerCase().includes('how would you rate your experience using'))) {
+            if (
+                result.textContent.toLowerCase().includes('thank you for voting') ||
+                (result.parentElement.textContent.toLowerCase().includes('one more thing...') &&
+                    result.parentElement.textContent.toLowerCase().includes('how would you rate your experience using'))
+            ) {
                 chrome.runtime.sendMessage({successfully: true})
             }
             return
@@ -64,7 +68,10 @@ const timer2 = setInterval(()=>{
                     return
                 }
             }
-            if (document.location.pathname.split('/').includes('thanks') || document.location.pathname.split('/').includes('rate')) {
+            if (
+                document.location.pathname.split('/').includes('thanks') ||
+                document.location.pathname.split('/').includes('rate')
+            ) {
                 chrome.runtime.sendMessage({successfully: true})
                 clearInterval(timer2)
                 return
@@ -81,7 +88,7 @@ const timer2 = setInterval(()=>{
     }
 }, 1000)
 
-const timer3 = setInterval(()=>{
+const timer3 = setInterval(() => {
     try {
         if (document.querySelector('div[role="status"]')?.children.length > 0) {
             const request = {}

@@ -3,8 +3,9 @@ let submitted = false
 
 async function vote(first) {
     // After a vote the site redirects back to the server page: .flash messages sit on the page, .alert ones inside the vote window
-    const messages = [...document.querySelectorAll('.flash, #vote-dlg .alert')]
-        .filter(element => element.textContent.trim().length > 0)
+    const messages = [...document.querySelectorAll('.flash, #vote-dlg .alert')].filter(
+        element => element.textContent.trim().length > 0,
+    )
     let retryCaptcha = false
 
     // A success message can also say when to come back, so it is checked before the cooldown
@@ -34,7 +35,10 @@ async function vote(first) {
         return
     }
 
-    if (document.body.outerHTML.length < 200 && document.body.outerHTML.includes('must have cookies enabled in your browser')) {
+    if (
+        document.body.outerHTML.length < 200 &&
+        document.body.outerHTML.includes('must have cookies enabled in your browser')
+    ) {
         const request = {}
         request.errorVoteNoElement = document.body.innerText.trim()
         request.ignoreReport = true

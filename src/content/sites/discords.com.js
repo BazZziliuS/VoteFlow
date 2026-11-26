@@ -10,7 +10,7 @@ async function vote(first) {
         const button = document.querySelector('.card-body button')
         if (button.disabled && button.textContent === 'Upvote') {
             await new Promise(resolve => {
-                setInterval(()=>{
+                setInterval(() => {
                     if (!button.disabled || button.textContent !== 'Upvote') resolve()
                 }, 1000)
             })
@@ -21,7 +21,7 @@ async function vote(first) {
         }
         if (button.textContent === 'Upvote') {
             button.click()
-            const timer = setInterval(()=> {
+            const timer = setInterval(() => {
                 if (button.textContent !== 'Upvote') {
                     chrome.runtime.sendMessage({successfully: true})
                 }
@@ -33,7 +33,7 @@ async function vote(first) {
         } else {
             //Из полученного текста достаёт все цифры в Array List
             const numbers = button.textContent.match(/\d+/g).map(Number)
-            const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000)
+            const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 + numbers[2] * 1000
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
         }
     } else {
@@ -76,7 +76,8 @@ async function vote(first) {
                     } else if (message.includes('You can upvote again in')) {
                         clearInterval(timer)
                         const numbers = message.match(/\d+/g).map(Number)
-                        const milliseconds = (numbers[numbers.length - 2] * 60 * 60 * 1000) + (numbers[numbers.length - 1] * 60 * 1000)
+                        const milliseconds =
+                            numbers[numbers.length - 2] * 60 * 60 * 1000 + numbers[numbers.length - 1] * 60 * 1000
                         chrome.runtime.sendMessage({later: Date.now() + milliseconds})
                     }
                 }

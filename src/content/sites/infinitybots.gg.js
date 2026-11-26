@@ -26,9 +26,9 @@ async function vote(/*first*/) {
     }
 
     const voteButton = document.querySelector('#vote-button')
-    if (voteButton.textContent.includes('can\'t vote now')) {
+    if (voteButton.textContent.includes("can't vote now")) {
         const numbers = voteButton.textContent.match(/\d+/g).map(Number)
-        const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000)
+        const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 + numbers[2] * 1000
         chrome.runtime.sendMessage({later: Date.now() + milliseconds})
         return
     }

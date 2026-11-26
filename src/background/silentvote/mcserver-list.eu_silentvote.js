@@ -1,8 +1,11 @@
 // noinspection ES6MissingAwait
 
 self['silentVote_mcserver-list.eu'] = async function (project) {
-    let response = await fetch('https://mcserver-list.eu/api/sendvote/' + project.id + '/' + project.nick, {'headers': {'content-type': 'application/x-www-form-urlencoded'}, 'body': null})
-    let json = await response.json()
+    const response = await fetch('https://mcserver-list.eu/api/sendvote/' + project.id + '/' + project.nick, {
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+        body: null,
+    })
+    const json = await response.json()
     if (response.ok) {
         if (json.data.status === 'success') {
             endVote({successfully: true}, null, project)

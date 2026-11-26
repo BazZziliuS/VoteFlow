@@ -1,7 +1,12 @@
 async function vote(first) {
     if (first === false) return
 
-    if (first !== 'manual' && document.querySelector('div.MsgBox') != null && document.querySelector('div.MsgBox').innerText.length > 0) return
+    if (
+        first !== 'manual' &&
+        document.querySelector('div.MsgBox') != null &&
+        document.querySelector('div.MsgBox').innerText.length > 0
+    )
+        return
 
     if (document.querySelector('div.ui.error.message') != null) {
         if (document.querySelector('div.ui.error.message').textContent.includes('must wait until tomorrow')) {
@@ -41,7 +46,7 @@ async function vote(first) {
             const message = button.textContent
             if (message.includes('ч.') || message.includes('м.')) {
                 const numbers = message.match(/\d+/g).map(Number)
-                const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000)/* + (sec * 1000)*/
+                const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 /* + (sec * 1000)*/
                 waiting = true
                 await wait(Math.floor(Math.random() * 9000 + 1000))
                 chrome.runtime.sendMessage({successfully: Date.now() + milliseconds})
@@ -62,7 +67,7 @@ async function vote(first) {
 }
 
 let voted = false
-const timer = setInterval(async ()=>{
+const timer = setInterval(async () => {
     try {
         if (document.querySelector('div.MsgBox .g-recaptcha')) return
 
@@ -91,7 +96,14 @@ const timer = setInterval(async ()=>{
                     vote('manual')
                 }
             } else {
-                if (request.message.includes('Сервис временно недоступен') || request.message.includes('Страница устарела') || request.message === 'Ошибка' || (request.message.includes('Запрос отклонен') && request.message.includes('Поступило слишком много запросов')) || request.message.includes('Важные документы')) {
+                if (
+                    request.message.includes('Сервис временно недоступен') ||
+                    request.message.includes('Страница устарела') ||
+                    request.message === 'Ошибка' ||
+                    (request.message.includes('Запрос отклонен') &&
+                        request.message.includes('Поступило слишком много запросов')) ||
+                    request.message.includes('Важные документы')
+                ) {
                     request.ignoreReport = true
                 }
                 if (request.message.includes('Достигнут лимит голосов за день')) {
@@ -100,7 +112,9 @@ const timer = setInterval(async ()=>{
                 }
 
                 // TODO временный код, пользователи слишком часто вмешиваются в процесс голосования
-                request.message = 'Похоже вы вмешались в процесс авто-голосования, если это не так и это является ошибкой - сообщите разработчику, вот что известно: ' + request.message
+                request.message =
+                    'Похоже вы вмешались в процесс авто-голосования, если это не так и это является ошибкой - сообщите разработчику, вот что известно: ' +
+                    request.message
                 request.ignoreReport = true
 
                 clearInterval(timer)

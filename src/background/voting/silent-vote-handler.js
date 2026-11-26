@@ -54,7 +54,6 @@ async function executeSilentVote(project, silentResponseBody) {
 
         // Выполнение silent vote
         await self['silentVote_' + scriptName](project)
-
     } catch (error) {
         handleSilentVoteError(error, project, silentResponseBody)
     } finally {
@@ -70,8 +69,10 @@ async function executeSilentVote(project, silentResponseBody) {
  */
 function handleSilentVoteError(error, project, silentResponseBody) {
     // Ошибка сети
-    if (error.message.includes('Failed to fetch') ||
-        error.message.includes('NetworkError when attempting to fetch resource')) {
+    if (
+        error.message.includes('Failed to fetch') ||
+        error.message.includes('NetworkError when attempting to fetch resource')
+    ) {
         endVote({notConnectInternet: true}, null, project)
         return
     }
@@ -106,9 +107,7 @@ async function validateSilentVoteResponse(project, response, url, bypassCodes, v
     // Обработка кодировки для VK
     if (vk && (host.includes('vk.com') || host.includes('vk.ru'))) {
         if (response.headers.get('Content-Type')?.includes('windows-1251')) {
-            response = await new Response(
-                new TextDecoder('windows-1251').decode(await response.arrayBuffer())
-            )
+            response = await new Response(new TextDecoder('windows-1251').decode(await response.arrayBuffer()))
         }
     }
 
@@ -119,7 +118,7 @@ async function validateSilentVoteResponse(project, response, url, bypassCodes, v
     // Сохранение для отладки
     silentResponseBody[project.rating] = {
         doc: response.doc,
-        url: response.url
+        url: response.url,
     }
 
     // Проверка авторизации VK
@@ -153,10 +152,12 @@ async function validateSilentVoteResponse(project, response, url, bypassCodes, v
     }
 
     // Проверка statusText
-    if (response.statusText &&
+    if (
+        response.statusText &&
         response.statusText !== '' &&
         response.statusText !== 'ok' &&
-        response.statusText !== 'OK') {
+        response.statusText !== 'OK'
+    ) {
         endVote({message: response.statusText}, null, project)
         return false
     }

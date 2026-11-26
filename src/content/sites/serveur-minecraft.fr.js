@@ -1,5 +1,9 @@
 async function vote(/*first*/) {
-    if (document.querySelector('.success.message') && (document.querySelector('.success.message').textContent.includes('vote a bien été comptabilisé') || document.querySelector('.success.message').textContent.includes('vote a été compté'))) {
+    if (
+        document.querySelector('.success.message') &&
+        (document.querySelector('.success.message').textContent.includes('vote a bien été comptabilisé') ||
+            document.querySelector('.success.message').textContent.includes('vote a été compté'))
+    ) {
         chrome.runtime.sendMessage({successfully: true})
         return
     }
@@ -13,6 +17,7 @@ async function vote(/*first*/) {
     }
 
     const project = await getProject()
-    if (document.querySelector('#main-content input[name="username"]')) document.querySelector('#main-content input[name="username"]').value = project.nick
+    if (document.querySelector('#main-content input[name="username"]'))
+        document.querySelector('#main-content input[name="username"]').value = project.nick
     chrome.runtime.sendMessage({captcha: true})
 }

@@ -68,27 +68,21 @@ function executeScriptInjection(tabId, frameId, filesIsolated, filesMain, catchT
     if (frameId) target.frameIds = [frameId]
 
     if (filesIsolated.length) {
-        chrome.scripting.executeScript(
-            {target, files: filesIsolated, injectImmediately: true},
-            () => {
-                const error = chrome.runtime.lastError
-                if (error) {
-                    catchTabError(error, opened, db)
-                }
+        chrome.scripting.executeScript({target, files: filesIsolated, injectImmediately: true}, () => {
+            const error = chrome.runtime.lastError
+            if (error) {
+                catchTabError(error, opened, db)
             }
-        )
+        })
     }
 
     if (filesMain.length) {
-        chrome.scripting.executeScript(
-            {target, files: filesMain, world: 'MAIN', injectImmediately: true},
-            () => {
-                const error = chrome.runtime.lastError
-                if (error) {
-                    catchTabError(error, opened, db)
-                }
+        chrome.scripting.executeScript({target, files: filesMain, world: 'MAIN', injectImmediately: true}, () => {
+            const error = chrome.runtime.lastError
+            if (error) {
+                catchTabError(error, opened, db)
             }
-        )
+        })
     }
 }
 
@@ -111,7 +105,7 @@ async function injectVoteScripts(tabId, project, settings, allProjects, debug, u
             window.prompt = new Proxy(window.prompt, {
                 apply(target, thisArg, argArray) {
                     return nick
-                }
+                },
             })
         }
         if (debug) console.log('Injecting funcPrompt to ' + url)
@@ -119,25 +113,39 @@ async function injectVoteScripts(tabId, project, settings, allProjects, debug, u
             target: {tabId},
             world: 'MAIN',
             func: funcPrompt,
-            args: [project.nick]
+            args: [project.nick],
         })
     }
 
     // Инъекция основных скриптов голосования
-    if (debug) console.log('Injecting src/content/sites/' + project.rating.toLowerCase() + '.js, src/content/common/api.js to ' + url)
+    if (debug)
+        console.log(
+            'Injecting src/content/sites/' + project.rating.toLowerCase() + '.js, src/content/common/api.js to ' + url,
+        )
     await chrome.scripting.executeScript({
         target: {tabId},
-        files: ['src/content/common/hacktimer.js', 'src/content/sites/' + (project.ratingMain || project.rating) + '.js', 'src/content/common/api.js']
+        files: [
+            'src/content/common/hacktimer.js',
+            'src/content/sites/' + (project.ratingMain || project.rating) + '.js',
+            'src/content/common/api.js',
+        ],
     })
 
     // Инъекция world скрипта если требуется
     // noinspection JSUnresolvedVariable,JSUnresolvedFunction
     if (allProjects[project.rating]?.needWorld?.()) {
-        if (debug) console.log('Injecting src/content/sites/' + project.rating.toLowerCase() + '_world.js to ' + url + ' in MAIN world')
+        if (debug)
+            console.log(
+                'Injecting src/content/sites/' +
+                    project.rating.toLowerCase() +
+                    '_world.js to ' +
+                    url +
+                    ' in MAIN world',
+            )
         await chrome.scripting.executeScript({
             target: {tabId},
             world: 'MAIN',
-            files: ['src/content/sites/' + (project.ratingMain || project.rating) + '_world.js']
+            files: ['src/content/sites/' + (project.ratingMain || project.rating) + '_world.js'],
         })
     }
 
@@ -160,7 +168,11 @@ async function injectCaptchaScripts(tabId, frameId, project, settings, debug, ur
     if (debug) console.log('Injecting src/content/common/captchaclicker.js to ' + url)
     await chrome.scripting.executeScript({
         target: {tabId, frameIds: [frameId]},
-        files: ['src/content/common/hacktimer.js', 'src/content/common/audio_captcha.js', 'src/content/common/captchaclicker.js']
+        files: [
+            'src/content/common/hacktimer.js',
+            'src/content/common/audio_captcha.js',
+            'src/content/common/captchaclicker.js',
+        ],
     })
 
     // Проверка статуса вкладки перед отправкой сообщения

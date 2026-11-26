@@ -1,7 +1,9 @@
 async function vote(first) {
     if (document.querySelector('div.main-panel span.red') || document.querySelector('div.main-panel div.red')) {
         const request = {}
-        request.message = document.querySelector('div.main-panel span.red')?.textContent || document.querySelector('div.main-panel div.red')?.textContent
+        request.message =
+            document.querySelector('div.main-panel span.red')?.textContent ||
+            document.querySelector('div.main-panel div.red')?.textContent
         if (request.message.toLowerCase().includes('already voted')) {
             chrome.runtime.sendMessage({later: true})
             return
@@ -17,7 +19,9 @@ async function vote(first) {
     }
 
     if (document.querySelector('div.main-panel > span.green') || document.querySelector('div.main-panel > div.green')) {
-        const message = document.querySelector('div.main-panel > span.green')?.textContent || document.querySelector('div.main-panel > div.green')?.textContent
+        const message =
+            document.querySelector('div.main-panel > span.green')?.textContent ||
+            document.querySelector('div.main-panel > div.green')?.textContent
         if (message.includes('vote was success') || message.includes('successfully voted')) {
             chrome.runtime.sendMessage({successfully: true})
         } else {

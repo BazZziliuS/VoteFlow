@@ -16,7 +16,9 @@ function fakeElement() {
     return {nodes, append: (...items) => nodes.push(...items.filter(item => item !== ''))}
 }
 
-const source = fs.readFileSync(path.join(__dirname, '../src/ui/options/projects-list.js'), 'utf8').replace(/\r\n/g, '\n')
+const source = fs
+    .readFileSync(path.join(__dirname, '../src/ui/options/projects-list.js'), 'utf8')
+    .replace(/\r\n/g, '\n')
 const start = source.indexOf('// Ссылки в тексте ошибки')
 const end = source.indexOf('\nfunction highlight(')
 const ctx = vm.createContext({document: fakeDocument(), String})

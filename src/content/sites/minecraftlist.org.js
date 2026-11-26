@@ -4,7 +4,7 @@ async function vote(first) {
         if (message.includes('You can vote after')) {
             //Из полученного текста достаёт все цифры в Array List
             const numbers = message.match(/\d+/g).map(Number)
-            const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000)/* + (sec * 1000)*/
+            const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 /* + (sec * 1000)*/
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             return
         } else {

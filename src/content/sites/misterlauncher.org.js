@@ -3,7 +3,10 @@ async function vote(first) {
     if (project.listing === 'projects') {
         if (first === false) return
 
-        if (document.querySelector('.container div.alert.alert-danger') && document.querySelector('.container div.alert.alert-danger').style.display !== 'none') {
+        if (
+            document.querySelector('.container div.alert.alert-danger') &&
+            document.querySelector('.container div.alert.alert-danger').style.display !== 'none'
+        ) {
             const message = document.querySelector('.container div.alert.alert-danger').textContent
             if (message.includes('Вы уже голосовали за этот проект')) {
                 chrome.runtime.sendMessage({later: true})
@@ -13,7 +16,10 @@ async function vote(first) {
             return
         }
 
-        if (document.querySelector('.container div.alert.alert-success') && document.querySelector('.container div.alert.alert-success').style.display !== 'none') {
+        if (
+            document.querySelector('.container div.alert.alert-success') &&
+            document.querySelector('.container div.alert.alert-success').style.display !== 'none'
+        ) {
             const message = document.querySelector('.container div.alert.alert-success').textContent
             if (message.includes('Спасибо за Ваш голос!')) {
                 chrome.runtime.sendMessage({successfully: true})
@@ -26,7 +32,7 @@ async function vote(first) {
         document.querySelector('input[name=nick]').value = project.nick
         document.querySelector('button[type=submit]').click()
     } else {
-        const timer = setInterval(()=>{
+        const timer = setInterval(() => {
             try {
                 if (document.querySelector('#messages').textContent.length > 0) {
                     const request = {}
@@ -37,7 +43,12 @@ async function vote(first) {
                     } else if (request.message.includes('уже голосовали')) {
                         clearInterval(timer)
                         const numbers = request.message.match(/\d+/g).map(Number)
-                        chrome.runtime.sendMessage({later: Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4], numbers[5]) - 10800000 + 60000})
+                        chrome.runtime.sendMessage({
+                            later:
+                                Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4], numbers[5]) -
+                                10800000 +
+                                60000,
+                        })
                     } else if (request.message.includes('Проверка на робота не пройдена')) {
                         // None
                     } else {

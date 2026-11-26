@@ -27,7 +27,7 @@ async function vote(first) {
     document.querySelector('.b-vote-modal__content button').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('.b-vote-modal__content_success')) {
             clearInterval(timer)

@@ -35,7 +35,14 @@ function manageListener(eventSource, listener, enable, eventName, options = null
  */
 function updateAllVoteListeners(enable, listeners, openedProjects, settings) {
     if (settings?.debug) {
-        console.log('Регистрация слушателей, включение', enable, 'openedProjects.size', openedProjects.size, 'openedProjects', openedProjects)
+        console.log(
+            'Регистрация слушателей, включение',
+            enable,
+            'openedProjects.size',
+            openedProjects.size,
+            'openedProjects',
+            openedProjects,
+        )
     }
 
     // Список всех listener'ов для регистрации
@@ -43,46 +50,39 @@ function updateAllVoteListeners(enable, listeners, openedProjects, settings) {
         {
             event: chrome.webNavigation.onErrorOccurred,
             listener: listeners.webNavigationOnErrorOccurred,
-            name: 'webNavigation.onErrorOccurred'
+            name: 'webNavigation.onErrorOccurred',
         },
         {
             event: chrome.webNavigation.onCommitted,
             listener: listeners.webNavigationOnCommitted,
-            name: 'webNavigation.onCommitted'
+            name: 'webNavigation.onCommitted',
         },
         {
             event: chrome.webNavigation.onCompleted,
             listener: listeners.webNavigationOnCompleted,
-            name: 'webNavigation.onCompleted'
+            name: 'webNavigation.onCompleted',
         },
         {
             event: chrome.tabs.onRemoved,
             listener: listeners.tabsOnRemoved,
-            name: 'tabs.onRemoved'
+            name: 'tabs.onRemoved',
         },
         {
             event: chrome.webRequest.onCompleted,
             listener: listeners.webRequestOnCompleted,
             name: 'webRequest.onCompleted',
-            options: {urls: ['<all_urls>']}
+            options: {urls: ['<all_urls>']},
         },
         {
             event: chrome.webRequest.onErrorOccurred,
             listener: listeners.webRequestOnErrorOccurred,
             name: 'webRequest.onErrorOccurred',
-            options: {urls: ['<all_urls>']}
-        }
+            options: {urls: ['<all_urls>']},
+        },
     ]
 
     // Регистрация/разрегистрация всех listener'ов
     for (const config of listenerConfigs) {
-        manageListener(
-            config.event,
-            config.listener,
-            enable,
-            config.name,
-            config.options,
-            settings?.debug
-        )
+        manageListener(config.event, config.listener, enable, config.name, config.options, settings?.debug)
     }
 }

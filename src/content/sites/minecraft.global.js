@@ -33,7 +33,7 @@ function findElement(selector, text) {
     }
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('div.border-2')) {
             const message = document.querySelector('div.border-2').textContent

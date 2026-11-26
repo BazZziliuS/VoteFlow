@@ -17,11 +17,14 @@ function sendNotification(title, message, type, notificationId) {
     if (settings?.disabledNotifInfo && type === 'info') return
 
     if (type === 'warn' || type === 'error') {
-        (async () => {
+        ;(async () => {
             try {
                 await chrome.runtime.sendMessage({notification: {title, message, type, notificationId}})
             } catch (error) {
-                if (!error.message.includes('Could not establish connection. Receiving end does not exist') && !error.message.includes('The message port closed before a response was received')) {
+                if (
+                    !error.message.includes('Could not establish connection. Receiving end does not exist') &&
+                    !error.message.includes('The message port closed before a response was received')
+                ) {
                     console.warn(error.message)
                 }
             }
@@ -31,12 +34,11 @@ function sendNotification(title, message, type, notificationId) {
     if (settings?.disabledNotifWarn && type === 'warn') return
     if (settings?.disabledNotifError && type === 'error') return
 
-    let notification = {
+    const notification = {
         type: 'basic',
         iconUrl: '/assets/images/icon128.png',
         title: title,
-        message: message
+        message: message,
     }
-    chrome.notifications.create(notificationId, notification, function () {
-    })
+    chrome.notifications.create(notificationId, notification, function () {})
 }

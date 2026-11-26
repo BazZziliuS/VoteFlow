@@ -19,7 +19,7 @@ function checkAnswer() {
     if (toast) {
         const request = {}
         request.message = document.querySelector('div.toast-message').innerText.trim()
-        if (request.message.includes('I\'m not a robot')) {
+        if (request.message.includes("I'm not a robot")) {
             // None
         } else if (request.message.includes('Vote sent successfully')) {
             chrome.runtime.sendMessage({successfully: true})

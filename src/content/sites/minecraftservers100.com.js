@@ -8,7 +8,7 @@ async function vote(first) {
 
     if (first) return
 
-    let project = await getProject()
+    const project = await getProject()
     document.querySelector('input[name="username"]').value = project.nick
     document.querySelector('input[type="submit"]').click()
 }

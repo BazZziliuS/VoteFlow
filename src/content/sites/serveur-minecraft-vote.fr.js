@@ -35,7 +35,10 @@ async function vote(/*first*/) {
             const message = error.textContent.replace(/\s+/g, ' ').trim()
             const low = message.toLowerCase()
             const ms = parseDuration(low)
-            if (ms != null && (low.includes('attendre') || low.includes('déjà') || low.includes('prochain') || low.includes('dans'))) {
+            if (
+                ms != null &&
+                (low.includes('attendre') || low.includes('déjà') || low.includes('prochain') || low.includes('dans'))
+            ) {
                 chrome.runtime.sendMessage({later: Date.now() + ms})
             } else if (low.includes('déjà voté')) {
                 chrome.runtime.sendMessage({later: true})

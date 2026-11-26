@@ -13,15 +13,32 @@ async function vote(first) {
         return
     }
 
-    if (document.querySelector('div.alert.alert-error:last-of-type') || document.querySelector('div.alert.alert-error')) {
+    if (
+        document.querySelector('div.alert.alert-error:last-of-type') ||
+        document.querySelector('div.alert.alert-error')
+    ) {
         const request = {}
-        const error = document.querySelector('div.alert.alert-error:last-of-type') || document.querySelector('div.alert.alert-error')
+        const error =
+            document.querySelector('div.alert.alert-error:last-of-type') ||
+            document.querySelector('div.alert.alert-error')
         request.message = error.innerText
-        if (request.message.includes('Již si hlasoval') || request.message.includes('Nyní nemůžeš hlasovat. Zkus to prosím znovu')) {
+        if (
+            request.message.includes('Již si hlasoval') ||
+            request.message.includes('Nyní nemůžeš hlasovat. Zkus to prosím znovu')
+        ) {
             if (request.message.match(/\d+/g)) {
                 const numbers = request.message.match(/\d+/g).map(Number)
                 const date = new Date()
-                chrome.runtime.sendMessage({later: Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), numbers[0] - 2/*На czech-craft время указано в часовом поясе UTC +2*/, numbers[1], numbers[2])})
+                chrome.runtime.sendMessage({
+                    later: Date.UTC(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        numbers[0] - 2 /*На czech-craft время указано в часовом поясе UTC +2*/,
+                        numbers[1],
+                        numbers[2],
+                    ),
+                })
             } else {
                 chrome.runtime.sendMessage({later: true})
             }
@@ -45,7 +62,10 @@ async function vote(first) {
         } else if (request.message.includes('field is required')) {
             // None
         } else {
-            if (request.message.includes('response parameter is missing') || request.message.includes('response parameter is invalid')) {
+            if (
+                request.message.includes('response parameter is missing') ||
+                request.message.includes('response parameter is invalid')
+            ) {
                 request.ignoreReport = true
             }
             chrome.runtime.sendMessage(request)

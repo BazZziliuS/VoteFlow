@@ -20,10 +20,10 @@ async function vote(first) {
         // Step 1: Check wipe calendar
         console.log('[bloodrust.com-promo] Шаг 1: Проверка календаря вайпов')
         const wipeResponse = await fetch('https://core.bloodrust.com/public/wipe-calendar', {
-            'headers': {
-                'accept': 'application/json, text/plain, */*'
+            headers: {
+                accept: 'application/json, text/plain, */*',
             },
-            'method': 'GET'
+            method: 'GET',
         })
 
         if (!wipeResponse.ok) {
@@ -33,14 +33,22 @@ async function vote(first) {
         }
 
         const wipeData = await wipeResponse.json()
-        console.log('[bloodrust.com-promo] Получено дней в календаре:', Array.isArray(wipeData) ? wipeData.length : 'не массив')
+        console.log(
+            '[bloodrust.com-promo] Получено дней в календаре:',
+            Array.isArray(wipeData) ? wipeData.length : 'не массив',
+        )
 
         // Find wipe in next 24 hours from now
         const now = new Date()
-        console.log('[bloodrust.com-promo] Текущее время:', now.toLocaleString('ru-RU'), '(timestamp:', now.getTime() + ')')
+        console.log(
+            '[bloodrust.com-promo] Текущее время:',
+            now.toLocaleString('ru-RU'),
+            '(timestamp:',
+            now.getTime() + ')',
+        )
 
         let recentWipe = null
-        let allWipes = []
+        const allWipes = []
 
         if (Array.isArray(wipeData)) {
             // Collect all wipes with their dates
@@ -60,7 +68,7 @@ async function vote(first) {
                                 date: wipeDate,
                                 hoursDiff,
                                 timestamp: wipe.date,
-                                adjustedTimestamp: wipe.date + 30000
+                                adjustedTimestamp: wipe.date + 30000,
                             })
                         }
                     }
@@ -77,7 +85,9 @@ async function vote(first) {
                 const timeDescription = isInPast
                     ? `${item.hoursDiff.toFixed(2)} часов назад`
                     : `через ${Math.abs(item.hoursDiff).toFixed(2)} часов`
-                console.log(`  ${idx + 1}. ${item.date.toLocaleString('ru-RU')} - ${timeDescription} (${item.wipe.type}, ${item.wipe.wipe_group}) [+30 сек]`)
+                console.log(
+                    `  ${idx + 1}. ${item.date.toLocaleString('ru-RU')} - ${timeDescription} (${item.wipe.type}, ${item.wipe.wipe_group}) [+30 сек]`,
+                )
             })
 
             // Find wipe within 24 hours (past or future)
@@ -90,7 +100,9 @@ async function vote(first) {
                         ? `${item.hoursDiff.toFixed(2)} часов назад`
                         : `через ${Math.abs(item.hoursDiff).toFixed(2)} часов`
                     const statusEmoji = isInPast ? '✓' : '⏳'
-                    console.log(`[bloodrust.com-promo] ${statusEmoji} Найден ${isInPast ? 'прошедший' : 'предстоящий'} вайп: ${item.date.toLocaleString('ru-RU')} (${timeDescription})`)
+                    console.log(
+                        `[bloodrust.com-promo] ${statusEmoji} Найден ${isInPast ? 'прошедший' : 'предстоящий'} вайп: ${item.date.toLocaleString('ru-RU')} (${timeDescription})`,
+                    )
                     console.log('[bloodrust.com-promo] Данные вайпа:', item.wipe)
                     break
                 }
@@ -130,8 +142,12 @@ async function vote(first) {
 
         // Get promo code from silentResponseBody (set by background script)
         // Check both 'bloodrust.com' and 'bloodrust.com-promo' keys for compatibility
-        if (window.silentResponseBody && (window.silentResponseBody['bloodrust.com'] || window.silentResponseBody['bloodrust.com-promo'])) {
-            const responseData = window.silentResponseBody['bloodrust.com'] || window.silentResponseBody['bloodrust.com-promo']
+        if (
+            window.silentResponseBody &&
+            (window.silentResponseBody['bloodrust.com'] || window.silentResponseBody['bloodrust.com-promo'])
+        ) {
+            const responseData =
+                window.silentResponseBody['bloodrust.com'] || window.silentResponseBody['bloodrust.com-promo']
             promoCode = responseData.promoCode
             console.log('[bloodrust.com-promo] ✓ Промокод получен от background script:', promoCode)
         }
@@ -181,7 +197,7 @@ async function vote(first) {
         // Step 4: Find and click "Промокод" tab
         console.log('[bloodrust.com-promo] Шаг 4: Поиск таба "Промокод"')
         const promoTab = Array.from(document.querySelectorAll('button[role="tab"]')).find(btn =>
-            btn.textContent.includes('Промокод')
+            btn.textContent.includes('Промокод'),
         )
 
         if (!promoTab) {
@@ -198,8 +214,9 @@ async function vote(first) {
 
         // Step 5: Find input field and enter promo code
         console.log('[bloodrust.com-promo] Шаг 5: Поиск поля ввода промокода')
-        const promoInput = document.querySelector('input[placeholder*="AAA"]') ||
-                          document.querySelector('input[type="text"][aria-label*="Value"]')
+        const promoInput =
+            document.querySelector('input[placeholder*="AAA"]') ||
+            document.querySelector('input[type="text"][aria-label*="Value"]')
 
         if (!promoInput) {
             console.error('[bloodrust.com-promo] Поле ввода промокода не найдено')
@@ -210,15 +227,15 @@ async function vote(first) {
         // Set input value
         console.log('[bloodrust.com-promo] Вводим промокод:', promoCode)
         promoInput.value = promoCode
-        promoInput.dispatchEvent(new Event('input', { bubbles: true }))
-        promoInput.dispatchEvent(new Event('change', { bubbles: true }))
+        promoInput.dispatchEvent(new Event('input', {bubbles: true}))
+        promoInput.dispatchEvent(new Event('change', {bubbles: true}))
 
         await new Promise(resolve => setTimeout(resolve, 500))
 
         // Step 6: Click "Применить" button
         console.log('[bloodrust.com-promo] Шаг 6: Поиск кнопки "Применить"')
         const applyButton = Array.from(document.querySelectorAll('button')).find(btn =>
-            btn.textContent.includes('Применить')
+            btn.textContent.includes('Применить'),
         )
 
         if (!applyButton) {
@@ -241,7 +258,7 @@ async function vote(first) {
             '.alert-danger',
             '.notification-error',
             '[class*="error"]',
-            '[class*="Error"]'
+            '[class*="Error"]',
         ]
 
         for (const selector of errorSelectors) {
@@ -255,7 +272,7 @@ async function vote(first) {
                 if (text.length > 0 && text.length < 500) {
                     console.error('[bloodrust.com-promo] Ошибка при применении промокода:', text)
                     chrome.runtime.sendMessage({
-                        message: `Ошибка активации промокода: ${text}`
+                        message: `Ошибка активации промокода: ${text}`,
                     })
                     return
                 }
@@ -269,7 +286,7 @@ async function vote(first) {
             '[role="status"]',
             '.notification-success',
             '[class*="success"]',
-            '[class*="Success"]'
+            '[class*="Success"]',
         ]
 
         let successText = null
@@ -298,9 +315,8 @@ async function vote(first) {
 
         chrome.runtime.sendMessage({
             successfully: true,
-            message: successText || `Промокод ${promoCode} применён (проверьте результат в профиле)`
+            message: successText || `Промокод ${promoCode} применён (проверьте результат в профиле)`,
         })
-
     } catch (error) {
         console.error('[bloodrust.com-promo] ✗ Критическая ошибка:', error)
         chrome.runtime.sendMessage({message: 'Ошибка: ' + error.message})

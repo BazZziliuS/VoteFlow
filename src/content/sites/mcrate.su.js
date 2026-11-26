@@ -6,7 +6,13 @@ async function vote(first) {
             chrome.runtime.sendMessage({later: true})
             return
         }
-        if (request.message.includes('аккаунт заблокирован') || request.message.includes('ВК ID заблокирован') || request.message.includes('Неправильный токен ВК') || request.message.includes('не прошли reCapatcha') || request.message.includes('Получены не все данные, либо данные неверны')) {
+        if (
+            request.message.includes('аккаунт заблокирован') ||
+            request.message.includes('ВК ID заблокирован') ||
+            request.message.includes('Неправильный токен ВК') ||
+            request.message.includes('не прошли reCapatcha') ||
+            request.message.includes('Получены не все данные, либо данные неверны')
+        ) {
             request.ignoreReport = true
         }
         chrome.runtime.sendMessage(request)
@@ -16,7 +22,7 @@ async function vote(first) {
         if (document.querySelector('div[class=report]').textContent.includes('Ваш голос засчитан')) {
             chrome.runtime.sendMessage({successfully: true})
             return
-        }/* else {
+        } /* else {
             chrome.runtime.sendMessage({message: document.querySelector('div[class=report]').textContent})
         }*/
     }

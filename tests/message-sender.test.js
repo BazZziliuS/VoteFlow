@@ -18,7 +18,12 @@ test('страницы расширения — свои, вкладки сай�
 })
 
 test('служебные команды: настройки, удаление и перезапуск проектов', () => {
-    for (const request of ['reloadSettings', 'reloadAllSettings', {projectDeleted: {key: 1}}, {projectRestart: {key: 1}}]) {
+    for (const request of [
+        'reloadSettings',
+        'reloadAllSettings',
+        {projectDeleted: {key: 1}},
+        {projectRestart: {key: 1}},
+    ]) {
         assert.equal(ctx.isExtensionPageCommand(request), true, JSON.stringify(request))
     }
     for (const request of ['checkVote', {successfully: true}, {message: 'x'}, {captchaPassed: true}, null]) {

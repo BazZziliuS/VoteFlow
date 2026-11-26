@@ -19,8 +19,9 @@ async function vote(first) {
 
     // Submit. The reCAPTCHA is solved beforehand by a captcha-solver extension or by the user
     // (see the extension wiki); this script intentionally does not handle the captcha itself.
-    const submit = [...document.querySelectorAll('button[type="submit"]')]
-        .find(b => b.textContent.includes('Vote for this server'))
+    const submit = [...document.querySelectorAll('button[type="submit"]')].find(b =>
+        b.textContent.includes('Vote for this server'),
+    )
     if (submit) submit.click()
 }
 

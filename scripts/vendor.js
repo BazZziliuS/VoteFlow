@@ -33,8 +33,14 @@ async function build() {
     const esbuild = require('esbuild')
     const out = {}
 
-    out['idb.umd.js'] = `/*! idb ${version('idb')} | ISC | https://github.com/jakearchibald/idb */\n` +
-        fs.readFileSync(require.resolve('idb/build/umd.js'), 'utf8').replace(/\r\n/g, '\n').replace(/\n?\/\/# sourceMappingURL=.*$/, '').trimEnd() + '\n'
+    out['idb.umd.js'] =
+        `/*! idb ${version('idb')} | ISC | https://github.com/jakearchibald/idb */\n` +
+        fs
+            .readFileSync(require.resolve('idb/build/umd.js'), 'utf8')
+            .replace(/\r\n/g, '\n')
+            .replace(/\n?\/\/# sourceMappingURL=.*$/, '')
+            .trimEnd() +
+        '\n'
 
     const bundle = await esbuild.build({
         stdin: {contents: LINKEDOM_ENTRY, resolveDir: root, loader: 'js'},
@@ -46,18 +52,25 @@ async function build() {
         legalComments: 'inline',
         charset: 'utf8',
     })
-    out['linkedom.js'] = `/*! linkedom ${version('linkedom')} (linkedom/worker) | ISC | https://github.com/WebReflection/linkedom */\n` +
-        `/* Собрано scripts/vendor.js — не редактировать вручную */\n` + bundle.outputFiles[0].text
+    out['linkedom.js'] =
+        `/*! linkedom ${version('linkedom')} (linkedom/worker) | ISC | https://github.com/WebReflection/linkedom */\n` +
+        `/* Собрано scripts/vendor.js — не редактировать вручную */\n` +
+        bundle.outputFiles[0].text
     return out
 }
 
 async function main() {
     const files = await build()
     if (process.argv.includes('--check')) {
-        const stale = Object.entries(files).filter(([name, text]) =>
-            !fs.existsSync(path.join(libs, name)) || fs.readFileSync(path.join(libs, name), 'utf8').replace(/\r\n/g, '\n') !== text)
+        const stale = Object.entries(files).filter(
+            ([name, text]) =>
+                !fs.existsSync(path.join(libs, name)) ||
+                fs.readFileSync(path.join(libs, name), 'utf8').replace(/\r\n/g, '\n') !== text,
+        )
         if (stale.length) {
-            console.error(`✗ libs/ не совпадают с package.json: ${stale.map(([n]) => n).join(', ')} — выполните npm run vendor`)
+            console.error(
+                `✗ libs/ не совпадают с package.json: ${stale.map(([n]) => n).join(', ')} — выполните npm run vendor`,
+            )
             process.exit(1)
         }
         console.log('libs/ совпадают с package.json')

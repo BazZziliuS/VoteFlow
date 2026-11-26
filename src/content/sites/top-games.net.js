@@ -28,17 +28,17 @@ async function vote(first) {
             const hoursSpan = digitalCountdown.querySelector('[data-unit="hours"]')
             const minutesSpan = digitalCountdown.querySelector('[data-unit="minutes"]')
             const secondsSpan = digitalCountdown.querySelector('[data-unit="seconds"]')
-            
+
             if (hoursSpan && minutesSpan && secondsSpan) {
                 const hours = parseInt(hoursSpan.textContent.trim(), 10) || 0
                 const minutes = parseInt(minutesSpan.textContent.trim(), 10) || 0
                 const seconds = parseInt(secondsSpan.textContent.trim(), 10) || 0
-                const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
+                const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000
                 chrome.runtime.sendMessage({later: Date.now() + milliseconds})
                 return
             }
         }
-        
+
         // Sinon, utiliser le voteTimer en secours
         const voteTimer = document.getElementById('voteTimer')
         if (voteTimer != null) {
@@ -51,12 +51,12 @@ async function vote(first) {
                     // Format avec heures
                     const hours = parseInt(numbers[0], 10) || 0
                     const minutes = parseInt(numbers[1], 10) || 0
-                    milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000)
+                    milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000
                 } else {
                     // Format sans heures (seulement minutes)
                     const minutes = parseInt(numbers[0], 10) || 0
                     const seconds = parseInt(numbers[1], 10) || 0
-                    milliseconds = (minutes * 60 * 1000) + (seconds * 1000)
+                    milliseconds = minutes * 60 * 1000 + seconds * 1000
                 }
                 chrome.runtime.sendMessage({later: Date.now() + milliseconds})
                 return
@@ -72,7 +72,7 @@ async function vote(first) {
         //Если вы уже голосовали
         if (document.getElementById('voteTimer') != null) {
             const numbers = document.getElementById('voteTimer').textContent.match(/\d+/g).map(Number)
-            const milliseconds = /*(hour * 60 * 60 * 1000) + */(numbers[0] * 60 * 1000)/* + (sec * 1000)*/
+            const milliseconds = /*(hour * 60 * 60 * 1000) + */ numbers[0] * 60 * 1000 /* + (sec * 1000)*/
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             return
         } else {
@@ -84,19 +84,25 @@ async function vote(first) {
     for (const el of document.querySelectorAll('div.alert.alert-danger')) {
         const request = {}
         request.message = el.innerText
-        if (request.message.includes('cannot vote more than once at the same time') || request.message.includes('avant de pouvoir voter à nouveau')) {
+        if (
+            request.message.includes('cannot vote more than once at the same time') ||
+            request.message.includes('avant de pouvoir voter à nouveau')
+        ) {
             chrome.runtime.sendMessage({later: true})
             return
         } else if (request.message.includes('Captcha')) {
             // None
         } else {
             if (
-                    request.message.includes('Sie können nicht wählen, weil Ihr Netzwerk kein')
-                    || request.message.includes('cannot vote because your network')
-                    || request.message.includes('не можете голосовать из-за того, что находитесь в частной или закрытой сети')
-                    || request.message.includes('não pode votar porque sua rede não é uma rede')
-                    || request.message.includes('ne pouvez pas voter car votre réseau n\'est pas un réseau')
-                    || request.message.includes('puedes votar porque tu red no es una red')) {
+                request.message.includes('Sie können nicht wählen, weil Ihr Netzwerk kein') ||
+                request.message.includes('cannot vote because your network') ||
+                request.message.includes(
+                    'не можете голосовать из-за того, что находитесь в частной или закрытой сети',
+                ) ||
+                request.message.includes('não pode votar porque sua rede não é uma rede') ||
+                request.message.includes("ne pouvez pas voter car votre réseau n'est pas un réseau") ||
+                request.message.includes('puedes votar porque tu red no es una red')
+            ) {
                 request.ignoreReport = true
             }
             chrome.runtime.sendMessage(request)
@@ -109,11 +115,14 @@ async function vote(first) {
         document.getElementById('playername').value = project.nick
     }
 
-    const timer = setInterval(function() {
+    const timer = setInterval(function () {
         try {
             if (document.querySelector('#captcha-content > div > div.grecaptcha-logo > iframe') != null) {
                 //Ждёт загрузки reCaptcha
-                const submitButton = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+                const submitButton =
+                    document.querySelector('button#btnSubmitVote') ||
+                    document.querySelector('form.vote-form button[type="submit"]') ||
+                    document.querySelector('form.form-vote button[type="submit"]')
                 if (submitButton) submitButton.click()
                 clearInterval(timer)
             }
@@ -127,10 +136,16 @@ async function vote(first) {
         chrome.runtime.sendMessage({captcha: true})
     }
 
-    const submitButton = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+    const submitButton =
+        document.querySelector('button#btnSubmitVote') ||
+        document.querySelector('form.vote-form button[type="submit"]') ||
+        document.querySelector('form.form-vote button[type="submit"]')
     if (submitButton && submitButton.disabled === true) {
         const timer = setInterval(() => {
-            const btn = document.querySelector('button#btnSubmitVote') || document.querySelector('form.vote-form button[type="submit"]') || document.querySelector('form.form-vote button[type="submit"]')
+            const btn =
+                document.querySelector('button#btnSubmitVote') ||
+                document.querySelector('form.vote-form button[type="submit"]') ||
+                document.querySelector('form.form-vote button[type="submit"]')
             if (btn?.disabled === false) {
                 clearInterval(timer)
                 btn.click()

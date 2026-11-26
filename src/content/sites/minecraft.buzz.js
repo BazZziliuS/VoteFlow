@@ -17,7 +17,7 @@ async function vote(first) {
     document.querySelector('#captcha_submit').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         const message = document.getElementById('message')
         if (message && message.textContent.trim().length > 0) {
@@ -28,7 +28,11 @@ const timer = setInterval(()=>{
             } else if (request.message.includes('already voted')) {
                 chrome.runtime.sendMessage({later: true})
             } else {
-                if (request.message.includes('proxy') || request.message.includes('Captcha') || request.message.includes('Username can\'t be empty')) {
+                if (
+                    request.message.includes('proxy') ||
+                    request.message.includes('Captcha') ||
+                    request.message.includes("Username can't be empty")
+                ) {
                     request.ignoreReport = true
                 }
                 chrome.runtime.sendMessage(request)

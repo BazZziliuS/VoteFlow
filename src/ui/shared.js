@@ -72,7 +72,9 @@ function reportIssueUrl(project) {
         '',
         '**Что происходило:**',
         '',
-    ].filter(line => line !== null).join('\n')
+    ]
+        .filter(line => line !== null)
+        .join('\n')
     return `${REPO_URL}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`
 }
 
@@ -80,7 +82,9 @@ function reportIssueUrl(project) {
 const FEATURED_PROJECTS = ['centurymine', 'sidemc']
 
 function normalizeProjectText(value) {
-    return String(value ?? '').toLowerCase().replace(/[\s_\-.]/g, '')
+    return String(value ?? '')
+        .toLowerCase()
+        .replace(/[\s_\-.]/g, '')
 }
 
 /**
@@ -139,7 +143,7 @@ function projectState(project, openedProjects) {
         let state = null
         for (const value of openedProjects.values()) {
             if (project.rating === value.rating) {
-                state = project.key === value.key ? 'now' : (state || 'queue')
+                state = project.key === value.key ? 'now' : state || 'queue'
                 if (state === 'now') break
             }
         }

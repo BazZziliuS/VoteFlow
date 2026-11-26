@@ -3,7 +3,9 @@
 
 const MAX_ITEMS = 50
 
-document.querySelectorAll('[data-resource]').forEach(el => el.prepend(chrome.i18n.getMessage(el.getAttribute('data-resource'))))
+document
+    .querySelectorAll('[data-resource]')
+    .forEach(el => el.prepend(chrome.i18n.getMessage(el.getAttribute('data-resource'))))
 
 // Открывает страницу настроек на нужном разделе. Если она уже открыта — переключается на неё
 async function openOptions(hash = '') {
@@ -39,10 +41,17 @@ function sortProjects(projects, opened) {
 function renderToday() {
     let stats = todayStats
     // Статистика за сегодня обнуляется в начале нового дня
-    if (!stats || !stats.lastAttemptVote || new Date(stats.lastAttemptVote).toDateString() !== new Date().toDateString()) {
+    if (
+        !stats ||
+        !stats.lastAttemptVote ||
+        new Date(stats.lastAttemptVote).toDateString() !== new Date().toDateString()
+    ) {
         stats = {successVotes: 0, errorVotes: 0}
     }
-    document.getElementById('today').textContent = chrome.i18n.getMessage('popupToday', [String(stats.successVotes || 0), String(stats.errorVotes || 0)])
+    document.getElementById('today').textContent = chrome.i18n.getMessage('popupToday', [
+        String(stats.successVotes || 0),
+        String(stats.errorVotes || 0),
+    ])
 }
 
 function statusText(project, state) {
@@ -57,37 +66,39 @@ function statusText(project, state) {
 function renderList(projects) {
     const list = document.getElementById('popupList')
     const items = sortProjects(projects, openedProjects).slice(0, MAX_ITEMS)
-    list.replaceChildren(...items.map(({project, state}) => {
-        const li = document.createElement('li')
-        const button = document.createElement('button')
-        button.type = 'button'
-        button.className = 'popup-item'
-        button.dataset.state = state
-        if (isFeaturedProject(project)) button.classList.add('featured')
-        button.title = project.error || ''
+    list.replaceChildren(
+        ...items.map(({project, state}) => {
+            const li = document.createElement('li')
+            const button = document.createElement('button')
+            button.type = 'button'
+            button.className = 'popup-item'
+            button.dataset.state = state
+            if (isFeaturedProject(project)) button.classList.add('featured')
+            button.title = project.error || ''
 
-        const dot = document.createElement('span')
-        dot.className = 'status-dot'
+            const dot = document.createElement('span')
+            dot.className = 'status-dot'
 
-        const text = document.createElement('span')
-        text.className = 'popup-item-text'
-        const name = document.createElement('span')
-        name.className = 'popup-item-name'
-        name.textContent = projectDisplayName(project)
-        const site = document.createElement('span')
-        site.className = 'popup-item-site'
-        site.textContent = project.nick ? project.rating + ' · ' + project.nick : project.rating
-        text.append(name, site)
+            const text = document.createElement('span')
+            text.className = 'popup-item-text'
+            const name = document.createElement('span')
+            name.className = 'popup-item-name'
+            name.textContent = projectDisplayName(project)
+            const site = document.createElement('span')
+            site.className = 'popup-item-site'
+            site.textContent = project.nick ? project.rating + ' · ' + project.nick : project.rating
+            text.append(name, site)
 
-        const when = document.createElement('span')
-        when.className = 'popup-item-when mono'
-        when.textContent = statusText(project, state)
+            const when = document.createElement('span')
+            when.className = 'popup-item-when mono'
+            when.textContent = statusText(project, state)
 
-        button.append(dot, text, when)
-        button.addEventListener('click', () => openOptions('project=' + project.key))
-        li.append(button)
-        return li
-    }))
+            button.append(dot, text, when)
+            button.addEventListener('click', () => openOptions('project=' + project.key))
+            li.append(button)
+            return li
+        }),
+    )
     document.getElementById('popupEmpty').hidden = projects.length > 0
 }
 
@@ -126,9 +137,8 @@ async function renderSiteOffer() {
         return
     }
 
-    const existingKey = project?.id != null
-        ? await db.getKeyFromIndex('projects', 'rating, id', [domain, project.id])
-        : undefined
+    const existingKey =
+        project?.id != null ? await db.getKeyFromIndex('projects', 'rating, id', [domain, project.id]) : undefined
     if (existingKey != null) {
         title.textContent = chrome.i18n.getMessage('offerAlreadyAdded', [domain, String(project.id)])
         hint.textContent = ''

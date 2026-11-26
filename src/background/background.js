@@ -48,7 +48,12 @@ importScripts('/src/background/browser/badge.js')
 // TODO отложенный importScripts пока не работают, подробнее https://bugs.chromium.org/p/chromium/issues/detail?id=1198822
 self.addEventListener('install', () => {
     importScripts('/libs/linkedom.js')
-    importScripts('/src/background/silentvote/mcserver-list.eu_silentvote.js', '/src/background/silentvote/misterlauncher.org_silentvote.js', '/src/background/silentvote/serverpact.com_silentvote.js', '/src/background/silentvote/bloodrust.com_silentvote.js')
+    importScripts(
+        '/src/background/silentvote/mcserver-list.eu_silentvote.js',
+        '/src/background/silentvote/misterlauncher.org_silentvote.js',
+        '/src/background/silentvote/serverpact.com_silentvote.js',
+        '/src/background/silentvote/bloodrust.com_silentvote.js',
+    )
 })
 
 //ID группы вкладок в которой сейчас открыты вкладки расширения
@@ -69,12 +74,12 @@ function isProjectDue(project) {
     return !project.time || project.time < Date.now()
 }
 
-let silentResponseBody = {}
+const silentResponseBody = {}
 
 //Инициализация настроек расширения
 // noinspection JSIgnoredPromiseFromCall
 const initializeFunc = initializeConfig(true)
-initializeFunc.finally(() => initializeFunc.done = true)
+initializeFunc.finally(() => (initializeFunc.done = true))
 initializeFunc.then(() => updateErrorBadge(db))
 
 /**
@@ -84,7 +89,6 @@ initializeFunc.then(() => updateErrorBadge(db))
  * @returns {Promise<void>}
  */
 async function processVoteQueue() {
-
     await initializeFunc
 
     // Проверка браузера Opera
@@ -224,7 +228,12 @@ async function openVoteWindow(project, opened) {
     }
 
     console.log(getProjectPrefix(project, true), chrome.i18n.getMessage('startedAutoVote'))
-    sendNotification(getProjectPrefix(project, false), chrome.i18n.getMessage('startedAutoVote'), 'start', 'openProject_' + project.key)
+    sendNotification(
+        getProjectPrefix(project, false),
+        chrome.i18n.getMessage('startedAutoVote'),
+        'start',
+        'openProject_' + project.key,
+    )
 
     // Инициализация статистики перед голосованием
     todayStats = initializeStatsBeforeVote(project, generalStats, todayStats)
@@ -251,10 +260,14 @@ async function openVoteWindow(project, opened) {
 
         const url = allProjects[project.rating].voteURL(project)
 
-        let tab = await tryOpenTab({
-            url,
-            active: settings.disabledFocusedTab || Boolean(allProjects[project.rating].focusedTab?.(project))
-        }, project, 0)
+        const tab = await tryOpenTab(
+            {
+                url,
+                active: settings.disabledFocusedTab || Boolean(allProjects[project.rating].focusedTab?.(project)),
+            },
+            project,
+            0,
+        )
         if (tab == null) return
         openedProjects.set(tab.id, opened)
         openedProjects.delete('start_' + project.key)
@@ -292,12 +305,12 @@ async function checkResponseError(project, response, url, bypassCodes, vk) {
 
 const webNavigationOnCommittedListener = function (details) {
     if (!initializeFunc.done) {
-        (async () => {
+        ;(async () => {
             await initializeFunc
-            let opened = openedProjects.get(details.tabId)
+            const opened = openedProjects.get(details.tabId)
             if (!opened) return
             const project = await db.get('projects', opened.key)
-            let message = chrome.i18n.getMessage('notReadyInject')
+            const message = chrome.i18n.getMessage('notReadyInject')
             if (project.error === message) return
             console.warn(getProjectPrefix(project, true), message)
             sendNotification(getProjectPrefix(project, false), message, 'warn', 'openProject_' + project.key)
@@ -307,7 +320,7 @@ const webNavigationOnCommittedListener = function (details) {
         return
     }
 
-    let opened = openedProjects.get(details.tabId)
+    const opened = openedProjects.get(details.tabId)
     if (!opened) return
     if (details.url.startsWith('blob:')) return
 
@@ -317,17 +330,31 @@ const webNavigationOnCommittedListener = function (details) {
     }
 
     // Определение скриптов для инъекции
-    const {filesIsolated, filesMain} = determineScriptsToInject(details, getDomainWithoutSubdomain, isCaptchaUrlForCommitted, allProjects)
+    const {filesIsolated, filesMain} = determineScriptsToInject(
+        details,
+        getDomainWithoutSubdomain,
+        isCaptchaUrlForCommitted,
+        allProjects,
+    )
 
     // Выполнение инъекции
-    executeScriptInjection(details.tabId, details.frameId, filesIsolated, filesMain, catchTabError, opened, db, settings.debug, details.url)
+    executeScriptInjection(
+        details.tabId,
+        details.frameId,
+        filesIsolated,
+        filesMain,
+        catchTabError,
+        opened,
+        db,
+        settings.debug,
+        details.url,
+    )
 }
 
 //Слушатель на обновление вкладок, если вкладка полностью загрузилась, загружает туда скрипт который сам нажимает кнопку проголосовать
 const webNavigationOnCompletedListener = async function (details) {
-
     await initializeFunc
-    let opened = openedProjects.get(details.tabId)
+    const opened = openedProjects.get(details.tabId)
     if (!opened) return
 
     if (details.frameId === 0) {
@@ -371,21 +398,22 @@ const webNavigationOnCompletedListener = async function (details) {
 
 const tabsOnRemovedListener = async function (tabId) {
     await initializeFunc
-    let opened = openedProjects.get(tabId)
+    const opened = openedProjects.get(tabId)
     if (!opened) return
     endVote({closedTab: true}, {tab: {id: tabId}}, opened)
 }
 
 const webRequestOnCompletedListener = async function (details) {
     await initializeFunc
-    let opened = openedProjects.get(details.tabId)
+    const opened = openedProjects.get(details.tabId)
     if (!opened) return
 
     // Иногда некоторые проекты намеренно выдаёт ошибку в status code, нам ничего не остаётся кроме как игнорировать все ошибки, подробнее https://discord.com/channels/371699266747629568/760393040174120990/1053016256535593022
     if (allProjects[opened.rating].ignoreErrors?.()) return
 
     if (details.type === 'main_frame' && (details.statusCode < 200 || details.statusCode > 299)) {
-        if (details.statusCode === 503 || details.statusCode === 403) { // Если проверка CloudFlare
+        if (details.statusCode === 503 || details.statusCode === 403) {
+            // Если проверка CloudFlare
             opened.countInject--
             db.put('other', openedProjects, 'openedProjects')
         } else {
@@ -429,14 +457,19 @@ const webNavigationOnErrorOccurredListener = async function (details) {
  * @param {boolean} enable - true для регистрации, false для разрегистрации слушателей
  */
 function updateListeners(enable) {
-    updateAllVoteListeners(enable, {
-        webNavigationOnErrorOccurred: webNavigationOnErrorOccurredListener,
-        webNavigationOnCommitted: webNavigationOnCommittedListener,
-        webNavigationOnCompleted: webNavigationOnCompletedListener,
-        tabsOnRemoved: tabsOnRemovedListener,
-        webRequestOnCompleted: webRequestOnCompletedListener,
-        webRequestOnErrorOccurred: webRequestOnErrorOccurredListener
-    }, openedProjects, settings)
+    updateAllVoteListeners(
+        enable,
+        {
+            webNavigationOnErrorOccurred: webNavigationOnErrorOccurredListener,
+            webNavigationOnCommitted: webNavigationOnCommittedListener,
+            webNavigationOnCompleted: webNavigationOnCompletedListener,
+            tabsOnRemoved: tabsOnRemovedListener,
+            webRequestOnCompleted: webRequestOnCompletedListener,
+            webRequestOnErrorOccurred: webRequestOnErrorOccurredListener,
+        },
+        openedProjects,
+        settings,
+    )
 }
 
 // Так как Service Worker может уснуть прямо во время голосования, мы прям при запуске всё равно регистрируем слушателей
@@ -452,7 +485,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 })
 
-let fakeIdToId = {};
+const fakeIdToId = {}
 
 async function onRuntimeMessage(request, sender, sendResponse) {
     if (request.reloadCaptcha) {
@@ -510,11 +543,15 @@ async function onRuntimeMessage(request, sender, sendResponse) {
 
     // Дальше — результаты голосования, они приходят только из вкладок
     if (!sender.tab || !openedProjects.has(sender.tab.id)) {
-        console.warn('A double attempt to complete the vote? chrome.runtime.onMessage', JSON.stringify(request), JSON.stringify(sender))
+        console.warn(
+            'A double attempt to complete the vote? chrome.runtime.onMessage',
+            JSON.stringify(request),
+            JSON.stringify(sender),
+        )
         return
     }
 
-    let opened = openedProjects.get(sender.tab.id)
+    const opened = openedProjects.get(sender.tab.id)
 
     // Обработка ручных действий (капча, авторизация и т.д.)
     if (requiresManualAction(request)) {
@@ -548,7 +585,14 @@ async function endVote(request, sender, project) {
     project = await db.get('projects', project.key)
 
     const result = applyVoteResult(project, request, {settings, allProjects, generalStats, todayStats, chrome})
-    const logLine = getProjectPrefix(project, true) + ' ' + result.message + ', ' + chrome.i18n.getMessage('timeStamp') + ' ' + project.time
+    const logLine =
+        getProjectPrefix(project, true) +
+        ' ' +
+        result.message +
+        ', ' +
+        chrome.i18n.getMessage('timeStamp') +
+        ' ' +
+        project.time
     if (result.level === 'error') console.error(logLine)
     else console.log(logLine)
     if (result.notify) {
@@ -564,7 +608,6 @@ async function endVote(request, sender, project) {
     // Планируем cleanup очереди и следующую проверку голосования
     scheduleQueueCleanup(project, openedProjects, timeout, db, processVoteQueue)
 }
-
 
 chrome.notifications.onClicked.addListener(async function (notificationId) {
     await handleNotificationClick(notificationId, db, openOptionsPage)
@@ -583,8 +626,6 @@ async function openOptionsPage() {
         }
     }
 }
-
-
 
 /**
  * Обновляет значение в хранилище базы данных

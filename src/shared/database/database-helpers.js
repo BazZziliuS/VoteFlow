@@ -25,8 +25,10 @@ async function updateStoreValue(db, storeName, value) {
     try {
         await chrome.runtime.sendMessage({updateValue: storeName, value})
     } catch (error) {
-        if (!error.message.includes('Could not establish connection. Receiving end does not exist') &&
-            !error.message.includes('The message port closed before a response was received')) {
+        if (
+            !error.message.includes('Could not establish connection. Receiving end does not exist') &&
+            !error.message.includes('The message port closed before a response was received')
+        ) {
             console.error(error.message)
         }
     }

@@ -1,5 +1,8 @@
 async function vote(first) {
-    if (document.querySelector('.success.message') && document.querySelector('.success.message').textContent.includes('vote a bien été comptabilisé')) {
+    if (
+        document.querySelector('.success.message') &&
+        document.querySelector('.success.message').textContent.includes('vote a bien été comptabilisé')
+    ) {
         chrome.runtime.sendMessage({successfully: true})
         return
     }

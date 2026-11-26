@@ -21,9 +21,7 @@ async function updateErrorBadge(database) {
     if (chrome.action.setBadgeTextColor) await chrome.action.setBadgeTextColor({color: '#ffffff'})
     await chrome.action.setBadgeText({text: errors > 0 ? String(errors) : ''})
     await chrome.action.setTitle({
-        title: errors > 0
-            ? chrome.i18n.getMessage('badgeErrors', String(errors))
-            : chrome.i18n.getMessage('appName')
+        title: errors > 0 ? chrome.i18n.getMessage('badgeErrors', String(errors)) : chrome.i18n.getMessage('appName'),
     })
     return errors
 }

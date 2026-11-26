@@ -10,13 +10,15 @@ const releasesDir = path.join(root, 'docs/releases')
 const REPO = 'https://github.com/BazZziliuS/VoteFlow'
 
 function compareSemver(a, b) {
-    const pa = a.split('.').map(Number), pb = b.split('.').map(Number)
+    const pa = a.split('.').map(Number),
+        pb = b.split('.').map(Number)
     for (let i = 0; i < 3; i++) if (pa[i] !== pb[i]) return pa[i] - pb[i]
     return 0
 }
 
 function releaseNotes() {
-    return fs.readdirSync(releasesDir)
+    return fs
+        .readdirSync(releasesDir)
         .filter(f => /^\d+\.\d+\.\d+\.md$/.test(f))
         .map(f => f.replace(/\.md$/, ''))
         .sort((a, b) => compareSemver(b, a))
@@ -24,7 +26,10 @@ function releaseNotes() {
             const raw = fs.readFileSync(path.join(releasesDir, version + '.md'), 'utf8').replace(/\r\n/g, '\n')
             const date = raw.match(/^<!--\s*date:\s*(\d{4}-\d{2}-\d{2})\s*-->/)?.[1] || null
             // Раздел «Установка» одинаковый во всех заметках — в журнал изменений не переносим
-            const body = raw.replace(/^<!--[\s\S]*?-->\n?/, '').replace(/\n### Установка\n[\s\S]*?(?=\n### |\n?$)/, '\n').trim()
+            const body = raw
+                .replace(/^<!--[\s\S]*?-->\n?/, '')
+                .replace(/\n### Установка\n[\s\S]*?(?=\n### |\n?$)/, '\n')
+                .trim()
             return {version, date, body}
         })
 }
@@ -41,7 +46,12 @@ function build() {
     for (const {version, date, body} of releaseNotes()) {
         parts.push(`## [${version}](${REPO}/releases/tag/v${version}) — ${date || 'не выпущено'}`, '', body, '')
     }
-    return parts.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n'
+    return (
+        parts
+            .join('\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trimEnd() + '\n'
+    )
 }
 
 if (require.main === module) {

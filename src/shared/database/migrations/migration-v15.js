@@ -4,10 +4,21 @@
  */
 
 const REMOVED_SITES_V15 = [
-    'discord.boats', 'genshindrop.com', 'mc-serverlist.cz', 'minecraft-index.com', 'minecraft-server.sk',
-    'minecraft-servers.biz', 'trackingservers.cloud', 'craft-list.net', 'mc-server-list.com',
-    'minecraft-server.net', 'serverlocator.com', 'servers-minecraft.net', 'mc-monitoring.info',
-    'topminecraft.io', 'ionmc.top'
+    'discord.boats',
+    'genshindrop.com',
+    'mc-serverlist.cz',
+    'minecraft-index.com',
+    'minecraft-server.sk',
+    'minecraft-servers.biz',
+    'trackingservers.cloud',
+    'craft-list.net',
+    'mc-server-list.com',
+    'minecraft-server.net',
+    'serverlocator.com',
+    'servers-minecraft.net',
+    'mc-monitoring.info',
+    'topminecraft.io',
+    'ionmc.top',
 ]
 
 /**

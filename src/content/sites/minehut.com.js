@@ -17,7 +17,7 @@ async function vote(first) {
     const prototype = Object.getPrototypeOf(textInputRef)
     const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set
     prototypeValueSetter.call(textInputRef, project.nick)
-    textInputRef.dispatchEvent(new Event('input', { bubbles: true }))
+    textInputRef.dispatchEvent(new Event('input', {bubbles: true}))
 
     document.querySelector('.ant-modal-footer button.ant-btn-primary').click()
 }

@@ -20,7 +20,7 @@ async function vote() {
     document.querySelector('.vote button[type="submit"]').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('.alert-success')?.offsetParent) {
             chrome.runtime.sendMessage({successfully: true})

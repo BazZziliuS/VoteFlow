@@ -2,7 +2,7 @@ async function vote(first) {
     //Мы попали на список серверов, возвращаемся, мы авторизовались? Ох, уж эти костыли
     if (document.querySelector('.servers-lists')) {
         const project = await getProject()
-        document.location.replace('https://' + project.game +'.mmorpg.top/server/' + project.id)
+        document.location.replace('https://' + project.game + '.mmorpg.top/server/' + project.id)
         return
     }
 
@@ -37,7 +37,7 @@ async function vote(first) {
     document.querySelector('.modal-vote button.btn-primary').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('.already-voted')) {
             clearInterval(timer)
@@ -51,7 +51,7 @@ const timer = setInterval(()=>{
             if (message.includes('засчитан')) {
                 clearInterval(timer)
                 chrome.runtime.sendMessage({successfully: true})
-            }/* else {//Какую-ту чушь (рекламу) туда суют поэтому игнорируем, ListForge 2.0 момент
+            } /* else {//Какую-ту чушь (рекламу) туда суют поэтому игнорируем, ListForge 2.0 момент
                 chrome.runtime.sendMessage({message})
             }*/
         }

@@ -1,29 +1,23 @@
-// Импорт утилит базы данных
-// Для Service Worker: импортируются в background.js
-// Для options.html: загружаются через теги <script>
+// Общее состояние фона и страниц расширения. Обычные скрипты (не модули) делят одну глобальную
+// область видимости, поэтому let/const верхнего уровня видны и в остальных файлах контекста.
+// Зависимости (idb, projects.js, database/*) подключает тот, кто загружает этот файл
 
 //Настройки
-// noinspection ES6ConvertVarToLetConst
-var settings
+let settings
 //Общая статистика
-// noinspection ES6ConvertVarToLetConst
-var generalStats
+let generalStats
 //Статистика за сегодня
-// noinspection ES6ConvertVarToLetConst
-var todayStats
+let todayStats
 //Основная база данных
-// noinspection ES6ConvertVarToLetConst
-var db
+let db
 //База данных логов
-// noinspection ES6ConvertVarToLetConst
-var dbLogs
+let dbLogs
 //Текущие открытые вкладки расширением
-// noinspection ES6ConvertVarToLetConst
-var openedProjects = new Map()
+let openedProjects = new Map()
 let onLine
 
-self.addEventListener('error', (event) => handleUnhandledError(event, dbLogs))
-self.addEventListener('unhandledrejection', (event) => handleUnhandledError(event, dbLogs))
+self.addEventListener('error', event => handleUnhandledError(event, dbLogs))
+self.addEventListener('unhandledrejection', event => handleUnhandledError(event, dbLogs))
 
 //Инициализация настроек расширения
 async function initializeConfig(background, version) {
@@ -38,8 +32,15 @@ async function initializeConfig(background, version) {
     try {
         db = await idb.openDB('avr', version ? version : 18, {
             upgrade: (db, oldVersion, newVersion, transaction) => {
-                return runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allProjects, getDomainWithoutSubdomain)
-            }
+                return runDatabaseUpgrade(
+                    db,
+                    oldVersion,
+                    newVersion,
+                    transaction,
+                    allProjects,
+                    getDomainWithoutSubdomain,
+                )
+            },
         })
     } catch (error) {
         // На случай если это версия MultiVote
@@ -48,7 +49,9 @@ async function initializeConfig(background, version) {
                 handleDatabaseError({target: {source: {name: 'avr'}, error}}, false, background)
                 return
             }
-            console.log('Ошибка версии базы данных, возможно вы на версии MultiVote, пытаемся загрузить настройки версии MultiVote')
+            console.log(
+                'Ошибка версии базы данных, возможно вы на версии MultiVote, пытаемся загрузить настройки версии MultiVote',
+            )
             await initializeConfig(background, 150)
             return
         }
@@ -57,8 +60,8 @@ async function initializeConfig(background, version) {
     }
 
     // Устанавливаем обработчики ошибок
-    db.onerror = (event) => handleDatabaseError(event, false, background)
-    dbLogs.onerror = (event) => handleDatabaseError(event, true, background)
+    db.onerror = event => handleDatabaseError(event, false, background)
+    dbLogs.onerror = event => handleDatabaseError(event, true, background)
 
     // Загружаем данные из БД
     const data = await loadDatabaseData(db)
@@ -73,4 +76,3 @@ async function initializeConfig(background, version) {
     // Инициализация состояния для background скрипта
     await initializeBackgroundState(state, openedProjects, db, tryCloseTab, processVoteQueue, updateListeners)
 }
-

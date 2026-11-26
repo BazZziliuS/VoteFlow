@@ -5,13 +5,19 @@ async function vote(first) {
 
     if (document.querySelector('.bonus_box_wrapper')?.nextElementSibling.textContent) {
         let message = document.querySelector('.bonus_box_wrapper').nextElementSibling.textContent
-        if (message.includes('Залогинтесь, чтобы получить доступ к данному разделу') || message.includes('Подтвердите двухфакторную аунтификацию')) {
+        if (
+            message.includes('Залогинтесь, чтобы получить доступ к данному разделу') ||
+            message.includes('Подтвердите двухфакторную аунтификацию')
+        ) {
             chrome.runtime.sendMessage({auth: true})
             await new Promise(resolve => {
                 const timer3 = setInterval(() => {
                     try {
                         message = document.querySelector('.bonus_box_wrapper').nextElementSibling.textContent
-                        if (!message.includes('Залогинтесь, чтобы получить доступ к данному разделу') && !message.includes('Подтвердите двухфакторную аунтификацию')) {
+                        if (
+                            !message.includes('Залогинтесь, чтобы получить доступ к данному разделу') &&
+                            !message.includes('Подтвердите двухфакторную аунтификацию')
+                        ) {
                             clearInterval(timer3)
                             resolve()
                         }
@@ -29,7 +35,7 @@ async function vote(first) {
     if (document.querySelector('.give_disable')) {
         chrome.runtime.sendMessage({
             message: 'Не выполнены условия для получения бонуса',
-            ignoreReport: true
+            ignoreReport: true,
         })
         return
     }
@@ -39,10 +45,20 @@ async function vote(first) {
 
 // LoliLand неверно сообщает браузеру что страница полностью загружена, приходится извращаться и дожидаться полной загрузки страницы через querySelector
 async function waitCompleteLoading() {
-    if (document.querySelector('.preloader_malc') || document.querySelector('#loader-wrapper') || document.querySelector('.lds-ring') || document.querySelector('.loading-text')) {
+    if (
+        document.querySelector('.preloader_malc') ||
+        document.querySelector('#loader-wrapper') ||
+        document.querySelector('.lds-ring') ||
+        document.querySelector('.loading-text')
+    ) {
         await new Promise(resolve => {
             const timer2 = setInterval(() => {
-                if (!document.querySelector('.preloader_malc') && !document.querySelector('#loader-wrapper') && !document.querySelector('.lds-ring') && !document.querySelector('.loading-text')) {
+                if (
+                    !document.querySelector('.preloader_malc') &&
+                    !document.querySelector('#loader-wrapper') &&
+                    !document.querySelector('.lds-ring') &&
+                    !document.querySelector('.loading-text')
+                ) {
                     clearInterval(timer2)
                     resolve()
                 }
@@ -77,13 +93,18 @@ const timer = setInterval(() => {
                 else if (x === 2) hours = numbers[i]
                 x++
             }
-            const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
+            const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             clearInterval(timer)
         } else if (message.toLowerCase().includes('вы успешно получили')) {
             chrome.runtime.sendMessage({successfully: true})
             clearInterval(timer)
-        } else if (message.toLowerCase().includes('вы успешно авторизовались') || message.toLowerCase().includes('логин или пароль введен не верно') || message.toLowerCase().includes('подтвердите двухфакторную авторизацию') || message.toLowerCase().includes('текущая сессия истекла')) {
+        } else if (
+            message.toLowerCase().includes('вы успешно авторизовались') ||
+            message.toLowerCase().includes('логин или пароль введен не верно') ||
+            message.toLowerCase().includes('подтвердите двухфакторную авторизацию') ||
+            message.toLowerCase().includes('текущая сессия истекла')
+        ) {
             // None
         } else {
             chrome.runtime.sendMessage({message})

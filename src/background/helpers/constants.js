@@ -33,7 +33,7 @@ const TIME = {
     MAX_ERROR_RANDOMIZATION: 900000,
 
     /** Cooldown для 404 ошибки (6 часов) */
-    ERROR_404_COOLDOWN: 21600000
+    ERROR_404_COOLDOWN: 21600000,
 }
 
 /**
@@ -50,5 +50,5 @@ const LIMITS = {
     MAX_TAB_LOAD_WAIT_CYCLES: 9,
 
     /** Задержка для проверки следующей попытки голосования (минуты) */
-    ERROR_RETRY_MINUTES: 15
+    ERROR_RETRY_MINUTES: 15,
 }

@@ -79,10 +79,10 @@
                             })
                         }
                         return Reflect.apply(...arguments)
-                    }
+                    },
                 })
                 return Reflect.apply(...arguments)
-            }
+            },
         })
 
         // const s = Symbol('listeners')

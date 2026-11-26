@@ -17,7 +17,7 @@ const timer = setInterval(() => {
                 chrome.runtime.sendMessage({successfully: true})
             } else if (message.includes('wait before your next vote')) {
                 const numbers = message.match(/\d+/g).map(Number)
-                const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000)
+                const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 + numbers[2] * 1000
                 chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             } else if (message.toLowerCase().includes('choose scopes')) {
                 modal.querySelector('#login-email').checked = false

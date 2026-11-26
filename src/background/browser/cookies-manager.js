@@ -19,7 +19,7 @@ async function clearDomainCookies(domain, debug) {
         }
         await chrome.cookies.remove({
             url: 'https://' + cookies[i].domain + cookies[i].path,
-            name: cookies[i].name
+            name: cookies[i].name,
         })
     }
 }

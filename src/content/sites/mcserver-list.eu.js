@@ -18,7 +18,7 @@ async function vote() {
     document.querySelector('input[name="playernick"]').nextElementSibling.click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('div.alert')) {
             clearInterval(timer)

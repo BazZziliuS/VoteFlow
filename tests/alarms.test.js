@@ -5,13 +5,19 @@ const {loadScripts} = require('./helpers')
 
 function setup() {
     const created = []
-    const chrome = {alarms: {
-        clear: async () => true,
-        getAll: async () => [],
-        create: async (name, info) => { created.push({name, ...info}) },
-    }}
-    const ctx = loadScripts(['src/background/helpers/constants.js', 'src/background/browser/alarms.js'],
-        {chrome, getProjectPrefix: () => '[test]'})
+    const chrome = {
+        alarms: {
+            clear: async () => true,
+            getAll: async () => [],
+            create: async (name, info) => {
+                created.push({name, ...info})
+            },
+        },
+    }
+    const ctx = loadScripts(['src/background/helpers/constants.js', 'src/background/browser/alarms.js'], {
+        chrome,
+        getProjectPrefix: () => '[test]',
+    })
     return {ctx, created}
 }
 

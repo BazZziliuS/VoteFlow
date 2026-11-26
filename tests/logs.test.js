@@ -9,10 +9,14 @@ function fakeLogsDb(count) {
     let nextKey = count + 1
     return {
         rows,
-        add: async (store, value) => { rows.set(nextKey++, value) },
+        add: async (store, value) => {
+            rows.set(nextKey++, value)
+        },
         count: async () => rows.size,
         getAllKeys: async (store, query, limit) => [...rows.keys()].sort((a, b) => a - b).slice(0, limit),
-        delete: async (store, range) => { for (const key of [...rows.keys()]) if (key <= range.upper) rows.delete(key) },
+        delete: async (store, range) => {
+            for (const key of [...rows.keys()]) if (key <= range.upper) rows.delete(key)
+        },
     }
 }
 

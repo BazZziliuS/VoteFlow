@@ -40,7 +40,10 @@ function collectCommits() {
     } catch {}
     const log = git('log', '--format=%s%x00%b%x1e', range)
     const groups = {breaking: [], feat: [], fix: [], perf: [], other: []}
-    for (const entry of log.split('\x1e').map(e => e.trim()).filter(Boolean)) {
+    for (const entry of log
+        .split('\x1e')
+        .map(e => e.trim())
+        .filter(Boolean)) {
         const [subject, body] = entry.split('\x00')
         const match = subject.match(HEADER)
         if (!match) {
@@ -59,8 +62,9 @@ function collectCommits() {
 
 function draftNotes(version, groups) {
     const date = new Date().toLocaleDateString('sv') // ГГГГ-ММ-ДД по местному времени
-    const section = (title, lines) => lines.length ? `### ${title}\n${lines.map(l => '- ' + l).join('\n')}\n\n` : ''
-    return `<!-- date: ${date} -->\n` +
+    const section = (title, lines) => (lines.length ? `### ${title}\n${lines.map(l => '- ' + l).join('\n')}\n\n` : '')
+    return (
+        `<!-- date: ${date} -->\n` +
         section('Важно', groups.breaking) +
         section('Новое', groups.feat) +
         section('Исправлено', groups.fix) +
@@ -73,6 +77,7 @@ function draftNotes(version, groups) {
 
 Если VoteFlow уже установлен, замените содержимое папки и нажмите «Обновить» на странице расширений: проекты и настройки сохранятся.
 `
+    )
 }
 
 function main() {
@@ -80,11 +85,14 @@ function main() {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'))
     const current = manifest.version
     const version = nextVersion(current, bump)
-    if (compareSemver(version, current) <= 0) throw new Error(`новая версия ${version} должна быть больше текущей ${current}`)
+    if (compareSemver(version, current) <= 0)
+        throw new Error(`новая версия ${version} должна быть больше текущей ${current}`)
 
     const {range, groups} = collectCommits()
     if (groups.breaking.length && version.split('.')[0] === current.split('.')[0]) {
-        console.warn(`⚠ В ${range} есть несовместимые изменения (тип с «!» или BREAKING CHANGE) — по правилам это major-версия`)
+        console.warn(
+            `⚠ В ${range} есть несовместимые изменения (тип с «!» или BREAKING CHANGE) — по правилам это major-версия`,
+        )
     }
 
     setVersion('manifest.json', version)
@@ -95,7 +103,9 @@ function main() {
         console.log(`Заметки ${path.relative(root, notes)} уже есть — оставлены как есть`)
     } else {
         fs.writeFileSync(notes, draftNotes(version, groups))
-        console.log(`Создан черновик заметок ${path.relative(root, notes)} из коммитов ${range} — отредактируйте его для пользователей`)
+        console.log(
+            `Создан черновик заметок ${path.relative(root, notes)} из коммитов ${range} — отредактируйте его для пользователей`,
+        )
     }
     execFileSync(process.execPath, [path.join(__dirname, 'changelog.js')], {cwd: root, stdio: 'inherit'})
 

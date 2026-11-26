@@ -1,6 +1,10 @@
 async function vote(first) {
     if (document.querySelector('#content')?.textContent.includes('Страница которую Вы запрашиваете не существует!')) {
-        chrome.runtime.sendMessage({message: document.querySelector('#content').textContent, ignoreReport: true, retryCoolDown: 21600000})
+        chrome.runtime.sendMessage({
+            message: document.querySelector('#content').textContent,
+            ignoreReport: true,
+            retryCoolDown: 21600000,
+        })
         return
     }
     if (first) {
@@ -10,21 +14,29 @@ async function vote(first) {
 
     const project = await getProject()
 
-    if (document.getElementById("nickname")) document.getElementById("nickname").value = project.nick
-    document.querySelector("#voteModal > div.modal-dialog > div > div.modal-footer.clearfix > div.pull-right > a").click()
+    if (document.getElementById('nickname')) document.getElementById('nickname').value = project.nick
+    document
+        .querySelector('#voteModal > div.modal-dialog > div > div.modal-footer.clearfix > div.pull-right > a')
+        .click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('div[class="message error"]')) {
             const request = {}
             request.message = document.querySelector('div[class="message error"]').textContent
             if (request.message.includes('уже голосовали')) {
-                const numbers = document.querySelector('div[class="message error"]').textContent.match(/\d+/g).map(Number)
-                const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000)/* + (sec * 1000)*/
+                const numbers = document
+                    .querySelector('div[class="message error"]')
+                    .textContent.match(/\d+/g)
+                    .map(Number)
+                const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 /* + (sec * 1000)*/
                 chrome.runtime.sendMessage({later: Date.now() + milliseconds})
                 clearInterval(timer)
-            } else if (request.message.toLowerCase().includes('капча') || request.message.toLowerCase().includes('заполните обязательные поля')) {
+            } else if (
+                request.message.toLowerCase().includes('капча') ||
+                request.message.toLowerCase().includes('заполните обязательные поля')
+            ) {
                 // None
             } else {
                 if (request.message.includes('Ключи безопасности не совпадают')) {

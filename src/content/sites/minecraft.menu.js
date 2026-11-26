@@ -9,7 +9,7 @@ async function vote(first) {
         if (message.includes('must wait') && message.includes('before voting again')) {
             chrome.runtime.sendMessage({later: true})
             return
-        } else if (message.includes('Captcha wasn\'t entered correctly')) {
+        } else if (message.includes("Captcha wasn't entered correctly")) {
             // None
         } else {
             chrome.runtime.sendMessage({message})

@@ -1,9 +1,15 @@
 async function vote(first) {
-    if (document.querySelector('div.alert.alert-success') != null && document.querySelector('div.alert.alert-success').parentElement.style.display !== 'none') {
+    if (
+        document.querySelector('div.alert.alert-success') != null &&
+        document.querySelector('div.alert.alert-success').parentElement.style.display !== 'none'
+    ) {
         chrome.runtime.sendMessage({successfully: true})
         return
     }
-    if (document.querySelector('div.alert.alert-danger') != null && document.querySelector('div.alert.alert-danger').parentElement.style.display !== 'none') {
+    if (
+        document.querySelector('div.alert.alert-danger') != null &&
+        document.querySelector('div.alert.alert-danger').parentElement.style.display !== 'none'
+    ) {
         if (document.querySelector('div.alert.alert-danger').textContent.includes('already voted')) {
             chrome.runtime.sendMessage({later: true})
             return
@@ -21,15 +27,21 @@ async function vote(first) {
     document.querySelector('form.vote button[type="submit"]').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         //Ищет надпись в которой написано что вы проголосовали или вы уже голосовали, по этой надписи скрипт завершается
-        if (document.querySelector('div.alert.alert-success') != null && document.querySelector('div.alert.alert-success').parentElement.style.display !== 'none') {
+        if (
+            document.querySelector('div.alert.alert-success') != null &&
+            document.querySelector('div.alert.alert-success').parentElement.style.display !== 'none'
+        ) {
             clearInterval(timer)
             chrome.runtime.sendMessage({successfully: true})
             return
         }
-        if (document.querySelector('div.alert.alert-danger') != null && document.querySelector('div.alert.alert-danger').parentElement.style.display !== 'none') {
+        if (
+            document.querySelector('div.alert.alert-danger') != null &&
+            document.querySelector('div.alert.alert-danger').parentElement.style.display !== 'none'
+        ) {
             const request = {}
             request.message = document.querySelector('div.alert.alert-danger').innerText
             if (request.message.includes('already voted')) {

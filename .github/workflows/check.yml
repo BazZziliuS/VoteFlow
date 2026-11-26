@@ -23,6 +23,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Formatting (Prettier)
+        run: npm run format:check
+
+      - name: Vendored libs match package.json
+        run: node scripts/vendor.js --check
+
       - name: Commit messages (CONTRIBUTING.md)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then

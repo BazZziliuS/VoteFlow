@@ -12,7 +12,7 @@ async function vote(first) {
     //Ожидаем загрузки Contrôle anti-bot
     if (document.querySelector('#loader_circle') != null) {
         await new Promise(resolve => {
-            const timer2 = setInterval(()=>{
+            const timer2 = setInterval(() => {
                 if (document.querySelector('#loader_circle') == null) {
                     resolve()
                     clearInterval(timer2)
@@ -28,7 +28,7 @@ async function vote(first) {
         } else if (text.includes('ous avez déjà voté')) {
             chrome.runtime.sendMessage({later: true})
             return
-        }/* else {
+        } /* else {
             chrome.runtime.sendMessage({message: text})
             return
         }*/
@@ -42,14 +42,17 @@ async function vote(first) {
     document.querySelector('span[title="Voter"]').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('.ZebraDialog')?.innerText?.length) {
             const request = {}
             request.message = document.querySelector('.ZebraDialog').innerText.trim()
             if (request.message.includes('captcha a expiré')) {
                 document.querySelector('.ZebraDialog_Button_0').click()
-            } else if (request.message.includes('vote a bien été enregistré') || request.message.includes('erci pour ton vote')) {
+            } else if (
+                request.message.includes('vote a bien été enregistré') ||
+                request.message.includes('erci pour ton vote')
+            ) {
                 chrome.runtime.sendMessage({successfully: true})
             } else {
                 if (request.message.includes('captcha est invalide')) {

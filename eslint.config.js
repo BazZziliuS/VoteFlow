@@ -41,6 +41,9 @@ const commonRules = {
     'use-isnan': 'error',
     'valid-typeof': 'error',
     'no-unused-vars': ['warn', {vars: 'local', args: 'none', caughtErrors: 'none'}],
+    // Современный стиль: var только там, где он нужен намеренно (с комментарием eslint-disable)
+    'no-var': 'error',
+    'prefer-const': ['error', {destructuring: 'all', ignoreReadBeforeAssign: true}],
 }
 
 module.exports = [
@@ -92,6 +95,8 @@ module.exports = [
             'no-unused-vars': ['warn', {vars: 'local', args: 'none', caughtErrors: 'none'}],
             'no-empty': ['warn', {allowEmptyCatch: true}],
             'no-useless-escape': 'off',
+            'no-var': 'error',
+            'prefer-const': ['error', {destructuring: 'all', ignoreReadBeforeAssign: true}],
         },
     },
 ]

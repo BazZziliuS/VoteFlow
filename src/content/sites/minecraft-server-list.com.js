@@ -1,6 +1,7 @@
 //Фикс-костыль двойной загрузки (для Rocket Loader)
 if (typeof loaded2 === 'undefined') {
-    // noinspection ES6ConvertVarToLetConst
+    // var, а не let: при повторном внедрении скрипта повторное объявление let — SyntaxError
+    // eslint-disable-next-line no-var
     var loaded2 = true
     runVote()
 }
@@ -8,7 +9,7 @@ if (typeof loaded2 === 'undefined') {
 async function vote(first) {
     if (document.querySelector('#voteform #voteButton').disabled) {
         await new Promise(resolve => {
-            const timer = setInterval(()=>{
+            const timer = setInterval(() => {
                 try {
                     if (!document.querySelector('#voteform #voteButton').disabled) {
                         clearInterval(timer)
@@ -27,17 +28,20 @@ async function vote(first) {
     const project = await getProject()
     while (document.querySelector('#voteform #ignnn') === null) await new Promise(resolve => setTimeout(resolve, 1000))
     document.querySelector('#voteform #ignnn').value = project.nick
-     await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise(resolve => setTimeout(resolve, 1000))
     document.querySelector('#voteform #voteButton').click()
 }
 
 function runVote() {
-    const timer2 = setInterval(()=>{
+    const timer2 = setInterval(() => {
         try {
             if (document.querySelector('#voteerror > font') != null) {
                 const request = {}
                 request.message = document.querySelector('#voteerror > font').textContent.trim()
-                if (request.message.includes('Vote Registered') || request.message.includes('Vote saved. But could not connect to Votifier')) {
+                if (
+                    request.message.includes('Vote Registered') ||
+                    request.message.includes('Vote saved. But could not connect to Votifier')
+                ) {
                     if (request.message.includes('Vote saved. But could not connect to Votifier')) {
                         chrome.runtime.sendMessage({successfully: request.message})
                     } else {
@@ -48,7 +52,14 @@ function runVote() {
                 } else if (request.message.includes('Please Wait')) {
                     return
                 } else {
-                    if (request.message.toLowerCase().includes('not a valid playername') || request.message.includes('verification expired due to timeout') || request.message.includes('Playername can not be empty') || request.message.includes('Your name is to short') || request.message.includes('cannot verify your vote due to a low browser score') || request.message.includes('with the Anti Spam check')) {
+                    if (
+                        request.message.toLowerCase().includes('not a valid playername') ||
+                        request.message.includes('verification expired due to timeout') ||
+                        request.message.includes('Playername can not be empty') ||
+                        request.message.includes('Your name is to short') ||
+                        request.message.includes('cannot verify your vote due to a low browser score') ||
+                        request.message.includes('with the Anti Spam check')
+                    ) {
                         request.ignoreReport = true
                     }
                     chrome.runtime.sendMessage(request)

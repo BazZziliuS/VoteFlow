@@ -31,7 +31,10 @@ const PROPER_NOUNS = new Set(['Яндекс', 'Яндекса', 'ВКонтак�
  * @returns {string[]} список нарушений (пустой — сообщение верное)
  */
 function lint(message) {
-    const lines = message.replace(/\r\n/g, '\n').split('\n').filter(line => !line.startsWith('#'))
+    const lines = message
+        .replace(/\r\n/g, '\n')
+        .split('\n')
+        .filter(line => !line.startsWith('#'))
     const header = (lines[0] || '').trim()
     // Служебные коммиты git проверять не нужно
     if (/^(Merge|Revert ") /.test(header) || /^(fixup|squash|amend)! /.test(header)) return []
@@ -39,7 +42,9 @@ function lint(message) {
     const errors = []
     const match = header.match(HEADER)
     if (!match) {
-        errors.push('заголовок должен быть в формате «тип(область): описание», например «fix(mctop.su): отправка после капчи»')
+        errors.push(
+            'заголовок должен быть в формате «тип(область): описание», например «fix(mctop.su): отправка после капчи»',
+        )
         return errors
     }
     const {type, scope, subject} = match.groups
@@ -71,12 +76,17 @@ function main(argv) {
         const out = execFileSync('git', ['log', '--format=%H%x00%B%x1e', argv[1]], {encoding: 'utf8'})
         let ok = true
         let count = 0
-        for (const entry of out.split('\x1e').map(e => e.trim()).filter(Boolean)) {
+        for (const entry of out
+            .split('\x1e')
+            .map(e => e.trim())
+            .filter(Boolean)) {
             const [hash, body] = entry.split('\x00')
             count++
             if (!report(hash.slice(0, 7), body)) ok = false
         }
-        console.log(ok ? `Сообщения коммитов в порядке (${count})` : 'Исправьте сообщения коммитов: см. CONTRIBUTING.md')
+        console.log(
+            ok ? `Сообщения коммитов в порядке (${count})` : 'Исправьте сообщения коммитов: см. CONTRIBUTING.md',
+        )
         return ok
     }
     if (argv[0]) {

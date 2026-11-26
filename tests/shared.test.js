@@ -3,7 +3,7 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const {loadScripts} = require('./helpers')
 
-const chrome = {i18n: {getUILanguage: () => 'ru', getMessage: (key, sub) => key === 'inTime' ? 'через ' + sub : key}}
+const chrome = {i18n: {getUILanguage: () => 'ru', getMessage: (key, sub) => (key === 'inTime' ? 'через ' + sub : key)}}
 const ctx = loadScripts(['src/ui/shared.js'], {chrome})
 
 test('centurymine и SideMC закрепляются по ID, названию или игре без учёта регистра', () => {
@@ -50,12 +50,27 @@ function updateContext(fetchImpl, version = '8.1.0') {
 
 function fakeDb(initial = {}) {
     const store = new Map(Object.entries(initial))
-    return {store, get: async (s, k) => store.get(k), put: async (s, v, k) => { store.set(k, v) }}
+    return {
+        store,
+        get: async (s, k) => store.get(k),
+        put: async (s, v, k) => {
+            store.set(k, v)
+        },
+    }
 }
 
 test('checkForUpdate: новая версия на GitHub', async () => {
     let calls = 0
-    const c = updateContext(async () => { calls++; return {ok: true, json: async () => ({tag_name: 'v8.2.0', html_url: 'https://github.com/BazZziliuS/VoteFlow/releases/tag/v8.2.0'})} })
+    const c = updateContext(async () => {
+        calls++
+        return {
+            ok: true,
+            json: async () => ({
+                tag_name: 'v8.2.0',
+                html_url: 'https://github.com/BazZziliuS/VoteFlow/releases/tag/v8.2.0',
+            }),
+        }
+    })
     const db = fakeDb()
     const update = await c.checkForUpdate(db)
     assert.equal(update.version, '8.2.0')
@@ -67,13 +82,23 @@ test('checkForUpdate: новая версия на GitHub', async () => {
 test('checkForUpdate: текущая версия — обновления нет, ошибка сети не ломает', async () => {
     const same = updateContext(async () => ({ok: true, json: async () => ({tag_name: 'v8.1.0'})}))
     assert.equal(await same.checkForUpdate(fakeDb()), null)
-    const offline = updateContext(async () => { throw new Error('offline') })
+    const offline = updateContext(async () => {
+        throw new Error('offline')
+    })
     assert.equal(await offline.checkForUpdate(fakeDb()), null)
 })
 
 test('reportIssueUrl: сайт, ошибка и версия есть, ника нет', () => {
-    const c = loadScripts(['src/ui/shared.js'], {chrome: {...chrome, runtime: {getManifest: () => ({version: '8.2.0'})}}, navigator: {userAgent: 'TestBrowser/1.0'}})
-    const url = c.reportIssueUrl({rating: 'magicrust.gg', id: 'free daily case', nick: 'SecretNick', error: 'Не найдена кнопка'})
+    const c = loadScripts(['src/ui/shared.js'], {
+        chrome: {...chrome, runtime: {getManifest: () => ({version: '8.2.0'})}},
+        navigator: {userAgent: 'TestBrowser/1.0'},
+    })
+    const url = c.reportIssueUrl({
+        rating: 'magicrust.gg',
+        id: 'free daily case',
+        nick: 'SecretNick',
+        error: 'Не найдена кнопка',
+    })
     const body = decodeURIComponent(new URL(url).searchParams.get('body'))
     assert.match(url, /^https:\/\/github\.com\/BazZziliuS\/VoteFlow\/issues\/new\?/)
     assert.match(body, /magicrust\.gg/)

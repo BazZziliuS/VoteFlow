@@ -8,11 +8,13 @@
  * @returns {boolean} true если это авторизационный URL
  */
 function isAuthUrl(url) {
-    return url.match(/facebook.com\/*/) ||
-           url.match(/google.com\/*/) ||
-           url.match(/accounts.google.com\/*/) ||
-           url.match(/reddit.com\/*/) ||
-           url.match(/twitter.com\/*/)
+    return (
+        url.match(/facebook.com\/*/) ||
+        url.match(/google.com\/*/) ||
+        url.match(/accounts.google.com\/*/) ||
+        url.match(/reddit.com\/*/) ||
+        url.match(/twitter.com\/*/)
+    )
 }
 
 /**
@@ -23,24 +25,28 @@ function isAuthUrl(url) {
 // Yandex SmartCaptcha открывает кадры на домене своего скрипта: smartcaptcha.cloud.yandex.ru, captcha-api.yandex.ru
 // или (старый) smartcaptcha.yandexcloud.net
 function isSmartCaptchaUrl(url) {
-    return /^https:\/\/(smartcaptcha\.cloud\.yandex\.ru|captcha-api\.yandex\.ru|smartcaptcha\.yandexcloud\.net)\//.test(url)
+    return /^https:\/\/(smartcaptcha\.cloud\.yandex\.ru|captcha-api\.yandex\.ru|smartcaptcha\.yandexcloud\.net)\//.test(
+        url,
+    )
 }
 
 function isCaptchaUrl(url) {
-    return url.match(/hcaptcha.com\/captcha\/*/) ||
-           isSmartCaptchaUrl(url) ||
-           url.includes('service.mtcaptcha.com') ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/bframe*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/bframe*/) ||
-           url.match(/https?:\/\/(.+?\.)?service\.mtcaptcha\.com\/mtcv1/) ||
-           url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    return (
+        url.match(/hcaptcha.com\/captcha\/*/) ||
+        isSmartCaptchaUrl(url) ||
+        url.includes('service.mtcaptcha.com') ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/bframe*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/bframe*/) ||
+        url.match(/https?:\/\/(.+?\.)?service\.mtcaptcha\.com\/mtcv1/) ||
+        url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    )
 }
 
 /**
@@ -50,18 +56,20 @@ function isCaptchaUrl(url) {
  * @returns {boolean} true если это URL капчи
  */
 function isCaptchaUrlForCommitted(url) {
-    return url.match(/hcaptcha.com\/captcha\/*/) ||
-           isSmartCaptchaUrl(url) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/bframe*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/fallback*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/bframe*/) ||
-           url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    return (
+        url.match(/hcaptcha.com\/captcha\/*/) ||
+        isSmartCaptchaUrl(url) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api.\/bframe*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api.\/bframe*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/api\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/api\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/fallback*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/enterprise\/anchor*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/enterprise\/bframe*/) ||
+        url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    )
 }
 
 /**
@@ -70,10 +78,12 @@ function isCaptchaUrlForCommitted(url) {
  * @returns {boolean} true если это домен капчи
  */
 function isCaptchaDomain(url) {
-    return url.match(/hcaptcha.com\/captcha\/*/) ||
-           url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/*/) ||
-           url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/*/) ||
-           url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    return (
+        url.match(/hcaptcha.com\/captcha\/*/) ||
+        url.match(/https?:\/\/(.+?\.)?google.com\/recaptcha\/*/) ||
+        url.match(/https?:\/\/(.+?\.)?recaptcha.net\/recaptcha\/*/) ||
+        url.match(/https:\/\/challenges.cloudflare.com\/*/)
+    )
 }
 
 /**
@@ -83,11 +93,13 @@ function isCaptchaDomain(url) {
  */
 function isIgnorableNetworkError(errorMessage) {
     // Chrome errors
-    if (errorMessage.includes('net::ERR_ABORTED') ||
+    if (
+        errorMessage.includes('net::ERR_ABORTED') ||
         errorMessage.includes('net::ERR_CONNECTION_RESET') ||
         errorMessage.includes('net::ERR_NETWORK_CHANGED') ||
         errorMessage.includes('net::ERR_CACHE_MISS') ||
-        errorMessage.includes('net::ERR_BLOCKED_BY_CLIENT')) {
+        errorMessage.includes('net::ERR_BLOCKED_BY_CLIENT')
+    ) {
         return true
     }
 
@@ -97,14 +109,16 @@ function isIgnorableNetworkError(errorMessage) {
     }
 
     // FireFox errors
-    if (errorMessage.includes('NS_BINDING_ABORTED') ||
+    if (
+        errorMessage.includes('NS_BINDING_ABORTED') ||
         errorMessage.includes('NS_ERROR_NET_ON_RESOLVED') ||
         errorMessage.includes('NS_ERROR_NET_ON_RESOLVING') ||
         errorMessage.includes('NS_ERROR_NET_ON_WAITING_FOR') ||
         errorMessage.includes('NS_ERROR_NET_ON_CONNECTING_TO') ||
         errorMessage.includes('NS_ERROR_FAILURE') ||
         errorMessage.includes('NS_ERROR_DOCSHELL_DYING') ||
-        errorMessage.includes('NS_ERROR_NET_ON_TRANSACTION_CLOSE')) {
+        errorMessage.includes('NS_ERROR_NET_ON_TRANSACTION_CLOSE')
+    ) {
         return true
     }
 

@@ -23,7 +23,7 @@ function handleUnhandledError(event, dbLogs) {
     if (self.createNotif) {
         // noinspection JSIgnoredPromiseFromCall
         createNotif(error, 'error', {dontLog: true})
-        document.querySelectorAll('button[disabled]').forEach((el) => el.disabled = false)
+        document.querySelectorAll('button[disabled]').forEach(el => (el.disabled = false))
     }
 
     if (!dbLogs) return
@@ -68,7 +68,7 @@ function appendLog(logsDb, line) {
  * @returns {Promise<number>} сколько записей удалено
  */
 async function trimLogs(logsDb, maxEntries = MAX_LOG_ENTRIES) {
-    const excess = await logsDb.count('logs') - maxEntries
+    const excess = (await logsDb.count('logs')) - maxEntries
     if (excess <= 0) return 0
     // Ключи автоинкрементные: старые записи — с наименьшими ключами
     const oldestKeys = await logsDb.getAllKeys('logs', null, excess)
@@ -88,7 +88,7 @@ function handleDatabaseError(event, logs, background) {
             chrome.i18n.getMessage('errordbTitle', event.target.source.name),
             event.target.error.message,
             'error',
-            'openSettings'
+            'openSettings',
         )
         if (logs) {
             console._error(chrome.i18n.getMessage('errordb', [event.target.source.name, event.target.error.message]))
@@ -96,10 +96,7 @@ function handleDatabaseError(event, logs, background) {
             console.error(chrome.i18n.getMessage('errordb', [event.target.source.name, event.target.error.message]))
         }
     } else {
-        createNotif(
-            chrome.i18n.getMessage('errordb', [event.target.source.name, event.target.error.message]),
-            'error'
-        )
+        createNotif(chrome.i18n.getMessage('errordb', [event.target.source.name, event.target.error.message]), 'error')
     }
 }
 
@@ -112,7 +109,7 @@ async function openLogsDatabase() {
     return await idb.openDB('logs', 1, {
         upgrade(db) {
             db.createObjectStore('logs', {autoIncrement: true})
-        }
+        },
     })
 }
 
@@ -128,7 +125,7 @@ async function loadDatabaseData(db) {
         generalStats: await db.get('other', 'generalStats'),
         todayStats: await db.get('other', 'todayStats'),
         openedProjects: await db.get('other', 'openedProjects'),
-        onLine: await db.get('other', 'onLine')
+        onLine: await db.get('other', 'onLine'),
     }
 }
 

@@ -3,21 +3,31 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const {loadScripts} = require('./helpers')
 
-const chrome = {i18n: {getMessage: (key, args) => args == null ? key : key + '(' + [].concat(args).join(',') + ')'}}
-const ctx = loadScripts([
-    'src/shared/projects.js',
-    'src/background/helpers/constants.js',
-    'src/background/voting/vote-time-calculator.js',
-    'src/background/voting/stats-updater.js',
-    'src/background/voting/end-vote-helpers.js',
-    'src/background/voting/vote-result-handler.js',
-], {chrome})
+const chrome = {i18n: {getMessage: (key, args) => (args == null ? key : key + '(' + [].concat(args).join(',') + ')')}}
+const ctx = loadScripts(
+    [
+        'src/shared/projects.js',
+        'src/background/helpers/constants.js',
+        'src/background/voting/vote-time-calculator.js',
+        'src/background/voting/stats-updater.js',
+        'src/background/voting/end-vote-helpers.js',
+        'src/background/voting/vote-result-handler.js',
+    ],
+    {chrome},
+)
 const allProjects = ctx.get('allProjects')
 const HOUR = 60 * 60 * 1000
 
 function newProject(extra = {}) {
-    return {key: 1, rating: 'topcraft.club', id: '7411', nick: 'Steve', time: null,
-        stats: {successVotes: 0, monthSuccessVotes: 0, laterVotes: 0, errorVotes: 0}, ...extra}
+    return {
+        key: 1,
+        rating: 'topcraft.club',
+        id: '7411',
+        nick: 'Steve',
+        time: null,
+        stats: {successVotes: 0, monthSuccessVotes: 0, laterVotes: 0, errorVotes: 0},
+        ...extra,
+    }
 }
 function newContext() {
     const stats = () => ({successVotes: 0, monthSuccessVotes: 0, laterVotes: 0, errorVotes: 0})

@@ -12,7 +12,9 @@ function fakeTransaction(projects) {
         return {
             primaryKey: key,
             value: store.get(key),
-            delete: async () => { store.delete(key) },
+            delete: async () => {
+                store.delete(key)
+            },
             continue: async () => cursorFor(rating, keys),
         }
     }
@@ -20,7 +22,11 @@ function fakeTransaction(projects) {
         store,
         objectStore: () => ({
             index: () => ({
-                openCursor: async rating => cursorFor(rating, [...store.values()].filter(p => p.rating === rating).map(p => p.key)),
+                openCursor: async rating =>
+                    cursorFor(
+                        rating,
+                        [...store.values()].filter(p => p.rating === rating).map(p => p.key),
+                    ),
             }),
         }),
     }
@@ -61,7 +67,9 @@ function fakeUpdatableTransaction(projects) {
         return {
             primaryKey: key,
             value: {...store.get(key)},
-            update: async value => { store.set(key, value) },
+            update: async value => {
+                store.set(key, value)
+            },
             continue: async () => cursorFor(keys),
         }
     }
@@ -69,7 +77,8 @@ function fakeUpdatableTransaction(projects) {
         store,
         objectStore: () => ({
             index: () => ({
-                openCursor: async rating => cursorFor([...store.values()].filter(p => p.rating === rating).map(p => p.key)),
+                openCursor: async rating =>
+                    cursorFor([...store.values()].filter(p => p.rating === rating).map(p => p.key)),
             }),
         }),
     }

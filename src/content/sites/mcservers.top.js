@@ -5,7 +5,10 @@ async function vote(first) {
     }
 
     if (document.querySelector('.pform .form-messages')) {
-        chrome.runtime.sendMessage({message: document.querySelector('.pform .form-messages').innerText, restartVote: false})
+        chrome.runtime.sendMessage({
+            message: document.querySelector('.pform .form-messages').innerText,
+            restartVote: false,
+        })
         return
     }
 

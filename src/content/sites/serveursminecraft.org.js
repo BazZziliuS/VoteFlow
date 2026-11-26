@@ -10,10 +10,13 @@ async function vote(first) {
             // const numbers = document.querySelector('div.error.message').textContent.match(/\d+/g).map(Number)
             // chrome.runtime.sendMessage({later: new Date(numbers[0][1]...)})
             chrome.runtime.sendMessage({later: true})
-        } else if (request.message.includes('Répondre au captcha est obligatoire') || request.message.includes('Le captcha est invalide')) {
+        } else if (
+            request.message.includes('Répondre au captcha est obligatoire') ||
+            request.message.includes('Le captcha est invalide')
+        ) {
             // None
         } else {
-            if (request.message.includes('Il est strictement interdit d\'utiliser un proxy / VPN')) {
+            if (request.message.includes("Il est strictement interdit d'utiliser un proxy / VPN")) {
                 request.ignoreReport = true
             }
             chrome.runtime.sendMessage(request)

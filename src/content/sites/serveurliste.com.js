@@ -3,10 +3,12 @@ async function vote(first) {
 
     if (document.querySelector('form[wire\\:submit\\.prevent="sendVote"] p.dark\\:text-red-200')?.innerText.length) {
         const request = {}
-        request.message = document.querySelector('form[wire\\:submit\\.prevent="sendVote"] p.dark\\:text-red-200').innerText
+        request.message = document.querySelector(
+            'form[wire\\:submit\\.prevent="sendVote"] p.dark\\:text-red-200',
+        ).innerText
         if (request.message.includes('Vous devez attendre encore')) {
             const numbers = request.message.match(/\d+/g).map(Number)
-            const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000)
+            const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             return
         } else {
@@ -38,7 +40,7 @@ function checkAnswer() {
             return true
         } else if (request.message.includes('Vous devez attendre encore')) {
             const numbers = request.message.match(/\d+/g).map(Number)
-            const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000)
+            const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             return true
         } else if (request.message.includes('ReCaptcha')) {

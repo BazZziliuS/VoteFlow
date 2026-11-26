@@ -1,121 +1,128 @@
 ﻿async function vote(first) {
     if (checkAnswer()) {
-        return;
+        return
     }
 
-    const spans = document.querySelectorAll('section.container > div > span');
-    const voteToggle = spans[1]?.parentElement;
+    const spans = document.querySelectorAll('section.container > div > span')
+    const voteToggle = spans[1]?.parentElement
 
     if (!voteToggle) {
         const watcher = setInterval(() => {
             if (checkAnswer()) {
-                clearInterval(watcher);
+                clearInterval(watcher)
             }
-        }, 1000);
-        return;
+        }, 1000)
+        return
     }
 
-    voteToggle.click();
-    await wait(1000);
+    voteToggle.click()
+    await wait(1000)
 
-    const project = await getProject();
-    const nickInput = await waitForElement('#username', 5000);
+    const project = await getProject()
+    const nickInput = await waitForElement('#username', 5000)
 
     if (!nickInput) {
-        return;
+        return
     }
 
-    nickInput.value = project.nick;
+    nickInput.value = project.nick
 
-    const inputEvent = typeof InputEvent === 'function'
-        ? new InputEvent('input', { bubbles: true, cancelable: true })
-        : new Event('input', { bubbles: true, cancelable: true });
+    const inputEvent =
+        typeof InputEvent === 'function'
+            ? new InputEvent('input', {bubbles: true, cancelable: true})
+            : new Event('input', {bubbles: true, cancelable: true})
 
-    nickInput.dispatchEvent(inputEvent);
+    nickInput.dispatchEvent(inputEvent)
 
-    await wait(1000);
+    await wait(1000)
 
-    const submitButton = document.querySelector('button.app_btn');
+    const submitButton = document.querySelector('button.app_btn')
 
     if (submitButton) {
-        submitButton.click();
-        await waitForToast();
+        submitButton.click()
+        await waitForToast()
     }
 }
 
 async function waitForToast(timeout = 15000, interval = 500) {
-    const start = Date.now();
+    const start = Date.now()
 
     while (Date.now() - start < timeout) {
         if (checkAnswer()) {
-            return;
+            return
         }
 
-        await wait(interval);
+        await wait(interval)
     }
 }
 
 function getToastText(selectors, classKeyword) {
     for (const selector of selectors) {
-        const node = document.querySelector(selector);
-        const text = node?.textContent?.trim();
+        const node = document.querySelector(selector)
+        const text = node?.textContent?.trim()
 
         if (text) {
-            return text;
+            return text
         }
     }
 
     if (classKeyword) {
-        const nodes = document.querySelectorAll('div.flex.items-center > div');
+        const nodes = document.querySelectorAll('div.flex.items-center > div')
 
         for (const node of nodes) {
-            const wrapperClass = `${node.parentElement?.className || ''} ${node.parentElement?.parentElement?.className || ''}`;
-            const text = node.textContent?.trim();
+            const wrapperClass = `${node.parentElement?.className || ''} ${node.parentElement?.parentElement?.className || ''}`
+            const text = node.textContent?.trim()
 
             if (text && wrapperClass.includes(classKeyword)) {
-                return text;
+                return text
             }
         }
     }
 
-    return '';
+    return ''
 }
 
 function checkAnswer() {
-    const successMessage = getToastText([
-        'div.text-green-800 div.flex.items-center > div',
-        'div.text-green-700 div.flex.items-center > div',
-        'div.text-emerald-800 div.flex.items-center > div',
-        'div.text-emerald-700 div.flex.items-center > div',
-        'div.bg-green-50 div.flex.items-center > div'
-    ], 'text-green');
+    const successMessage = getToastText(
+        [
+            'div.text-green-800 div.flex.items-center > div',
+            'div.text-green-700 div.flex.items-center > div',
+            'div.text-emerald-800 div.flex.items-center > div',
+            'div.text-emerald-700 div.flex.items-center > div',
+            'div.bg-green-50 div.flex.items-center > div',
+        ],
+        'text-green',
+    )
 
     if (successMessage) {
-        chrome.runtime.sendMessage({ successfully: true, message: successMessage });
-        return true;
+        chrome.runtime.sendMessage({successfully: true, message: successMessage})
+        return true
     }
 
-    const errorMessage = getToastText([
-        'div.text-red-800 div.flex.items-center > div',
-        'div.text-red-700 div.flex.items-center > div',
-        'div.text-rose-800 div.flex.items-center > div',
-        'div.bg-red-50 div.flex.items-center > div'
-    ], 'text-red');
+    const errorMessage = getToastText(
+        [
+            'div.text-red-800 div.flex.items-center > div',
+            'div.text-red-700 div.flex.items-center > div',
+            'div.text-rose-800 div.flex.items-center > div',
+            'div.bg-red-50 div.flex.items-center > div',
+        ],
+        'text-red',
+    )
 
     if (!errorMessage) {
-        return false;
+        return false
     }
 
-    const normalized = errorMessage.toLowerCase();
+    const normalized = errorMessage.toLowerCase()
 
     if (normalized.includes('too many voting attempts')) {
-        chrome.runtime.sendMessage({ later: true });
+        chrome.runtime.sendMessage({later: true})
     } else if (normalized.includes('vote sent successfully') || normalized.includes('successfully sent')) {
-        chrome.runtime.sendMessage({ successfully: true, message: errorMessage });
+        chrome.runtime.sendMessage({successfully: true, message: errorMessage})
     } else {
-        const request = { message: errorMessage };
-        chrome.runtime.sendMessage(request);
+        const request = {message: errorMessage}
+        chrome.runtime.sendMessage(request)
     }
 
-    return true;
+    return true
 }

@@ -23,9 +23,7 @@ async function vote(first) {
     await new Promise(resolve => setTimeout(resolve, 2000))
 
     // Find the spin button (first button with "Крутить" text)
-    const spinButton = Array.from(document.querySelectorAll('button')).find(btn =>
-        btn.textContent.includes('Крутить')
-    )
+    const spinButton = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.includes('Крутить'))
 
     if (!spinButton) {
         chrome.runtime.sendMessage({errorVoteNoElement: 'Spin button not found'})
@@ -39,7 +37,7 @@ async function vote(first) {
 
         // Search for element containing cooldown message
         const cooldownText = Array.from(allMutedElements).find(el =>
-            el.textContent.includes('вращение будет доступно через')
+            el.textContent.includes('вращение будет доступно через'),
         )
 
         if (cooldownText) {
@@ -52,8 +50,8 @@ async function vote(first) {
                 const hours = parseInt(timeMatch[1])
                 const minutes = parseInt(timeMatch[2])
                 const seconds = parseInt(timeMatch[3])
-                const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
-                const nextVoteTime = Date.now() + milliseconds + (1 * 60 * 1000) // +1 minute buffer
+                const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000
+                const nextVoteTime = Date.now() + milliseconds + 1 * 60 * 1000 // +1 minute buffer
 
                 chrome.runtime.sendMessage({later: nextVoteTime})
                 return
@@ -61,7 +59,7 @@ async function vote(first) {
         }
 
         // If we couldn't parse the time, set timer to 24 hours
-        chrome.runtime.sendMessage({later: Date.now() + (24 * 60 * 60 * 1000)})
+        chrome.runtime.sendMessage({later: Date.now() + 24 * 60 * 60 * 1000})
         return
     }
 
@@ -80,7 +78,7 @@ async function vote(first) {
 
         const allMutedElements = document.querySelectorAll('.text-muted-foreground')
         const cooldownText = Array.from(allMutedElements).find(el =>
-            el.textContent.includes('вращение будет доступно через')
+            el.textContent.includes('вращение будет доступно через'),
         )
 
         if (cooldownText) {
@@ -91,8 +89,8 @@ async function vote(first) {
                 const hours = parseInt(timeMatch[1])
                 const minutes = parseInt(timeMatch[2])
                 const seconds = parseInt(timeMatch[3])
-                const milliseconds = (hours * 60 * 60 * 1000) + (minutes * 60 * 1000) + (seconds * 1000)
-                const nextVoteTime = Date.now() + milliseconds + (1 * 60 * 1000)
+                const milliseconds = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000
+                const nextVoteTime = Date.now() + milliseconds + 1 * 60 * 1000
 
                 chrome.runtime.sendMessage({later: nextVoteTime})
             }

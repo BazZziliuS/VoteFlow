@@ -9,7 +9,9 @@ const ctx = loadScripts(['src/shared/projects.js'])
 const allProjects = ctx.get('allProjects')
 const getDomainWithoutSubdomain = ctx.get('getDomainWithoutSubdomain')
 
-const entries = Object.entries(allProjects).filter(([domain, config]) => domain !== 'Custom' && Object.keys(config).length > 0)
+const entries = Object.entries(allProjects).filter(
+    ([domain, config]) => domain !== 'Custom' && Object.keys(config).length > 0,
+)
 
 test('projects.js содержит сайты', () => {
     assert.ok(entries.length > 100, `сайтов: ${entries.length}`)
@@ -41,9 +43,12 @@ for (const [domain, config] of entries) {
         // Дозаполняем поля, которые в реальном потоке приходят из формы
         project.rating = domain
         project.nick ??= 'TestNick'
-        if (config.exampleURLGame && project.game == null) project.game = config.defaultGame?.() ?? config.exampleURLGame()[1]
-        if (config.exampleURLListing && project.listing == null) project.listing = config.defaultListing?.() ?? config.exampleURLListing()[1]
-        if (config.langList && project.lang == null) project.lang = config.defaultLand?.() ?? [...config.langList().keys()][0]
+        if (config.exampleURLGame && project.game == null)
+            project.game = config.defaultGame?.() ?? config.exampleURLGame()[1]
+        if (config.exampleURLListing && project.listing == null)
+            project.listing = config.defaultListing?.() ?? config.exampleURLListing()[1]
+        if (config.langList && project.lang == null)
+            project.lang = config.defaultLand?.() ?? [...config.langList().keys()][0]
         project.addition ??= ''
 
         for (const fn of ['pageURL', 'voteURL']) {
@@ -58,7 +63,19 @@ for (const [domain, config] of entries) {
         if (!config.timeout) return
         const timeout = config.timeout(project)
         assert.equal(typeof timeout, 'object', 'timeout() должен вернуть объект')
-        const allowed = new Set(['hours', 'hour', 'minutes', 'minute', 'seconds', 'second', 'ms', 'week', 'month', 'day', 'days'])
+        const allowed = new Set([
+            'hours',
+            'hour',
+            'minutes',
+            'minute',
+            'seconds',
+            'second',
+            'ms',
+            'week',
+            'month',
+            'day',
+            'days',
+        ])
         for (const key of Object.keys(timeout)) {
             assert.ok(allowed.has(key), `неизвестный ключ timeout(): ${key}`)
             assert.ok(Number.isFinite(timeout[key]), `timeout().${key} не число`)

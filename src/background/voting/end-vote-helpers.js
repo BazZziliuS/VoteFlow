@@ -59,7 +59,12 @@ function findAndPrepareOpenedProject(openedProjects, project, timeout, db) {
         if (project.key === value.key) {
             // Проверка на двойную попытку завершения голосования
             if (!Number.isInteger(tab) && !tab.startsWith('background_') && !tab.startsWith('start_')) {
-                console.warn('A double attempt to complete the vote? endVote, has openedProjects', JSON.stringify({request: '...'}), JSON.stringify({sender: '...'}), JSON.stringify(project))
+                console.warn(
+                    'A double attempt to complete the vote? endVote, has openedProjects',
+                    JSON.stringify({request: '...'}),
+                    JSON.stringify({sender: '...'}),
+                    JSON.stringify(project),
+                )
                 return null
             }
 
@@ -73,7 +78,12 @@ function findAndPrepareOpenedProject(openedProjects, project, timeout, db) {
     }
 
     if (!opened) {
-        console.warn('A double attempt to complete the vote? endVote, not found openedProjects', JSON.stringify({request: '...'}), JSON.stringify({sender: '...'}), JSON.stringify(project))
+        console.warn(
+            'A double attempt to complete the vote? endVote, not found openedProjects',
+            JSON.stringify({request: '...'}),
+            JSON.stringify({sender: '...'}),
+            JSON.stringify(project),
+        )
     }
 
     return opened
@@ -93,21 +103,29 @@ function applyTimeRandomization(project, time) {
             project.randomize.min = 0
             project.randomize.max = 43200000 // 12 часов
         }
-        return time + Math.floor(Math.random() * (project.randomize.max - project.randomize.min) + project.randomize.min)
+        return (
+            time + Math.floor(Math.random() * (project.randomize.max - project.randomize.min) + project.randomize.min)
+        )
     }
 
     // Рандомизация по умолчанию для TopCraft/McTOP (5-10 минут)
     // Эти рейтинги легко ддосятся от массового автоматического голосования
     const needsDefaultRandomization =
         (project.rating === 'topcraft.ru' ||
-         project.rating === 'topcraft.club' ||
-         project.rating === 'mctop.su' ||
-         (project.rating === 'minecraftrating.ru' && project.listing === 'projects')) &&
+            project.rating === 'topcraft.club' ||
+            project.rating === 'mctop.su' ||
+            (project.rating === 'minecraftrating.ru' && project.listing === 'projects')) &&
         !project.priority &&
         project.timeoutHour == null
 
     if (needsDefaultRandomization) {
-        return time + Math.floor(Math.random() * (TIME.MAX_RANDOMIZATION_DEFAULT - TIME.MIN_RANDOMIZATION_DEFAULT) + TIME.MIN_RANDOMIZATION_DEFAULT)
+        return (
+            time +
+            Math.floor(
+                Math.random() * (TIME.MAX_RANDOMIZATION_DEFAULT - TIME.MIN_RANDOMIZATION_DEFAULT) +
+                    TIME.MIN_RANDOMIZATION_DEFAULT,
+            )
+        )
     }
 
     return time

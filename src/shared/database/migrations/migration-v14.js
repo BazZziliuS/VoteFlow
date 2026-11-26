@@ -13,7 +13,10 @@ async function migrateV14(transaction) {
     let cursor = await transaction.objectStore('projects').index('rating').openCursor('topcraft.club')
     while (cursor) {
         const project = cursor.value
-        project.error = chrome.i18n.getMessage('disabledSite', 'Высокий риск быть заблокированным за авто-голосование, голосуйте на данном сайте вручную')
+        project.error = chrome.i18n.getMessage(
+            'disabledSite',
+            'Высокий риск быть заблокированным за авто-голосование, голосуйте на данном сайте вручную',
+        )
         project.time = Infinity
         await cursor.update(project)
         cursor = await cursor.continue()
@@ -24,7 +27,10 @@ async function migrateV14(transaction) {
     let cursor2 = await transaction.objectStore('projects').index('rating').openCursor('mctop.su')
     while (cursor2) {
         const project = cursor2.value
-        project.error = chrome.i18n.getMessage('disabledSite', 'Высокий риск быть заблокированным за авто-голосование, голосуйте на данном сайте вручную')
+        project.error = chrome.i18n.getMessage(
+            'disabledSite',
+            'Высокий риск быть заблокированным за авто-голосование, голосуйте на данном сайте вручную',
+        )
         project.time = Infinity
         await cursor2.update(project)
         cursor2 = await cursor2.continue()

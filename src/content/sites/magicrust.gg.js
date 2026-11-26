@@ -13,22 +13,33 @@ const SELECTORS = {
     openCaseButton: '[data-attr="product-roulette-open"], .modal-roulette__btn, .modal-product-buy',
     modalContainer: '.modal.modal-on, .modal__container, .modal__flex, .modal',
     errorMessage: '.alert-danger, .error-message',
-    successMessage: '.alert-success, .success-message, .modal-roulette__result'
+    successMessage: '.alert-success, .success-message, .modal-roulette__result',
 }
 
 const MESSAGES = {
     cooldown: [
-        '10 часов', '10 hours',
-        'доступен каждые', 'доступн', 'available in',
-        'кулдаун', 'cooldown',
-        'подожди', 'wait',
-        'уже получ', 'already received', 'already claimed',
-        'попробуй позже', 'try later',
-        'час', 'hour', 'мин', 'min'
+        '10 часов',
+        '10 hours',
+        'доступен каждые',
+        'доступн',
+        'available in',
+        'кулдаун',
+        'cooldown',
+        'подожди',
+        'wait',
+        'уже получ',
+        'already received',
+        'already claimed',
+        'попробуй позже',
+        'try later',
+        'час',
+        'hour',
+        'мин',
+        'min',
     ],
     success: ['успешно', 'success', 'получен', 'received', 'claimed'],
     insufficientFunds: 'Недостаточно средств',
-    freeCaseCooldownHours: 10 // Кулдаун для free daily case в часах
+    freeCaseCooldownHours: 10, // Кулдаун для free daily case в часах
 }
 
 const TIMEOUTS = {
@@ -36,7 +47,7 @@ const TIMEOUTS = {
     modalAppear: 150,
     modalMaxAttempts: 20,
     buttonReady: 500,
-    waitResult: 2500
+    waitResult: 2500,
 }
 
 // ============================================================================
@@ -50,7 +61,7 @@ function sendCooldown(nextVoteTime) {
     // If no specific time provided for free case, calculate based on cooldown hours
     if (!nextVoteTime && typeof MESSAGES.freeCaseCooldownHours !== 'undefined') {
         const hours = MESSAGES.freeCaseCooldownHours
-        const milliseconds = (hours * 60 * 60 * 1000) + (60 * 1000)
+        const milliseconds = hours * 60 * 60 * 1000 + 60 * 1000
         nextVoteTime = Date.now() + milliseconds
         console.log('[Free Case] Calculated cooldown time:', hours, 'hours ->', new Date(nextVoteTime).toLocaleString())
     }
@@ -144,8 +155,7 @@ function validateFreeCase() {
 }
 
 function findVisibleOpenCaseButton(root = document) {
-    return Array.from(root.querySelectorAll(SELECTORS.openCaseButton))
-        .find(btn => btn.offsetParent !== null) || null
+    return Array.from(root.querySelectorAll(SELECTORS.openCaseButton)).find(btn => btn.offsetParent !== null) || null
 }
 
 async function waitForModal() {
@@ -196,10 +206,17 @@ async function handleModalActions(modal) {
 
     // Кнопка в КД: data-cooldown-active="1" / disabled / «Доступно через 5ч 19м 16с»
     if (isOpenCaseButtonOnCooldown(openCaseButton)) {
-        const timerText = openCaseButton.querySelector('.modal-roulette__timer')?.textContent ||
-            openCaseButton.querySelector('.modal-roulette__btn-cooldown')?.textContent || ''
+        const timerText =
+            openCaseButton.querySelector('.modal-roulette__timer')?.textContent ||
+            openCaseButton.querySelector('.modal-roulette__btn-cooldown')?.textContent ||
+            ''
         const cooldownTime = parseCooldown(timerText)
-        console.log('[Free Case] Open case button on cooldown, timer:', timerText.trim(), '->', cooldownTime ? new Date(cooldownTime).toLocaleString() : 'default')
+        console.log(
+            '[Free Case] Open case button on cooldown, timer:',
+            timerText.trim(),
+            '->',
+            cooldownTime ? new Date(cooldownTime).toLocaleString() : 'default',
+        )
         sendCooldown(cooldownTime)
         return false
     }
@@ -235,14 +252,24 @@ function checkNotificationResult() {
         console.log('[Free Case] Notification text:', text)
 
         // Check for cooldown message
-        if (containsAny(text.toLowerCase(), MESSAGES.cooldown.map(m => m.toLowerCase()))) {
+        if (
+            containsAny(
+                text.toLowerCase(),
+                MESSAGES.cooldown.map(m => m.toLowerCase()),
+            )
+        ) {
             console.log('[Free Case] ✓ COOLDOWN detected:', text)
             sendCooldown()
             return true
         }
 
         // Check for success message
-        if (containsAny(text.toLowerCase(), MESSAGES.success.map(m => m.toLowerCase()))) {
+        if (
+            containsAny(
+                text.toLowerCase(),
+                MESSAGES.success.map(m => m.toLowerCase()),
+            )
+        ) {
             console.log('[Free Case] ✓ SUCCESS detected:', text)
             sendSuccess()
             return true
@@ -289,8 +316,9 @@ function checkErrorMessages() {
 
 function checkSuccessMessages() {
     // Учитываем только видимые элементы: скрытый шаблон результата рулетки есть в DOM всегда
-    const successMsg = Array.from(document.querySelectorAll(SELECTORS.successMessage))
-        .find(el => el.offsetParent !== null && el.textContent.trim().length > 0)
+    const successMsg = Array.from(document.querySelectorAll(SELECTORS.successMessage)).find(
+        el => el.offsetParent !== null && el.textContent.trim().length > 0,
+    )
     if (successMsg) {
         console.log('[Free Case] ✓ SUCCESS message element found')
         sendSuccess()
@@ -349,7 +377,7 @@ async function voteFreeCase(first) {
 
     // Step 1: Activate modded mode
     console.log('[Free Case] Step 1: Activating modded mode...')
-    if (!await activateModdedMode()) {
+    if (!(await activateModdedMode())) {
         console.log('[Free Case] Failed to activate modded mode')
         return
     }
@@ -366,9 +394,11 @@ async function voteFreeCase(first) {
     const freeCase = freeCaseButton.closest(SELECTORS.productCard)
     if (freeCase) {
         // Check if button is disabled or has cooldown class
-        if (freeCaseButton.disabled ||
+        if (
+            freeCaseButton.disabled ||
             freeCaseButton.classList.contains('disabled') ||
-            freeCaseButton.classList.contains('cooldown')) {
+            freeCaseButton.classList.contains('cooldown')
+        ) {
             console.log('[Free Case] Button is disabled or has cooldown class')
             sendCooldown()
             return
@@ -377,11 +407,13 @@ async function voteFreeCase(first) {
         // Check button text for cooldown indicators
         const buttonText = freeCaseButton.textContent.trim().toLowerCase()
         console.log('[Free Case] Button text:', buttonText)
-        if (buttonText.includes('час') ||
+        if (
+            buttonText.includes('час') ||
             buttonText.includes('hour') ||
             buttonText.includes('мін') ||
             buttonText.includes('min') ||
-            buttonText.includes(':')) {
+            buttonText.includes(':')
+        ) {
             console.log('[Free Case] Button text contains cooldown indicator')
             sendCooldown()
             return
@@ -461,14 +493,14 @@ const WHEEL_SELECTORS = {
     cooldownTimer: '.wheel-fortune__wheel-timer-lost, .wheel-timer, .cooldown, [class*="timer"], [class*="cooldown"]',
     notification: '.notification, .alert, .toast',
     successMessage: '.success, [class*="success"]',
-    errorMessage: '.error, [class*="error"]'
+    errorMessage: '.error, [class*="error"]',
 }
 
 const WHEEL_TIMEOUTS = {
     pageLoad: 2000,
     spinAnimation: 5000,
     checkResult: 1000,
-    cooldownCheck: 500
+    cooldownCheck: 500,
 }
 
 // Разбор времени кулдауна — parseCooldown() из src/content/common/api.js
@@ -494,7 +526,7 @@ function getCooldownFromPage() {
 
     // Default to 22 hours if we can't parse
     console.log('[Wheel Fortune] No timer found, using default 22 hours')
-    const defaultTime = Date.now() + (22 * 60 * 60 * 1000)
+    const defaultTime = Date.now() + 22 * 60 * 60 * 1000
     console.log('[Wheel Fortune] Default next vote:', new Date(defaultTime).toLocaleString())
     return defaultTime
 }
@@ -509,10 +541,7 @@ function findSpinButton() {
     const buttons = document.querySelectorAll('button')
     button = Array.from(buttons).find(btn => {
         const text = btn.textContent.toLowerCase()
-        return text.includes('крутить') ||
-               text.includes('spin') ||
-               text.includes('вращ') ||
-               text.includes('колесо')
+        return text.includes('крутить') || text.includes('spin') || text.includes('вращ') || text.includes('колесо')
     })
 
     return button
@@ -566,9 +595,7 @@ async function voteWheelFortune(first) {
 
     // Check button style - sometimes buttons are visually disabled via opacity/pointer-events
     const computedStyle = window.getComputedStyle(spinButton)
-    if (computedStyle.pointerEvents === 'none' ||
-        computedStyle.opacity === '0' ||
-        computedStyle.opacity === '0.5') {
+    if (computedStyle.pointerEvents === 'none' || computedStyle.opacity === '0' || computedStyle.opacity === '0.5') {
         const cooldownTime = getCooldownFromPage()
         sendCooldown(cooldownTime)
         return
@@ -583,7 +610,9 @@ async function voteWheelFortune(first) {
     }
 
     // Запоминаем текст уведомлений до клика, чтобы реагировать только на новые
-    const notificationsBefore = new Set(Array.from(document.querySelectorAll('.notyf__message')).map(n => n.textContent.trim()))
+    const notificationsBefore = new Set(
+        Array.from(document.querySelectorAll('.notyf__message')).map(n => n.textContent.trim()),
+    )
 
     // Button is enabled - click to spin
     console.log('[Wheel Fortune] Clicking spin button')
@@ -636,11 +665,31 @@ function checkWheelNotifications(notificationsBefore) {
         const lower = text.toLowerCase()
         console.log('[Wheel Fortune] Notification:', text)
 
-        if (containsAny(lower, ['кулдаун', 'cooldown', 'доступно через', 'доступн', 'подожди', 'wait', 'уже', 'already', 'попробуй позже', 'try later', 'не можете', 'нельзя'])) {
+        if (
+            containsAny(lower, [
+                'кулдаун',
+                'cooldown',
+                'доступно через',
+                'доступн',
+                'подожди',
+                'wait',
+                'уже',
+                'already',
+                'попробуй позже',
+                'try later',
+                'не можете',
+                'нельзя',
+            ])
+        ) {
             console.log('[Wheel Fortune] ✓ COOLDOWN detected:', text)
             return 'cooldown'
         }
-        if (containsAny(lower, MESSAGES.success) || lower.includes('выигр') || lower.includes('приз') || lower.includes('won')) {
+        if (
+            containsAny(lower, MESSAGES.success) ||
+            lower.includes('выигр') ||
+            lower.includes('приз') ||
+            lower.includes('won')
+        ) {
             console.log('[Wheel Fortune] ✓ SUCCESS detected:', text)
             return 'success'
         }

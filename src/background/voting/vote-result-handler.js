@@ -25,8 +25,10 @@ function calculateErrorCooldown(request, project, settings) {
         return request.retryCoolDown
     }
 
-    if ((request.errorVote && request.errorVote[0] === '404') ||
-        (request.message && project.rating === 'wargm.ru' && project.randomize)) {
+    if (
+        (request.errorVote && request.errorVote[0] === '404') ||
+        (request.message && project.rating === 'wargm.ru' && project.randomize)
+    ) {
         return TIME.ERROR_404_COOLDOWN
     }
 
@@ -35,7 +37,8 @@ function calculateErrorCooldown(request, project, settings) {
     }
 
     // Индивидуальный cooldown после ошибки из конфигурации проекта (projects.js)
-    const projectErrorCoolDown = typeof allProjects !== 'undefined' ? allProjects[project.rating]?.errorCoolDown?.(project) : null
+    const projectErrorCoolDown =
+        typeof allProjects !== 'undefined' ? allProjects[project.rating]?.errorCoolDown?.(project) : null
     if (projectErrorCoolDown) {
         return projectErrorCoolDown
     }
@@ -69,15 +72,28 @@ function applyVoteTimeRandomization(baseTime, project) {
             project.randomize.min = 0
             project.randomize.max = 43200000
         }
-        return baseTime + Math.floor(Math.random() * (project.randomize.max - project.randomize.min) + project.randomize.min)
+        return (
+            baseTime +
+            Math.floor(Math.random() * (project.randomize.max - project.randomize.min) + project.randomize.min)
+        )
     }
 
     // Рандомизация по умолчанию для TopCraft/McTOP
-    if ((project.rating === 'topcraft.ru' || project.rating === 'topcraft.club' ||
-         project.rating === 'mctop.su' ||
-         (project.rating === 'minecraftrating.ru' && project.listing === 'projects')) &&
-        !project.priority && project.timeoutHour == null) {
-        return baseTime + Math.floor(Math.random() * (TIME.MAX_RANDOMIZATION_DEFAULT - TIME.MIN_RANDOMIZATION_DEFAULT) + TIME.MIN_RANDOMIZATION_DEFAULT)
+    if (
+        (project.rating === 'topcraft.ru' ||
+            project.rating === 'topcraft.club' ||
+            project.rating === 'mctop.su' ||
+            (project.rating === 'minecraftrating.ru' && project.listing === 'projects')) &&
+        !project.priority &&
+        project.timeoutHour == null
+    ) {
+        return (
+            baseTime +
+            Math.floor(
+                Math.random() * (TIME.MAX_RANDOMIZATION_DEFAULT - TIME.MIN_RANDOMIZATION_DEFAULT) +
+                    TIME.MIN_RANDOMIZATION_DEFAULT,
+            )
+        )
     }
 
     return baseTime
@@ -186,7 +202,12 @@ function applyVoteResult(project, request, {settings, allProjects, generalStats,
             return {outcome: 'success', message: formatSuccessMessage(request, chrome), level: 'info', notify: true}
         }
         updateLaterStats(project, generalStats, todayStats)
-        return {outcome: 'later', message: formatLaterMessage(request, chrome), level: project.warn ? 'warn' : 'info', notify: true}
+        return {
+            outcome: 'later',
+            message: formatLaterMessage(request, chrome),
+            level: project.warn ? 'warn' : 'info',
+            notify: true,
+        }
     }
 
     const error = formatErrorMessage(request, chrome)
@@ -197,12 +218,17 @@ function applyVoteResult(project, request, {settings, allProjects, generalStats,
         // Сайт запрещает автоматизацию: повторные попытки только приблизят блокировку аккаунта.
         // Проект ждёт, пока пользователь не перезапустит его сам
         project.time = Infinity
-        return {outcome: 'stopped', message: error + '. ' + chrome.i18n.getMessage('votingStopped'), level: 'error', notify: true}
+        return {
+            outcome: 'stopped',
+            message: error + '. ' + chrome.i18n.getMessage('votingStopped'),
+            level: 'error',
+            notify: true,
+        }
     }
 
     const retryDelay = applyRandomization(calculateErrorCooldown(request, project, settings), project)
     project.time = Date.now() + retryDelay
-    const retryMinutes = (Math.round(retryDelay / 1000 / 60 * 100) / 100).toString()
+    const retryMinutes = (Math.round((retryDelay / 1000 / 60) * 100) / 100).toString()
     return {
         outcome: 'error',
         message: error + '. ' + chrome.i18n.getMessage('errorNextVote', retryMinutes),

@@ -107,7 +107,7 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
             errorVotes: 0,
             laterVotes: 0,
             lastSuccessVote: null,
-            lastAttemptVote: null
+            lastAttemptVote: null,
         }
         await other.put(todayStats, 'todayStats')
         result.todayStats = todayStats
@@ -124,7 +124,7 @@ async function runDatabaseUpgrade(db, oldVersion, newVersion, transaction, allPr
             laterVotes: 0,
             lastSuccessVote: null,
             lastAttemptVote: null,
-            added: Date.now()
+            added: Date.now(),
         }
         await other.put(generalStats, 'generalStats')
         result.generalStats = generalStats

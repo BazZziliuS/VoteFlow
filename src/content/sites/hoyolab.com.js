@@ -24,8 +24,16 @@ async function vote(first) {
             chrome.runtime.sendMessage({errorVoteNoElement: 'not loaded page?'})
         }
     } else {
-        if (document.querySelector('div[class*="prize-list"] div[style*="https://upload-static.hoyoverse.com/event/2023/04/21/5ccbbab8f5eb147df704e16f31fc5788_6285576485616685271.png"]')) {
-            document.querySelector('div[class*="prize-list"] div[style*="https://upload-static.hoyoverse.com/event/2023/04/21/5ccbbab8f5eb147df704e16f31fc5788_6285576485616685271.png"]').click()
+        if (
+            document.querySelector(
+                'div[class*="prize-list"] div[style*="https://upload-static.hoyoverse.com/event/2023/04/21/5ccbbab8f5eb147df704e16f31fc5788_6285576485616685271.png"]',
+            )
+        ) {
+            document
+                .querySelector(
+                    'div[class*="prize-list"] div[style*="https://upload-static.hoyoverse.com/event/2023/04/21/5ccbbab8f5eb147df704e16f31fc5788_6285576485616685271.png"]',
+                )
+                .click()
         } else if (document.querySelector('div[class*="prize-list"] [class*="received"]')) {
             chrome.runtime.sendMessage({later: true})
         } else {
@@ -36,7 +44,8 @@ async function vote(first) {
 
 const timer = setInterval(() => {
     const request = {}
-    request.message = document.querySelector('div.sign-wrapper')?.innerText ||
+    request.message =
+        document.querySelector('div.sign-wrapper')?.innerText ||
         document.querySelector('div.van-toast__text')?.innerText ||
         document.querySelector('div.m-dialog-body')?.innerText ||
         document.querySelector('div[class*="sign-guide"]')?.innerText
@@ -44,7 +53,10 @@ const timer = setInterval(() => {
         if (request.message.includes('checked in today')) {
             clearInterval(timer)
             chrome.runtime.sendMessage({successfully: true})
-        } else if (request.message.includes('You may set up check-in notifications') || request.message.includes('You can set up check-in reminders')) {
+        } else if (
+            request.message.includes('You may set up check-in notifications') ||
+            request.message.includes('You can set up check-in reminders')
+        ) {
             // None
             document.querySelector('div[class*="dialog-close"]')?.click()
             document.querySelector('span[class*="guide-close"]')?.click()

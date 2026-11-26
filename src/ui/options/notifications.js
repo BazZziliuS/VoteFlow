@@ -8,7 +8,8 @@ async function createNotif(message, type, options = {}) {
     if (!message || message === '') message = 'An empty error, see the details in the console'
     if (!type) type = 'hint'
     if (!options.dontLog) {
-        if (type === 'error' && (message instanceof Error || message.stack || message.message)) console.error('[' + type + ']', message)
+        if (type === 'error' && (message instanceof Error || message.stack || message.message))
+            console.error('[' + type + ']', message)
         // else if (type === 'warn') console.warn('['+type+']', message)
         // else console.log('['+type+']', message)
     }
@@ -21,7 +22,8 @@ async function createNotif(message, type, options = {}) {
         }
         options.element.className = type
         if (type === 'success') {
-            options.element.parentElement.parentElement.parentElement.firstElementChild.src = '../../assets/images/icons/success.svg'
+            options.element.parentElement.parentElement.parentElement.firstElementChild.src =
+                '../../assets/images/icons/success.svg'
         }
         return
     }
@@ -36,15 +38,15 @@ async function createNotif(message, type, options = {}) {
         const dot = document.createElement('span')
         dot.classList.add('notif-dot')
         notif.append(dot)
-        let progressBlock = document.createElement('div')
+        const progressBlock = document.createElement('div')
         progressBlock.classList.add('progress')
-        let progressBar = document.createElement('div')
+        const progressBar = document.createElement('div')
         progressBar.style.animation = 'notif-progress ' + options.delay / 1000 + 's linear'
         progressBlock.append(progressBar)
         notif.append(progressBlock)
     }
 
-    let mesBlock = document.createElement('div')
+    const mesBlock = document.createElement('div')
     if (typeof message[Symbol.iterator] === 'function' && typeof message === 'object') {
         for (const m of message) mesBlock.append(m)
     } else {
@@ -58,10 +60,10 @@ async function createNotif(message, type, options = {}) {
 
     function calcAllNotifH() {
         allNotifH = 10
-        document.querySelectorAll('#notifBlock > .notif').forEach((el) => {
+        document.querySelectorAll('#notifBlock > .notif').forEach(el => {
             allNotifH = allNotifH + el.clientHeight + 10
         })
-        document.querySelectorAll('#notifBlock2 > .notif').forEach((el) => {
+        document.querySelectorAll('#notifBlock2 > .notif').forEach(el => {
             allNotifH = allNotifH + el.clientHeight + 10
         })
     }
@@ -94,7 +96,7 @@ async function createNotif(message, type, options = {}) {
         setTimeout(() => removeNotif(notif.previousElementSibling), options.delay >= 3000 ? 3000 : options.delay)
     }
 
-    notif.addEventListener('click', (e) => {
+    notif.addEventListener('click', e => {
         if (notif.querySelector('a') != null || notif.querySelector('button') != null || options.onClick) {
             if (options.onClick) options.onClick()
             if (e.detail === 2) removeNotif(notif)
@@ -126,8 +128,10 @@ function removeNotif(elem) {
     setTimeout(() => elem.remove(), 1000)
 }
 
-let Timer = function (callback, delay) {
-    let timerId, start, remaining = delay
+const Timer = function (callback, delay) {
+    let timerId,
+        start,
+        remaining = delay
 
     this.pause = function () {
         clearTimeout(timerId)

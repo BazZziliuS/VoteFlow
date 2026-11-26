@@ -1,6 +1,5 @@
 // Перенесено из JustMordeckai/Auto-Vote-Rating (MIT, © 2026 JustMordeckai and contributors), 2026-11-26
 async function vote(first) {
-
     // Если мы каким-то образом попали на форум значит что-то не так
     if (document.location.pathname.split('/')[1] === 'forum') {
         const request = {}
@@ -43,14 +42,14 @@ async function vote(first) {
 
 const timer = setInterval(async () => {
     try {
-        if (!document.querySelector("#voteBox") || document.querySelector("#voteBox").style.display === 'none') return
+        if (!document.querySelector('#voteBox') || document.querySelector('#voteBox').style.display === 'none') return
         clearInterval(timer)
-        if (document.querySelector("#voteBox").firstElementChild.tagName === 'INPUT') {
+        if (document.querySelector('#voteBox').firstElementChild.tagName === 'INPUT') {
             const project = await getProject()
-            document.querySelector("#voteBox").firstElementChild.value = project.nick
-            document.querySelector("#voteBox").querySelector('button').click()
-        } else if (document.querySelector("#voteBox").firstElementChild.tagName === 'BUTTON') {
-            document.querySelector("#voteBox").firstElementChild.click()
+            document.querySelector('#voteBox').firstElementChild.value = project.nick
+            document.querySelector('#voteBox').querySelector('button').click()
+        } else if (document.querySelector('#voteBox').firstElementChild.tagName === 'BUTTON') {
+            document.querySelector('#voteBox').firstElementChild.click()
         } else {
             chrome.runtime.sendMessage({message: 'Not found element'})
         }

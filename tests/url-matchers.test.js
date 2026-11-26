@@ -18,7 +18,11 @@ test('Yandex SmartCaptcha на всех доменах', () => {
 })
 
 test('не капча: похожие, но чужие адреса', () => {
-    for (const url of ['https://topcraft.club/servers/7411/#vote', 'https://evil.example/?u=https://smartcaptcha.cloud.yandex.ru/', 'https://yandex.ru/']) {
+    for (const url of [
+        'https://topcraft.club/servers/7411/#vote',
+        'https://evil.example/?u=https://smartcaptcha.cloud.yandex.ru/',
+        'https://yandex.ru/',
+    ]) {
         assert.equal(ctx.isSmartCaptchaUrl(url), false, url)
     }
 })

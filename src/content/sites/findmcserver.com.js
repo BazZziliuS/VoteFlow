@@ -1,5 +1,4 @@
 async function vote(first) {
-
     // И ещё более наитупейший костыль дожидающийся загрузки сайта
     // Мы иногда получаем просто пустую страницу без ничего
     // даже нет иконки обозначающей что что-то загружается (настолько говно код на сайте)
@@ -40,7 +39,10 @@ async function vote(first) {
     }
 
     if (document.querySelector('.ant-result')) {
-        if (document.querySelector('.ant-result').innerText.trim().includes('404') && document.querySelector('.ant-result').innerText.trim().includes('not found')) {
+        if (
+            document.querySelector('.ant-result').innerText.trim().includes('404') &&
+            document.querySelector('.ant-result').innerText.trim().includes('not found')
+        ) {
             const request = {}
             request.message = document.querySelector('.ant-result').innerText.trim()
             request.ignoreReport = true
@@ -58,7 +60,7 @@ async function vote(first) {
     const prototype = Object.getPrototypeOf(textInputRef)
     const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set
     prototypeValueSetter.call(textInputRef, project.nick)
-    textInputRef.dispatchEvent(new Event('input', { bubbles: true }))
+    textInputRef.dispatchEvent(new Event('input', {bubbles: true}))
 
     document.querySelector('div.ant-modal-body button.ant-btn').click()
 }
@@ -71,7 +73,10 @@ const timer = setInterval(() => {
         if (request.message.includes('Thank you for voting')) {
             clearInterval(timer)
             chrome.runtime.sendMessage({successfully: true})
-        } else if (request.message.includes('can vote for this server once per day') || request.message.includes('can vote for this server again tomorrow in')) {
+        } else if (
+            request.message.includes('can vote for this server once per day') ||
+            request.message.includes('can vote for this server again tomorrow in')
+        ) {
             clearInterval(timer)
             chrome.runtime.sendMessage({later: true})
         } else {

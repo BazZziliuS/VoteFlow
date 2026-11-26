@@ -24,7 +24,7 @@ async function vote(first) {
     document.getElementById('web_server_vote_username').value = project.nick
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.getElementById('captcha-input').style.display !== 'none') {
             chrome.runtime.sendMessage({captcha: true})

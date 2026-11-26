@@ -12,12 +12,14 @@ async function vote(first) {
 
     if (document.querySelector('div.alert.alert-success')) {
         const message = document.querySelector('div.alert.alert-success').textContent
-        if (message.includes('vote was successfully')
-            || message.includes('hlas byl úspěšně přijatý')
-            || message.includes('hlas bol úspešne prijatý')
-            || message.includes('Dein Vote wurde akzeptiert')
-            || message.includes('Tvůj hlas byl úspěšne přijatý')
-            || message.includes('głos został pomyślnie zaakceptowany')) {
+        if (
+            message.includes('vote was successfully') ||
+            message.includes('hlas byl úspěšně přijatý') ||
+            message.includes('hlas bol úspešne prijatý') ||
+            message.includes('Dein Vote wurde akzeptiert') ||
+            message.includes('Tvůj hlas byl úspěšne přijatý') ||
+            message.includes('głos został pomyślnie zaakceptowany')
+        ) {
             chrome.runtime.sendMessage({successfully: true})
         } else {
             chrome.runtime.sendMessage({message})
@@ -26,13 +28,17 @@ async function vote(first) {
     }
     if (document.querySelector('div.alert.alert-info')) {
         const message = document.querySelector('div.alert.alert-info').textContent
-        if (message.includes('next vote')
-            || message.includes('možný hlas za tento server můžeš odeslat')
-            || message.includes('možný hlas za tento server môžeš odoslať')
-            || message.includes('nächster Vote')
-            || message.includes('następny głos będzie możliwy')) {
+        if (
+            message.includes('next vote') ||
+            message.includes('možný hlas za tento server můžeš odeslat') ||
+            message.includes('možný hlas za tento server môžeš odoslať') ||
+            message.includes('nächster Vote') ||
+            message.includes('następny głos będzie możliwy')
+        ) {
             const numbers = message.match(/\d+/g).map(Number)
-            chrome.runtime.sendMessage({later: Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4], numbers[5]) + 3600000})
+            chrome.runtime.sendMessage({
+                later: Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4], numbers[5]) + 3600000,
+            })
         } else {
             chrome.runtime.sendMessage({message})
         }
@@ -40,13 +46,17 @@ async function vote(first) {
     }
     if (document.querySelector('div.alert.alert-error')) {
         const message = document.querySelector('div.alert.alert-error').textContent
-        if (message.includes('next vote')
-            || message.includes('možný hlas za tento server můžeš odeslat')
-            || message.includes('možný hlas za tento server môžeš odoslať')
-            || message.includes('nächster Vote')
-            || message.includes('następny głos będzie możliwy')) {
+        if (
+            message.includes('next vote') ||
+            message.includes('možný hlas za tento server můžeš odeslat') ||
+            message.includes('možný hlas za tento server môžeš odoslať') ||
+            message.includes('nächster Vote') ||
+            message.includes('następny głos będzie możliwy')
+        ) {
             const numbers = message.match(/\d+/g).map(Number)
-            chrome.runtime.sendMessage({later: Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4]) + 3600000})
+            chrome.runtime.sendMessage({
+                later: Date.UTC(numbers[2], numbers[1] - 1, numbers[0], numbers[3], numbers[4]) + 3600000,
+            })
             return
         } else if (message.includes('robot')) {
             // None
@@ -70,19 +80,24 @@ async function vote(first) {
     if (document.querySelector('body #tracy-error')) {
         chrome.runtime.sendMessage({
             message: document.querySelector('body #tracy-error').innerText,
-            ignoreReport: true
+            ignoreReport: true,
         })
         return
     }
     if (document.querySelector('body #server-error')) {
         chrome.runtime.sendMessage({
             message: document.querySelector('body #server-error').innerText,
-            ignoreReport: true
+            ignoreReport: true,
         })
         return
     }
     // Костыль
-    if ((document.location.pathname.split('/')[1] === 'cz' || document.location.pathname.split('/')[1] === 'cs' || document.location.pathname.split('/')[1] === 'sk') && !document.location.pathname.split('/')[2]) {
+    if (
+        (document.location.pathname.split('/')[1] === 'cz' ||
+            document.location.pathname.split('/')[1] === 'cs' ||
+            document.location.pathname.split('/')[1] === 'sk') &&
+        !document.location.pathname.split('/')[2]
+    ) {
         const request = {}
         request.errorVoteNoElement = 'Redirected to server list'
         request.ignoreReport = true
@@ -94,12 +109,12 @@ async function vote(first) {
 
     if (first && !document.querySelector('#voteModal')?.classList.contains('show')) {
         const btnText = document.querySelector('.sidebar .card-body .btn')?.textContent
-        if (btnText &&
-            (btnText.includes('possible vote')
-            || btnText.includes('možný hlas')
-            || btnText.includes('ist möglich'))) {
+        if (
+            btnText &&
+            (btnText.includes('possible vote') || btnText.includes('možný hlas') || btnText.includes('ist möglich'))
+        ) {
             const numbers = btnText.match(/\d+/g).map(Number)
-            const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000)
+            const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 + numbers[2] * 1000
             chrome.runtime.sendMessage({later: Date.now() + milliseconds})
             return
         } else {
@@ -109,7 +124,7 @@ async function vote(first) {
         const timeout = document.querySelector('#voteModal p.text-center')
         if (timeout) {
             const hours = timeout.textContent.match(/\d+/g).map(Number)[0]
-            const milliseconds = (hours * 60 * 60 * 1000)
+            const milliseconds = hours * 60 * 60 * 1000
             if (project.timeout == null || project.timeout !== milliseconds) {
                 project.timeout = milliseconds
                 chrome.runtime.sendMessage({changeProject: project})
@@ -124,12 +139,12 @@ async function vote(first) {
     }
 
     const btnText = document.querySelector('.modal-footer a span')?.textContent
-    if (btnText &&
-        (btnText.includes('possible vote')
-            || btnText.includes('možný hlas')
-            || btnText.includes('ist möglich'))) {
+    if (
+        btnText &&
+        (btnText.includes('possible vote') || btnText.includes('možný hlas') || btnText.includes('ist möglich'))
+    ) {
         const numbers = btnText.match(/\d+/g).map(Number)
-        const milliseconds = (numbers[0] * 60 * 60 * 1000) + (numbers[1] * 60 * 1000) + (numbers[2] * 1000)
+        const milliseconds = numbers[0] * 60 * 60 * 1000 + numbers[1] * 60 * 1000 + numbers[2] * 1000
         chrome.runtime.sendMessage({later: Date.now() + milliseconds})
         return
     }
@@ -137,13 +152,18 @@ async function vote(first) {
     if (first) return
 
     document.querySelector('.modal-body #frm-voteForm-nickName').value = project.nick
-    document.querySelector("#voteModal > div > div > div.modal-footer > button").click()
+    document.querySelector('#voteModal > div > div > div.modal-footer > button').click()
 }
 
 const timer = setInterval(() => {
     const request = {}
     request.message = document.querySelector('.modal-body .text-danger')?.innerText
-    if (request.message?.length > 3 && !request.message.includes('field is required') && !request.message.includes('pole je povinný') && !request.message.includes('pole je povinné')) {
+    if (
+        request.message?.length > 3 &&
+        !request.message.includes('field is required') &&
+        !request.message.includes('pole je povinný') &&
+        !request.message.includes('pole je povinné')
+    ) {
         clearInterval(timer)
         if (request.message.includes('Nick je v špatném formátu')) {
             request.ignoreReport = true

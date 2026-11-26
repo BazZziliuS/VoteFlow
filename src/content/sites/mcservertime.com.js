@@ -1,5 +1,8 @@
 async function vote(first) {
-    if (document.querySelector('.success.message') && document.querySelector('.success.message').textContent.includes('vote has been registered')) {
+    if (
+        document.querySelector('.success.message') &&
+        document.querySelector('.success.message').textContent.includes('vote has been registered')
+    ) {
         chrome.runtime.sendMessage({successfully: true})
         return
     }

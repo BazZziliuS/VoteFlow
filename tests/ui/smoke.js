@@ -17,14 +17,20 @@ const sleep = ms => new Promise(r => setTimeout(r, ms))
 function findChrome() {
     if (process.env.CHROME_PATH) return process.env.CHROME_PATH
     const candidates = [
-        '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
         'C:/Program Files/Google/Chrome/Application/chrome.exe',
         'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
     ]
     const playwright = process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'ms-playwright')
     if (playwright && fs.existsSync(playwright)) {
-        for (const dir of fs.readdirSync(playwright).filter(d => d.startsWith('chromium-')).sort().reverse()) {
+        for (const dir of fs
+            .readdirSync(playwright)
+            .filter(d => d.startsWith('chromium-'))
+            .sort()
+            .reverse()) {
             candidates.unshift(path.join(playwright, dir, 'chrome-win64', 'chrome.exe'))
         }
     }
@@ -33,7 +39,10 @@ function findChrome() {
 
 function buildPage(outFile) {
     let html = fs.readFileSync(path.join(uiDir, 'options.html'), 'utf8')
-    html = html.replace(/(src|href)="(\.\.\/[^"]+|(?:options|styles)\/[^"]+|[\w-]+\.(?:js|css))"/g, (m, attr, rel) => `${attr}="${fileUrl(path.join(uiDir, rel))}"`)
+    html = html.replace(
+        /(src|href)="(\.\.\/[^"]+|(?:options|styles)\/[^"]+|[\w-]+\.(?:js|css))"/g,
+        (m, attr, rel) => `${attr}="${fileUrl(path.join(uiDir, rel))}"`,
+    )
     const messages = fs.readFileSync(path.join(root, '_locales/ru/messages.json'), 'utf8')
     const manifest = fs.readFileSync(path.join(root, 'manifest.json'), 'utf8')
 
@@ -180,13 +189,22 @@ async function run() {
     let proc, target
     for (let attempt = 1; attempt <= 2 && !target; attempt++) {
         const port = 9300 + Math.floor(Math.random() * 500)
-        const args = ['--headless=new', '--disable-gpu', '--allow-file-access-from-files', '--no-first-run',
-            `--remote-debugging-port=${port}`, `--user-data-dir=${path.join(tmp, 'profile-' + attempt)}`, 'about:blank']
+        const args = [
+            '--headless=new',
+            '--disable-gpu',
+            '--allow-file-access-from-files',
+            '--no-first-run',
+            `--remote-debugging-port=${port}`,
+            `--user-data-dir=${path.join(tmp, 'profile-' + attempt)}`,
+            'about:blank',
+        ]
         if (process.platform === 'linux') args.unshift('--no-sandbox', '--disable-dev-shm-usage')
         proc = spawn(chrome, args, {stdio: 'ignore'})
         for (let i = 0; i < 150 && !target; i++) {
             await sleep(200)
-            try { target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find(t => t.type === 'page') } catch {}
+            try {
+                target = (await (await fetch(`http://127.0.0.1:${port}/json`)).json()).find(t => t.type === 'page')
+            } catch {}
         }
         if (!target) {
             console.warn(`Chromium не открыл порт отладки (попытка ${attempt})`)
@@ -197,21 +215,34 @@ async function run() {
     try {
         if (!target) throw new Error('Chromium не открыл порт отладки')
         const ws = new WebSocket(target.webSocketDebuggerUrl)
-        await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject })
+        await new Promise((resolve, reject) => {
+            ws.onopen = resolve
+            ws.onerror = reject
+        })
         let id = 0
         const pending = new Map()
         ws.onmessage = ev => {
             const msg = JSON.parse(ev.data)
-            if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg.result); pending.delete(msg.id) }
+            if (msg.id && pending.has(msg.id)) {
+                pending.get(msg.id)(msg.result)
+                pending.delete(msg.id)
+            }
         }
-        const send = (method, params = {}) => new Promise(r => { const i = ++id; pending.set(i, r); ws.send(JSON.stringify({id: i, method, params})) })
+        const send = (method, params = {}) =>
+            new Promise(r => {
+                const i = ++id
+                pending.set(i, r)
+                ws.send(JSON.stringify({id: i, method, params}))
+            })
         await send('Page.enable')
         await send('Page.navigate', {url: fileUrl(page)})
 
         let title = ''
         for (let i = 0; i < 150 && !title.startsWith('SMOKE'); i++) {
             await sleep(200)
-            title = (await send('Runtime.evaluate', {expression: 'document.title', returnByValue: true}))?.result?.value || ''
+            title =
+                (await send('Runtime.evaluate', {expression: 'document.title', returnByValue: true}))?.result?.value ||
+                ''
         }
         ws.close()
         if (!title.startsWith('SMOKE')) throw new Error('сценарий не завершился за 30 секунд')
@@ -230,4 +261,7 @@ async function run() {
     }
 }
 
-run().catch(e => { console.error(e.message); process.exit(1) })
+run().catch(e => {
+    console.error(e.message)
+    process.exit(1)
+})

@@ -25,9 +25,8 @@ function fixedDate(iso) {
 
 function calculator(nowIso, sites = {}) {
     const ctx = loadScripts(['src/background/voting/vote-time-calculator.js'], {Date: fixedDate(nowIso)})
-    const calc = (project, request) => new Date(ctx.calculateNextVoteTime(
-        {stats: {}, ...project}, request, sites
-    )).toISOString()
+    const calc = (project, request) =>
+        new Date(ctx.calculateNextVoteTime({stats: {}, ...project}, request, sites)).toISOString()
     return calc
 }
 
@@ -49,9 +48,18 @@ test('стандартный таймаут: hours + minutes', () => {
 
 test('ежедневный сброс: до часа сброса — сегодня, после — завтра (+10 минут без приоритета)', () => {
     const sites = {site: {timeout: () => ({hour: 21})}}
-    assert.equal(calculator('2026-11-25T10:00:00Z', sites)({rating: 'site'}, {successfully: true}), '2026-11-25T21:10:00.000Z')
-    assert.equal(calculator('2026-11-25T22:00:00Z', sites)({rating: 'site'}, {successfully: true}), '2026-11-26T21:10:00.000Z')
-    assert.equal(calculator('2026-11-25T22:00:00Z', sites)({rating: 'site', priority: true}, {successfully: true}), '2026-11-26T21:00:00.000Z')
+    assert.equal(
+        calculator('2026-11-25T10:00:00Z', sites)({rating: 'site'}, {successfully: true}),
+        '2026-11-25T21:10:00.000Z',
+    )
+    assert.equal(
+        calculator('2026-11-25T22:00:00Z', sites)({rating: 'site'}, {successfully: true}),
+        '2026-11-26T21:10:00.000Z',
+    )
+    assert.equal(
+        calculator('2026-11-25T22:00:00Z', sites)({rating: 'site', priority: true}, {successfully: true}),
+        '2026-11-26T21:00:00.000Z',
+    )
 })
 
 test('ежедневный сброс через границу месяца', () => {
@@ -104,8 +112,14 @@ test('lastDayMonth: свой таймаут применяется только 
 test('ограниченное число голосов в день: после последнего — следующий день', () => {
     const sites = {site: {timeout: () => ({hours: 1}), limitedCountVote: () => true}}
     const calc = calculator('2026-11-25T10:00:00Z', sites)
-    assert.equal(calc({rating: 'site', countVote: 0, maxCountVote: 3}, {successfully: true}), '2026-11-25T11:00:00.000Z')
-    assert.equal(calc({rating: 'site', countVote: 2, maxCountVote: 3}, {successfully: true}), '2026-11-26T00:10:00.000Z')
+    assert.equal(
+        calc({rating: 'site', countVote: 0, maxCountVote: 3}, {successfully: true}),
+        '2026-11-25T11:00:00.000Z',
+    )
+    assert.equal(
+        calc({rating: 'site', countVote: 2, maxCountVote: 3}, {successfully: true}),
+        '2026-11-26T00:10:00.000Z',
+    )
 })
 
 test('у каждого сайта таймаут задаёт период (hour, hours, week или month)', () => {
@@ -114,7 +128,8 @@ test('у каждого сайта таймаут задаёт период (hou
     for (const [domain, config] of Object.entries(ctx.get('allProjects'))) {
         if (!config.timeout) continue
         const t = config.timeout({id: '', game: '', listing: ''})
-        if (t.hour == null && t.hours == null && t.week == null && t.month == null) problems.push(`${domain}: ${JSON.stringify(t)}`)
+        if (t.hour == null && t.hours == null && t.week == null && t.month == null)
+            problems.push(`${domain}: ${JSON.stringify(t)}`)
     }
     assert.deepEqual(problems, [], 'без периода время следующего голоса = «сейчас», вкладка будет открываться по кругу')
 })
@@ -154,10 +169,18 @@ test('isAutomationWarning: предупреждения сайтов о блок
     const end = apiSource.indexOf('\n}\n', apiSource.indexOf('function isAutomationWarning(', start)) + 2
     const ctx = vm.createContext({String})
     vm.runInContext(apiSource.slice(start, end) + '\nthis.isAutomationWarning = isAutomationWarning', ctx)
-    const warning = 'Пожалуйста, используйте сайт вручную. Использование автоматизации может привести к блокировке вашего аккаунта. ' +
+    const warning =
+        'Пожалуйста, используйте сайт вручную. Использование автоматизации может привести к блокировке вашего аккаунта. ' +
         'При повторении нарушений ваш аккаунт (ID: 123) будет заблокирован без права восстановления.'
     assert.equal(ctx.isAutomationWarning(warning), true)
-    for (const text of ['Спасибо за голос!', 'Вы уже голосовали сегодня', 'Аккаунт заблокирован', 'Некорректный ник', '', undefined]) {
+    for (const text of [
+        'Спасибо за голос!',
+        'Вы уже голосовали сегодня',
+        'Аккаунт заблокирован',
+        'Некорректный ник',
+        '',
+        undefined,
+    ]) {
         assert.equal(ctx.isAutomationWarning(text), false, String(text))
     }
 })

@@ -17,10 +17,10 @@ async function vote(first) {
     const project = await getProject()
     const inputNick = document.querySelector('#mc_user')
     inputNick.value = project.nick
-    inputNick.dispatchEvent(new Event('input', {bubbles:true}))
+    inputNick.dispatchEvent(new Event('input', {bubbles: true}))
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         const voteBtn = document.querySelector('#vote-btn')
         if (!voteBtn.disabled) {

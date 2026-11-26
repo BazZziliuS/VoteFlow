@@ -23,7 +23,7 @@ async function vote(first) {
     document.querySelector('#submitVoterName').click()
 }
 
-const timer = setInterval(()=>{
+const timer = setInterval(() => {
     try {
         if (document.querySelector('div.alert-success')) {
             clearInterval(timer)

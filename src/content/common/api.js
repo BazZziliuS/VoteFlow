@@ -1,8 +1,9 @@
 let resolveProject, waitProject
-if (!waitProject) waitProject = new Promise(resolve => resolveProject = resolve)
+if (!waitProject) waitProject = new Promise(resolve => (resolveProject = resolve))
 // Состояние ожидания Cloudflare Turnstile объявлено первым: run() может дойти до скрипта голосования, пока файл ещё грузится.
 // Механизм перенесён из форка JustMordeckai/Auto-Vote-Rating (MIT)
-let turnstileWait, turnstilePassed = false
+let turnstileWait,
+    turnstilePassed = false
 
 //Фикс-костыль двойной загрузки (для Rocket Loader)
 if (!window.loaded) {
@@ -12,7 +13,7 @@ if (!window.loaded) {
 }
 
 async function run() {
-    chrome.runtime.onMessage.addListener(function (request/*, sender, sendResponse*/) {
+    chrome.runtime.onMessage.addListener(function (request /*, sender, sendResponse*/) {
         if (request.sendProject) {
             window.proj = request.project
             if (request.vkontakte) window.vkontakte = request.vkontakte
@@ -87,7 +88,12 @@ async function run() {
 // Если на странице есть hCaptcha или reCAPTCHA, Turnstile там — только проверка на бота, и ждать нужно другую капчу
 function watchTurnstileToken() {
     const timer = setInterval(() => {
-        if (turnstilePassed || document.querySelector('.h-captcha, .g-recaptcha, [name="h-captcha-response"], [name="g-recaptcha-response"], iframe[src*="hcaptcha.com"], iframe[src*="/recaptcha/"], #captcha-block')) {
+        if (
+            turnstilePassed ||
+            document.querySelector(
+                '.h-captcha, .g-recaptcha, [name="h-captcha-response"], [name="g-recaptcha-response"], iframe[src*="hcaptcha.com"], iframe[src*="/recaptcha/"], #captcha-block',
+            )
+        ) {
             clearInterval(timer)
             return
         }
@@ -110,15 +116,26 @@ function handleVkId() {
     const started = Date.now()
     let clicked = false
     const timer = setInterval(() => {
-        const loginField = document.querySelector('input[name="login"], input[name="phone"], input[type="tel"], input[autocomplete="username"]')
+        const loginField = document.querySelector(
+            'input[name="login"], input[name="phone"], input[type="tel"], input[autocomplete="username"]',
+        )
         if (loginField && isVisibleElement(loginField)) {
             clearInterval(timer)
-            chrome.runtime.sendMessage({errorAuthVK: chrome.i18n.getMessage('vkIdNotLoggedIn'), notAuth: true, ignoreReport: true})
+            chrome.runtime.sendMessage({
+                errorAuthVK: chrome.i18n.getMessage('vkIdNotLoggedIn'),
+                notAuth: true,
+                ignoreReport: true,
+            })
             return
         }
         if (!clicked) {
-            const confirm = [...document.querySelectorAll('button, [role="button"]')].find(button =>
-                isVisibleElement(button) && /^\s*(продолжить|разрешить|подтвердить|войти как|continue|allow|confirm|sign in as)/i.test(button.textContent))
+            const confirm = [...document.querySelectorAll('button, [role="button"]')].find(
+                button =>
+                    isVisibleElement(button) &&
+                    /^\s*(продолжить|разрешить|подтвердить|войти как|continue|allow|confirm|sign in as)/i.test(
+                        button.textContent,
+                    ),
+            )
             if (confirm) {
                 clicked = true
                 confirm.click()
@@ -128,7 +145,10 @@ function handleVkId() {
         if (Date.now() - started > 45000) {
             clearInterval(timer)
             const text = (document.body?.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 300)
-            chrome.runtime.sendMessage({errorAuthVK: text || chrome.i18n.getMessage('vkIdNoResponse'), ignoreReport: true})
+            chrome.runtime.sendMessage({
+                errorAuthVK: text || chrome.i18n.getMessage('vkIdNoResponse'),
+                ignoreReport: true,
+            })
         }
     }, 1000)
 }
@@ -176,17 +196,28 @@ async function checkAll(first) {
                 if (document.getElementById('error_display').style.display !== 'none') {
                     chrome.runtime.sendMessage({authSteam: true})
                     clearInterval(timer2)
-                } else if ((document.querySelector('div.newmodal') && document.querySelector('div.newmodal').style.display !== 'none')
-                    || (document.querySelector('div.login_modal.loginAuthCodeModal') && document.querySelector('div.login_modal.loginAuthCodeModal').style.display !== 'none')
-                    || (document.querySelector('div.login_modal.loginTwoFactorCodeModal') && document.querySelector('div.login_modal.loginTwoFactorCodeModal').style.display !== 'none')
-                    || (document.querySelector('div.login_modal.loginIPTModal') && document.querySelector('div.login_modal.loginIPTModal').style.display !== 'none')
-                    || (document.querySelector('div.login_modal.loginAuthCodeModal') && document.querySelector('div.login_modal.loginAuthCodeModal').style.display !== 'none')
-                    || document.querySelector('#loginForm')) {
+                } else if (
+                    (document.querySelector('div.newmodal') &&
+                        document.querySelector('div.newmodal').style.display !== 'none') ||
+                    (document.querySelector('div.login_modal.loginAuthCodeModal') &&
+                        document.querySelector('div.login_modal.loginAuthCodeModal').style.display !== 'none') ||
+                    (document.querySelector('div.login_modal.loginTwoFactorCodeModal') &&
+                        document.querySelector('div.login_modal.loginTwoFactorCodeModal').style.display !== 'none') ||
+                    (document.querySelector('div.login_modal.loginIPTModal') &&
+                        document.querySelector('div.login_modal.loginIPTModal').style.display !== 'none') ||
+                    (document.querySelector('div.login_modal.loginAuthCodeModal') &&
+                        document.querySelector('div.login_modal.loginAuthCodeModal').style.display !== 'none') ||
+                    document.querySelector('#loginForm')
+                ) {
                     chrome.runtime.sendMessage({authSteam: true})
                     clearInterval(timer2)
                 }
             } catch (e) {
-                chrome.runtime.sendMessage({errorVoteNoElement: e.stack + (document.body.textContent.trim().length < 500 ? ' ' + document.body.textContent.trim() : '')})
+                chrome.runtime.sendMessage({
+                    errorVoteNoElement:
+                        e.stack +
+                        (document.body.textContent.trim().length < 500 ? ' ' + document.body.textContent.trim() : ''),
+                })
                 clearInterval(timer2)
             }
         }, 1000)
@@ -212,7 +243,9 @@ async function checkAll(first) {
         const timer7 = setInterval(() => {
             if (document.querySelector('#error .vkuiModalCardBase__container')) {
                 clearInterval(timer7)
-                chrome.runtime.sendMessage({errorAuthVK: document.querySelector('#error .vkuiModalCardBase__container').textContent})
+                chrome.runtime.sendMessage({
+                    errorAuthVK: document.querySelector('#error .vkuiModalCardBase__container').textContent,
+                })
             }
         }, 1000)
         if (document.querySelector('#error .vkuiModalCardBase__container')) return
@@ -226,22 +259,28 @@ async function checkAll(first) {
             }, 1000)
             return
         }
-        if (document.querySelector(".vkc__Authorize__container")) {
-            if (document.querySelector("button.vkuiButton") != null) {
-                document.querySelector("button.vkuiButton").click()
+        if (document.querySelector('.vkc__Authorize__container')) {
+            if (document.querySelector('button.vkuiButton') != null) {
+                document.querySelector('button.vkuiButton').click()
                 return
             }
         }
         let text
         let notAuth = false
         if (document.querySelector('div.oauth_form_access')) {
-            text = document.querySelector('div.oauth_form_access').textContent.replace(document.querySelector('div.oauth_access_items').textContent, '').trim()
+            text = document
+                .querySelector('div.oauth_form_access')
+                .textContent.replace(document.querySelector('div.oauth_access_items').textContent, '')
+                .trim()
             notAuth = true
         } else if (document.querySelector('div.oauth_content > div')) {
             text = document.querySelector('div.oauth_content > div').textContent
             notAuth = true
         } else if (document.querySelector('#login_blocked_wrap')) {
-            text = document.querySelector('#login_blocked_wrap div.header').textContent + ' ' + document.querySelector('#login_blocked_wrap div.content').textContent.trim()
+            text =
+                document.querySelector('#login_blocked_wrap div.header').textContent +
+                ' ' +
+                document.querySelector('#login_blocked_wrap div.content').textContent.trim()
         } else if (document.querySelector('div.login_blocked_panel')) {
             text = document.querySelector('div.login_blocked_panel').textContent.trim()
         } else if (document.querySelector('.profile_deleted_text')) {
@@ -257,18 +296,33 @@ async function checkAll(first) {
         }
         chrome.runtime.sendMessage({errorAuthVK: text, notAuth})
         return
-    } else if (document.location.search.includes('error=invalid_request&error_description=Invalid%20display%20parameter') || document.location.search.includes('error=invalid_request&error_description=Invalid+display+parameter')) {
-        chrome.runtime.sendMessage({errorAuthVK: 'Скорее всего ваш аккаунт ВК был заблокирован, если это не так и эта ошибка постоянно повторяется, сообщите разработчику расширения!'})
+    } else if (
+        document.location.search.includes('error=invalid_request&error_description=Invalid%20display%20parameter') ||
+        document.location.search.includes('error=invalid_request&error_description=Invalid+display+parameter')
+    ) {
+        chrome.runtime.sendMessage({
+            errorAuthVK:
+                'Скорее всего ваш аккаунт ВК был заблокирован, если это не так и эта ошибка постоянно повторяется, сообщите разработчику расширения!',
+        })
         return
     }
 
     //Если мы находися на странице авторизации Дискорд
     if (document.URL.match(/discord.com\/*/)) {
         let replaced = false
-        if (document.location.search.includes('%20guilds.join') || document.location.search.includes('%20guilds') || document.location.search.includes('+guilds.join') || document.location.search.includes('+guilds') || document.location.search.includes('%20email') || document.location.search.includes('+email') || !document.location.search.includes('prompt=none')) {
+        if (
+            document.location.search.includes('%20guilds.join') ||
+            document.location.search.includes('%20guilds') ||
+            document.location.search.includes('+guilds.join') ||
+            document.location.search.includes('+guilds') ||
+            document.location.search.includes('%20email') ||
+            document.location.search.includes('+email') ||
+            !document.location.search.includes('prompt=none')
+        ) {
             let url = document.URL
             //Пилюля от жадности в правах
-            if (!document.location.search.includes('client_id=477949690848083968')) { // discordbotlist.com
+            if (!document.location.search.includes('client_id=477949690848083968')) {
+                // discordbotlist.com
                 if (document.location.search.includes('%20guilds.join')) {
                     url = url.replace('%20guilds.join', '')
                     replaced = true
@@ -302,7 +356,8 @@ async function checkAll(first) {
             if (replaced) document.location.replace(url)
         }
         if (!replaced) {
-            const timer4 = setTimeout(() => {//Да это костыль, а есть вариант по лучше?
+            const timer4 = setTimeout(() => {
+                //Да это костыль, а есть вариант по лучше?
                 chrome.runtime.sendMessage({discordLogIn: true})
             }, 10000)
             window.onbeforeunload = () => clearTimeout(timer4)
@@ -334,9 +389,15 @@ async function checkAll(first) {
     }
 
     // Если ошибка 5xx https://i.imgur.com/aO5H1k8.png
-    if (document.querySelector('div#cf-wrapper div#cf-error-details h1') && document.querySelector('div#cf-wrapper div#cf-error-details > div > div.clearfix')) {
+    if (
+        document.querySelector('div#cf-wrapper div#cf-error-details h1') &&
+        document.querySelector('div#cf-wrapper div#cf-error-details > div > div.clearfix')
+    ) {
         const request = {}
-        request.message = document.querySelector('div#cf-wrapper div#cf-error-details h1')?.innerText + ' ' + document.querySelector('div#cf-wrapper div#cf-error-details > div > div.clearfix').innerText
+        request.message =
+            document.querySelector('div#cf-wrapper div#cf-error-details h1')?.innerText +
+            ' ' +
+            document.querySelector('div#cf-wrapper div#cf-error-details > div > div.clearfix').innerText
         request.ignoreReport = true
         chrome.runtime.sendMessage(request)
         return
@@ -351,7 +412,11 @@ async function checkAll(first) {
         return
     }
 
-    if (document.querySelector('body > center > h1') && (document.querySelector('body > center:last-of-type')?.textContent.includes('cloudflare') || document.querySelector('body > center:last-of-type')?.textContent.includes('nginx'))) {
+    if (
+        document.querySelector('body > center > h1') &&
+        (document.querySelector('body > center:last-of-type')?.textContent.includes('cloudflare') ||
+            document.querySelector('body > center:last-of-type')?.textContent.includes('nginx'))
+    ) {
         const request = {}
         request.message = document.body.innerText
         request.ignoreReport = true
@@ -360,11 +425,17 @@ async function checkAll(first) {
     }
 
     // Bot Verification https://gyazo.com/04797d3f1ba6b9b90c48d1dd57d305a2
-    if (document.querySelector('title')?.textContent?.includes('Bot Verification') || document.querySelector('#recaptchadiv')) {
+    if (
+        document.querySelector('title')?.textContent?.includes('Bot Verification') ||
+        document.querySelector('#recaptchadiv')
+    ) {
         return
     }
 
-    if (document.querySelector('body > h1') && document.querySelector('body > address')?.textContent.toLowerCase().includes('apache')) {
+    if (
+        document.querySelector('body > h1') &&
+        document.querySelector('body > address')?.textContent.toLowerCase().includes('apache')
+    ) {
         const request = {}
         request.message = document.body.innerText
         request.ignoreReport = true
@@ -373,7 +444,10 @@ async function checkAll(first) {
     }
 
     //Если мы находимся на странице проверки ReCaptcha
-    if (document.querySelector('body > iframe') && document.querySelector('body > iframe').src.startsWith('https://geo.captcha-delivery.com/captcha/')) {
+    if (
+        document.querySelector('body > iframe') &&
+        document.querySelector('body > iframe').src.startsWith('https://geo.captcha-delivery.com/captcha/')
+    ) {
         return
     }
 
@@ -466,7 +540,7 @@ function throwError(error) {
 }
 
 function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 /**
@@ -520,8 +594,15 @@ function parseCooldown(text, bufferMs = 30000) {
 
 // Сайт распознал автоматизацию и предупреждает о блокировке аккаунта. Такие предупреждения не обходим:
 // скрипт сайта отправляет {stopVoting: true}, и фон останавливает автоголосование проекта
-const AUTOMATION_WARNINGS = ['использование автоматизации', 'используйте сайт вручную', 'автоматизированн',
-    'automated voting', 'automation detected', 'bot detected', 'please vote manually']
+const AUTOMATION_WARNINGS = [
+    'использование автоматизации',
+    'используйте сайт вручную',
+    'автоматизированн',
+    'automated voting',
+    'automation detected',
+    'bot detected',
+    'please vote manually',
+]
 
 function isAutomationWarning(text) {
     const lower = String(text ?? '').toLowerCase()
@@ -546,8 +627,13 @@ function isVisibleElement(elem) {
         return false
     }
 
-    if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
-        elem.getBoundingClientRect().width === 0) {
+    if (
+        elem.offsetWidth +
+            elem.offsetHeight +
+            elem.getBoundingClientRect().height +
+            elem.getBoundingClientRect().width ===
+        0
+    ) {
         return false
     }
 
@@ -558,11 +644,14 @@ function isUsedTranslator() {
     // Если пользователь использовал переводчик
     if (
         // Google
-        document.querySelector('html')?.classList.contains('translated-ltr') || document.querySelector('html > body > #goog-gt-tt')
+        document.querySelector('html')?.classList.contains('translated-ltr') ||
+        document.querySelector('html > body > #goog-gt-tt') ||
         // Edge
-        || (document.querySelector('[_msttexthash]') && document.querySelector('[_msthash]'))
+        (document.querySelector('[_msttexthash]') && document.querySelector('[_msthash]')) ||
         // Yandex
-        || (document.querySelector('[data-translated]')?.getAttribute('data-translated') === 'true' && document.querySelector('[data-translated]')?.tagName?.toLowerCase().includes('ya-tr'))) {
+        (document.querySelector('[data-translated]')?.getAttribute('data-translated') === 'true' &&
+            document.querySelector('[data-translated]')?.tagName?.toLowerCase().includes('ya-tr'))
+    ) {
         return true
     }
     return false

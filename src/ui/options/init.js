@@ -4,23 +4,46 @@
 // Это обычные скрипты с общей глобальной областью; код верхнего уровня может вызывать
 // только функции из этого же файла или из модулей, подключённых раньше
 
-
 const initializeFunc = initializeConfig()
 
 let resolveLoad
-const loaded = new Promise(resolve => resolveLoad = resolve)
+const loaded = new Promise(resolve => (resolveLoad = resolve))
 
 let editingProject
 
 const authVKUrls = new Map([
-    ['topcraft.ru', 'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=Pxjb0wSdLe1y&redirect_uri=close.html&response_type=token&client_id=5128935&scope=email'],
-    ['topcraft.club', 'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=Pxjb0wSdLe1y&redirect_uri=close.html&response_type=token&client_id=5128935&scope=email'],
-    ['mctop.su', 'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=4KpbnTjl0Cmc&redirect_uri=close.html&response_type=token&client_id=5113650&scope=email'],
-    ['mcrate.su', 'https://oauth.vk.com/authorize?client_id=3059117&redirect_uri=close.html&response_type=token&scope=0&v=&state=&display=page&__q_hash=a11ee68ba006307dbef29f34297bee9a'],
-    ['minecraftrating.ru', 'https://oauth.vk.com/authorize?client_id=5216838&display=page&redirect_uri=close.html&response_type=token&v=5.45'],
-    ['monitoringminecraft.ru', 'https://oauth.vk.com/authorize?client_id=3697128&scope=0&response_type=token&redirect_uri=close.html'],
-    ['misterlauncher.org', 'https://oauth.vk.com/authorize?client_id=7636705&display=page&redirect_uri=close.html&response_type=token'],
-    ['minecraft-servers.ru', 'https://oauth.vk.com/authorize?response_type=token&client_id=53128143&redirect_uri=close.html&scope=email']
+    [
+        'topcraft.ru',
+        'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=Pxjb0wSdLe1y&redirect_uri=close.html&response_type=token&client_id=5128935&scope=email',
+    ],
+    [
+        'topcraft.club',
+        'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=Pxjb0wSdLe1y&redirect_uri=close.html&response_type=token&client_id=5128935&scope=email',
+    ],
+    [
+        'mctop.su',
+        'https://oauth.vk.com/authorize?auth_type=reauthenticate&state=4KpbnTjl0Cmc&redirect_uri=close.html&response_type=token&client_id=5113650&scope=email',
+    ],
+    [
+        'mcrate.su',
+        'https://oauth.vk.com/authorize?client_id=3059117&redirect_uri=close.html&response_type=token&scope=0&v=&state=&display=page&__q_hash=a11ee68ba006307dbef29f34297bee9a',
+    ],
+    [
+        'minecraftrating.ru',
+        'https://oauth.vk.com/authorize?client_id=5216838&display=page&redirect_uri=close.html&response_type=token&v=5.45',
+    ],
+    [
+        'monitoringminecraft.ru',
+        'https://oauth.vk.com/authorize?client_id=3697128&scope=0&response_type=token&redirect_uri=close.html',
+    ],
+    [
+        'misterlauncher.org',
+        'https://oauth.vk.com/authorize?client_id=7636705&display=page&redirect_uri=close.html&response_type=token',
+    ],
+    [
+        'minecraft-servers.ru',
+        'https://oauth.vk.com/authorize?response_type=token&client_id=53128143&redirect_uri=close.html&scope=email',
+    ],
 ])
 
 const svgFail = document.createElement('img')

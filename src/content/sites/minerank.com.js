@@ -27,19 +27,20 @@ function poll(condition, timeout) {
 }
 
 function checkAlreadyVoted() {
-    const alreadyVotedSelectors = ['div.bg-stone-400\\/20', 'div.bg-red-200', 'div.flex.items-center.gap-1.text-sm.mb-4']
+    const alreadyVotedSelectors = [
+        'div.bg-stone-400\\/20',
+        'div.bg-red-200',
+        'div.flex.items-center.gap-1.text-sm.mb-4',
+    ]
     for (const selector of alreadyVotedSelectors) {
         const element = document.querySelector(selector)
         if (element && element.textContent.toLowerCase().includes('voted')) {
             // Calculate next midnight UTC
             const now = new Date()
-            const nextMidnightUTC = new Date(Date.UTC(
-                now.getUTCFullYear(),
-                now.getUTCMonth(),
-                now.getUTCDate() + 1,
-                0, 0, 0, 0
-            ))
-            chrome.runtime.sendMessage({ later: nextMidnightUTC.getTime() })
+            const nextMidnightUTC = new Date(
+                Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0),
+            )
+            chrome.runtime.sendMessage({later: nextMidnightUTC.getTime()})
             return true
         }
     }
@@ -51,7 +52,7 @@ async function clickVoteButton() {
     const submitButton = document.querySelector('form button[type="submit"]')
     if (!submitButton) {
         console.error('ERROR: Submit button not found')
-        chrome.runtime.sendMessage({ message: 'Submit button not found', ignoreReport: true })
+        chrome.runtime.sendMessage({message: 'Submit button not found', ignoreReport: true})
         return 'stop'
     }
 
@@ -63,18 +64,18 @@ async function clickVoteButton() {
     submitButton.click()
 
     const result = await poll(() => {
-        if (document.querySelector('div.bg-green-100')) return { successfully: true }
+        if (document.querySelector('div.bg-green-100')) return {successfully: true}
 
         const message = document.querySelector(ALERT_DIALOG_SELECTOR)?.innerText?.trim()
         if (message && message.length > 10) {
             // The site asks us to wait, the vote has not been taken into account yet
             if (message.toLowerCase().includes('hang on')) return null
-            if (message.toLowerCase().includes('success')) return { successfully: true }
-            return { message, ignoreReport: true }
+            if (message.toLowerCase().includes('success')) return {successfully: true}
+            return {message, ignoreReport: true}
         }
 
         // checkAlreadyVoted() reports the result itself
-        if (checkAlreadyVoted()) return { reported: true }
+        if (checkAlreadyVoted()) return {reported: true}
 
         return null
     }, VOTE_RESULT_TIMEOUT)
@@ -84,34 +85,41 @@ async function clickVoteButton() {
     return 'stop'
 }
 
-
 async function vote(first) {
     // vote() runs again once the Turnstile token shows up, the first call already waits for it
     if (voteStarted) return
     voteStarted = true
 
     // The rating renders its page on the client side, wait until there is something to work with
-    await poll(() => document.querySelector(USERNAME_FIELD_SELECTOR)
-        || document.querySelector(ALERT_DIALOG_SELECTOR)
-        || document.querySelector('div.bg-green-100')
-        || document.querySelector('body > main > div > p'), PAGE_READY_TIMEOUT)
+    await poll(
+        () =>
+            document.querySelector(USERNAME_FIELD_SELECTOR) ||
+            document.querySelector(ALERT_DIALOG_SELECTOR) ||
+            document.querySelector('div.bg-green-100') ||
+            document.querySelector('body > main > div > p'),
+        PAGE_READY_TIMEOUT,
+    )
 
     if (document.querySelector(ALERT_DIALOG_SELECTOR)?.textContent.toLowerCase().includes('hang on')) {
         return
     }
 
     if (document.querySelector('div.bg-green-100')) {
-        chrome.runtime.sendMessage({ successfully: true })
+        chrome.runtime.sendMessage({successfully: true})
         return
     }
 
-    if (checkAlreadyVoted()){
+    if (checkAlreadyVoted()) {
         return
     }
 
     const pageNotFoundSelector = 'body > main > div > p'
     if (document.querySelector(pageNotFoundSelector)?.textContent.includes('does not exist')) {
-        chrome.runtime.sendMessage({ message: document.querySelector(pageNotFoundSelector)?.textContent.trim(), ignoreReport: true, retryCoolDown: 21600000 })
+        chrome.runtime.sendMessage({
+            message: document.querySelector(pageNotFoundSelector)?.textContent.trim(),
+            ignoreReport: true,
+            retryCoolDown: 21600000,
+        })
         return
     }
 
@@ -119,31 +127,39 @@ async function vote(first) {
 
     // Set the value and dispatch events so site frameworks detect the change
     function setValueAndTrigger(el, value) {
-        try { el.focus(); } catch (e) { }
+        try {
+            el.focus()
+        } catch (e) {}
         el.value = value
-        try { el.setAttribute('value', value); } catch (e) { }
+        try {
+            el.setAttribute('value', value)
+        } catch (e) {}
 
         // Dispatch InputEvent (preferred) and fallback events
         try {
-            el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true, data: value, inputType: 'insertText' }))
+            el.dispatchEvent(
+                new InputEvent('input', {bubbles: true, cancelable: true, data: value, inputType: 'insertText'}),
+            )
         } catch (e) {
-            el.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }))
+            el.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}))
         }
-        el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }))
-        try { el.dispatchEvent(new Event('blur', { bubbles: true })); } catch (e) { }
+        el.dispatchEvent(new Event('change', {bubbles: true, cancelable: true}))
+        try {
+            el.dispatchEvent(new Event('blur', {bubbles: true}))
+        } catch (e) {}
 
         // Simulate last-key keyboard events to satisfy listeners that depend on key events
         try {
             const lastChar = value ? value.charAt(value.length - 1) : ''
-            el.dispatchEvent(new KeyboardEvent('keydown', { bubbles: true, cancelable: true, key: lastChar }))
-            el.dispatchEvent(new KeyboardEvent('keypress', { bubbles: true, cancelable: true, key: lastChar }))
-            el.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true, cancelable: true, key: lastChar }))
-        } catch (e) { }
+            el.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: lastChar}))
+            el.dispatchEvent(new KeyboardEvent('keypress', {bubbles: true, cancelable: true, key: lastChar}))
+            el.dispatchEvent(new KeyboardEvent('keyup', {bubbles: true, cancelable: true, key: lastChar}))
+        } catch (e) {}
     }
 
     const usernameField = document.querySelector(USERNAME_FIELD_SELECTOR)
     if (!usernameField) {
-        chrome.runtime.sendMessage({ message: 'Username field not found', ignoreReport: true })
+        chrome.runtime.sendMessage({message: 'Username field not found', ignoreReport: true})
         return
     }
     setValueAndTrigger(usernameField, project.nick)
@@ -161,10 +177,10 @@ async function vote(first) {
             } else if (state === 'waiting' && ++waits >= MAX_CAPTCHA_WAIT) {
                 // The vote button never became clickable, the captcha did not solve itself
                 clearInterval(voteTimer)
-                chrome.runtime.sendMessage({ captcha: true })
+                chrome.runtime.sendMessage({captcha: true})
             } else if (state === 'retry' && ++clicks >= MAX_VOTE_CLICKS) {
                 clearInterval(voteTimer)
-                chrome.runtime.sendMessage({ message: 'The rating did not answer the vote', ignoreReport: true })
+                chrome.runtime.sendMessage({message: 'The rating did not answer the vote', ignoreReport: true})
             }
         } finally {
             running = false

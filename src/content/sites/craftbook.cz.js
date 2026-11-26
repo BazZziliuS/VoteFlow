@@ -20,7 +20,10 @@ const timer = setInterval(() => {
             } else if (message.includes('Již si hlasoval')) {
                 clearInterval(timer)
                 chrome.runtime.sendMessage({later: true})
-            } else if (message.includes('uživatelské jméno, prosím vyplň jméno') || message.includes('neověřil jsi nám reCAPTCHU')) {
+            } else if (
+                message.includes('uživatelské jméno, prosím vyplň jméno') ||
+                message.includes('neověřil jsi nám reCAPTCHU')
+            ) {
                 // None
             } else {
                 clearInterval(timer)

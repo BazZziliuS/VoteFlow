@@ -7,7 +7,7 @@ async function vote(first) {
     if (document.querySelector('div[x-show="show"] section > div')?.textContent.includes('can vote again in')) {
         const message = document.querySelector('div[x-show="show"] section > div').textContent
         const numbers = message.match(/\d+/g).map(Number)
-        chrome.runtime.sendMessage({later: Date.now() + ((numbers[0] + 1) * 60 * 60 * 1000)})
+        chrome.runtime.sendMessage({later: Date.now() + (numbers[0] + 1) * 60 * 60 * 1000})
         return
     }
 
