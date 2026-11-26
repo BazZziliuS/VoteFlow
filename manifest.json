@@ -68,7 +68,7 @@
     }
   ],
   "homepage_url": "https://github.com/BazZziliuS/VoteFlow",
-  "version": "9.1.0",
+  "version": "9.1.1",
   "minimum_chrome_version": "105.0",
   "default_locale": "en"
 }
