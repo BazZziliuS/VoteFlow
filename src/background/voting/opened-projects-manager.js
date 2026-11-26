@@ -131,12 +131,11 @@ function cleanupExpiredQueue(openedProjects) {
  * @async
  * @param {Object} project - Новый проект для голосования
  * @param {Map} openedProjects - Map открытых проектов
- * @param {IDBTransaction} transaction - Транзакция базы данных
  * @param {Object} settings - Настройки расширения
  * @param {Object} db - База данных
  * @returns {Promise<boolean>} true если нужно прервать выполнение
  */
-async function handleProjectConflicts(project, openedProjects, transaction, settings, db) {
+async function handleProjectConflicts(project, openedProjects, settings, db) {
     for (let [tab, value] of openedProjects) {
         if (hasConflict(project, value, settings)) {
             if (!canRestart(tab, value, settings)) {
@@ -147,7 +146,8 @@ async function handleProjectConflicts(project, openedProjects, transaction, sett
             openedProjects.delete(tab)
             db.put('other', openedProjects, 'openedProjects')
 
-            const projectTimeout = await transaction.objectStore('projects').get(value.key)
+            // Своя транзакция: переданная могла закрыться, пока вызывающий код ждал API браузера
+            const projectTimeout = await db.get('projects', value.key)
             if (!value.nextAttempt) {
                 console.warn(getProjectPrefix(projectTimeout, true), 'nextAttempt is undefined, maybe it\'s an error')
             }

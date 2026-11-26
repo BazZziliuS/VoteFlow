@@ -31,15 +31,49 @@ function handleUnhandledError(event, dbLogs) {
     const time = new Date().toLocaleString().replace(',', '')
     if (error.stack) error = error.stack
     const log = '[' + time + ' ERROR]: ' + error
+    appendLog(dbLogs, log)
+}
+
+// Журнал хранит только последние записи: в него попадает каждый console.log фона,
+// и без ограничения он растёт месяцами, а «Скачать логи» загружает его целиком
+const MAX_LOG_ENTRIES = 5000
+// Подрезаем не на каждой записи, а раз в несколько сотен — count() по всей таблице не бесплатный
+const LOG_TRIM_INTERVAL = 200
+let logWritesSinceTrim = 0
+
+/**
+ * Добавляет строку в журнал логов и время от времени удаляет самые старые записи
+ * @param {Object} logsDb - База данных логов (idb)
+ * @param {string} line - Строка журнала
+ */
+function appendLog(logsDb, line) {
+    const reportLogError = error => (console._error || console.error).call(console, error)
     try {
-        dbLogs.put('logs', log).catch(e => {
-            if (console._error) console._error(e)
-            else console.error(e)
-        })
-    } catch (e) {
-        if (console._error) console._error(e)
-        else console.error(e)
+        logsDb.add('logs', line).catch(reportLogError)
+    } catch (error) {
+        reportLogError(error)
+        return
     }
+    if (++logWritesSinceTrim >= LOG_TRIM_INTERVAL) {
+        logWritesSinceTrim = 0
+        trimLogs(logsDb).catch(reportLogError)
+    }
+}
+
+/**
+ * Удаляет самые старые записи журнала сверх лимита
+ * @async
+ * @param {Object} logsDb - База данных логов (idb)
+ * @param {number} [maxEntries] - Сколько последних записей оставить
+ * @returns {Promise<number>} сколько записей удалено
+ */
+async function trimLogs(logsDb, maxEntries = MAX_LOG_ENTRIES) {
+    const excess = await logsDb.count('logs') - maxEntries
+    if (excess <= 0) return 0
+    // Ключи автоинкрементные: старые записи — с наименьшими ключами
+    const oldestKeys = await logsDb.getAllKeys('logs', null, excess)
+    await logsDb.delete('logs', IDBKeyRange.upperBound(oldestKeys[oldestKeys.length - 1]))
+    return excess
 }
 
 /**
@@ -105,11 +139,11 @@ async function loadDatabaseData(db) {
  * @param {Object} openedProjects - Map открытых проектов
  * @param {Object} db - База данных
  * @param {Function} tryCloseTab - Функция закрытия вкладки
- * @param {Function} checkVote - Функция проверки голосования
+ * @param {Function} processVoteQueue - Функция проверки голосования
  * @param {Function} updateListeners - Функция обновления listeners
  * @returns {Promise<void>}
  */
-async function initializeBackgroundState(state, openedProjects, db, tryCloseTab, checkVote, updateListeners) {
+async function initializeBackgroundState(state, openedProjects, db, tryCloseTab, processVoteQueue, updateListeners) {
     if (state !== 'activated') {
         console.log(chrome.i18n.getMessage('start', chrome.runtime.getManifest().version))
 
@@ -123,7 +157,7 @@ async function initializeBackgroundState(state, openedProjects, db, tryCloseTab,
         }
 
         // noinspection ES6MissingAwait
-        checkVote()
+        processVoteQueue()
     } else {
         if (!openedProjects.size) {
             updateListeners(false)

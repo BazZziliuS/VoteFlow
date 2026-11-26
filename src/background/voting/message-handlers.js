@@ -125,7 +125,7 @@ async function handleProjectDeleted(request, openedProjects, db) {
     await chrome.alarms.clear(String(request.projectDeleted.key))
 
     if (nowVoting) {
-        checkVote()
+        processVoteQueue()
         console.log(getProjectPrefix(request.projectDeleted, true), chrome.i18n.getMessage('projectDeleted'))
     }
 
@@ -232,8 +232,8 @@ async function handleProjectRestart(request, openedProjects, db, settings) {
     console.log(getProjectPrefix(request.projectRestart, true), chrome.i18n.getMessage('projectRestarted'))
 
     // Запускаем голосование для перезапущенного проекта
-    await checkOpen(request.projectRestart, transaction)
-    checkVote()
+    await startProjectVote(request.projectRestart)
+    processVoteQueue()
 
     return 'success'
 }
@@ -246,10 +246,10 @@ async function handleProjectRestart(request, openedProjects, db, settings) {
  * @param {Map} openedProjects - Map открытых проектов
  * @param {Function} tryCloseTab - Функция закрытия вкладки
  * @param {Function} reloadAllAlarms - Функция перезагрузки всех алармов
- * @param {Function} checkVote - Функция проверки голосования
+ * @param {Function} processVoteQueue - Функция проверки голосования
  * @returns {Promise<{settings: Object, generalStats: Object, todayStats: Object}>} Обновленные настройки и статистика
  */
-async function handleReloadAllSettings(db, openedProjects, tryCloseTab, reloadAllAlarms, checkVote) {
+async function handleReloadAllSettings(db, openedProjects, tryCloseTab, reloadAllAlarms, processVoteQueue) {
     const store = db.transaction('other', 'readwrite').store
     const settings = await store.get('settings')
     const generalStats = await store.get('generalStats')
@@ -263,7 +263,42 @@ async function handleReloadAllSettings(db, openedProjects, tryCloseTab, reloadAl
 
     await store.put(openedProjects, 'openedProjects')
     reloadAllAlarms()
-    checkVote()
+    processVoteQueue()
 
     return {settings, generalStats, todayStats}
+}
+
+// Команды, которые управляют проектами и настройками. Скрипты во вкладках сайтов работают рядом
+// с чужим кодом, поэтому такие команды принимаются только со страниц самого расширения
+const EXTENSION_PAGE_COMMANDS = ['reloadAllSettings', 'reloadSettings']
+
+/**
+ * Сообщение пришло со страницы расширения (настройки, окно по иконке), а не из вкладки сайта
+ * @param {chrome.runtime.MessageSender} sender
+ * @param {string} extensionUrl - chrome.runtime.getURL('')
+ * @returns {boolean}
+ */
+function isExtensionPageSender(sender, extensionUrl) {
+    return typeof sender?.url === 'string' && sender.url.startsWith(extensionUrl)
+}
+
+/**
+ * Команда требует отправителя-страницы расширения
+ * @param {Object|string} request
+ * @returns {boolean}
+ */
+function isExtensionPageCommand(request) {
+    return EXTENSION_PAGE_COMMANDS.includes(request) || Boolean(request?.projectDeleted || request?.projectRestart)
+}
+
+/**
+ * Вкладка сайта меняет проект, который в ней сейчас голосует (например, сохраняет новый id сервера)
+ * @param {chrome.runtime.MessageSender} sender
+ * @param {Object} changedProject
+ * @param {Map} openedProjects
+ * @returns {boolean}
+ */
+function canTabChangeProject(sender, changedProject, openedProjects) {
+    const opened = sender?.tab ? openedProjects.get(sender.tab.id) : null
+    return Boolean(opened) && opened.key === changedProject?.key
 }

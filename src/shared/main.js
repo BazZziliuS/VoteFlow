@@ -30,6 +30,8 @@ async function initializeConfig(background, version) {
     // Открываем базу данных логов
     if (!dbLogs) {
         dbLogs = await openLogsDatabase()
+        // Журналы, накопленные до появления ротации, подрезаются при запуске
+        trimLogs(dbLogs).catch(error => console.warn('Не удалось подрезать журнал логов', error))
     }
 
     // Открываем основную базу данных
@@ -69,6 +71,6 @@ async function initializeConfig(background, version) {
     if (!background) return
 
     // Инициализация состояния для background скрипта
-    await initializeBackgroundState(state, openedProjects, db, tryCloseTab, checkVote, updateListeners)
+    await initializeBackgroundState(state, openedProjects, db, tryCloseTab, processVoteQueue, updateListeners)
 }
 

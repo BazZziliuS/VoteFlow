@@ -21,7 +21,7 @@ async function checkInternetConnection(project, settings, db, onLine) {
 
     // Если браузер сообщает что нет соединения, но мы думали что оно есть
     if (!navigator.onLine && onLine) {
-        // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить checkVote через минуту
+        // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
         await createSafeAlarm('checkVote', Date.now() + TIME.MIN_ALARM_DELAY, null)
 
         sendNotification(getProjectPrefix(project, false), chrome.i18n.getMessage('internetDisconnected'), 'error', 'openProject_' + project.key)
@@ -40,7 +40,7 @@ async function checkInternetConnection(project, settings, db, onLine) {
 }
 
 /**
- * Проверяет восстановление интернет-соединения в checkVote
+ * Проверяет восстановление интернет-соединения в processVoteQueue
  * @async
  * @param {Object} settings - Настройки расширения
  * @param {Object} db - База данных
@@ -63,7 +63,7 @@ async function checkInternetRestoration(settings, db, onLine) {
     }
 
     // Соединения по-прежнему нет, планируем повторную проверку
-    // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить checkVote через минуту
+    // TODO к сожалению в Service Worker отсутствует слушатель на восстановление соединения с интернетом, у нас остаётся только 1 вариант, это попытаться снова запустить processVoteQueue через минуту
     await createSafeAlarm('checkVote', Date.now() + TIME.MIN_ALARM_DELAY, null)
     return {shouldReturn: true, newOnLineStatus: null}
 }

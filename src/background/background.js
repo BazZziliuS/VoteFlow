@@ -56,9 +56,18 @@ let groupId
 //Если этот браузер не поддерживает группировку вкладок
 let notSupportedGroupTabs = false
 
-//Нужно ли сейчас делать проверку голосования, false может быть только лишь тогда когда предыдущая проверка ещё не завершилась
-let check = true
-let doubleCheck = false
+// Проход по очереди уже идёт; новый запрос во время прохода откладывается до его конца
+let isQueueRunning = false
+let isQueueRerunRequested = false
+
+/**
+ * Проект пора голосовать: время не задано или наступило. Остановленный (time = Infinity) не голосует
+ * @param {Object} project
+ * @returns {boolean}
+ */
+function isProjectDue(project) {
+    return !project.time || project.time < Date.now()
+}
 
 let silentResponseBody = {}
 
@@ -74,7 +83,7 @@ initializeFunc.then(() => updateErrorBadge(db))
  * @async
  * @returns {Promise<void>}
  */
-async function checkVote() {
+async function processVoteQueue() {
 
     await initializeFunc
 
@@ -90,34 +99,31 @@ async function checkVote() {
         onLine = restorationCheck.newOnLineStatus
     }
 
-    if (check) {
-        check = false
-    } else {
-        doubleCheck = true
+    if (isQueueRunning) {
+        isQueueRerunRequested = true
         return
     }
+    isQueueRunning = true
 
-    const transaction = db.transaction('projects')
-    let cursor = await transaction.objectStore('projects').openCursor()
-    while (cursor) {
-        const project = cursor.value
-        if (!project.time || project.time < Date.now()) {
-            await checkOpen(project, transaction)
+    try {
+        // Проекты читаются заранее: startProjectVote ждёт API браузера, а IndexedDB закрывает транзакцию,
+        // как только управление уходит в чужой асинхронный вызов (TransactionInactiveError на cursor.continue)
+        const dueProjects = (await db.getAll('projects')).filter(isProjectDue)
+        for (const project of dueProjects) {
+            await startProjectVote(project)
         }
-        // noinspection JSVoidFunctionReturnValueUsed
-        cursor = await cursor.continue()
+    } finally {
+        // Даже после ошибки очередь должна снова запускаться, иначе голосования встанут до перезапуска браузера
+        isQueueRunning = false
     }
 
-    check = true
-    if (doubleCheck) {
-        doubleCheck = false
-        checkVote()
-    } else {
+    if (isQueueRerunRequested) {
+        isQueueRerunRequested = false
+        processVoteQueue()
+    } else if (!openedProjects.size) {
         // Голосование завершилось и более не планируется
-        if (!openedProjects.size) {
-            promises = []
-            updateListeners(false)
-        }
+        promises = []
+        updateListeners(false)
     }
 }
 
@@ -125,14 +131,14 @@ async function checkVote() {
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (settings?.debug) console.log('chrome.alarms.onAlarm', JSON.stringify(alarm))
     // noinspection JSIgnoredPromiseFromCall
-    checkVote()
+    processVoteQueue()
 })
 
 // TODO костыльное решение бага https://bugs.chromium.org/p/chromium/issues/detail?id=471524
 chrome.idle.onStateChanged.addListener(async function (newState) {
     if (newState === 'active') {
         // noinspection JSIgnoredPromiseFromCall
-        checkVote()
+        processVoteQueue()
     }
 })
 
@@ -164,10 +170,9 @@ let promises = []
  * Валидирует состояние интернета, открытые вкладки и запускает процесс голосования
  * @async
  * @param {Object} project - Объект проекта для голосования
- * @param {IDBTransaction} transaction - Транзакция базы данных
  * @returns {Promise<void>}
  */
-async function checkOpen(project, transaction) {
+async function startProjectVote(project) {
     // Проверка интернет-соединения
     const connectionCheck = await checkInternetConnection(project, settings, db, onLine)
     if (connectionCheck.shouldReturn) return
@@ -182,7 +187,7 @@ async function checkOpen(project, transaction) {
     }
 
     // Проверка и обработка конфликтов с уже открытыми проектами
-    const shouldStop = await handleProjectConflicts(project, openedProjects, transaction, settings, db)
+    const shouldStop = await handleProjectConflicts(project, openedProjects, settings, db)
     if (shouldStop) return
 
     // Очистка временных полей и создание объекта opened
@@ -204,14 +209,14 @@ async function checkOpen(project, transaction) {
     }
 
     // noinspection JSIgnoredPromiseFromCall
-    newWindow(project, opened)
+    openVoteWindow(project, opened)
 }
 
 let promiseGroup
 let promiseWindow
 
 //Открывает вкладку для голосования или начинает выполнять fetch запросы
-async function newWindow(project, opened) {
+async function openVoteWindow(project, opened) {
     //Ожидаем очистку куки
     let result = await Promise.all(promises)
     while (result.length < promises.length) {
@@ -463,11 +468,18 @@ async function onRuntimeMessage(request, sender, sendResponse) {
 
     await initializeFunc
 
+    const fromExtensionPage = isExtensionPageSender(sender, chrome.runtime.getURL(''))
+    if (isExtensionPageCommand(request) && !fromExtensionPage) {
+        console.warn('Команда со страницы сайта отклонена', JSON.stringify(request).slice(0, 200), sender.url)
+        sendResponse('denied')
+        return
+    }
+
     if (request === 'checkVote') {
-        checkVote()
+        processVoteQueue()
         return
     } else if (request === 'reloadAllSettings') {
-        const result = await handleReloadAllSettings(db, openedProjects, tryCloseTab, reloadAllAlarms, checkVote)
+        const result = await handleReloadAllSettings(db, openedProjects, tryCloseTab, reloadAllAlarms, processVoteQueue)
         settings = result.settings
         generalStats = result.generalStats
         todayStats = result.todayStats
@@ -488,11 +500,16 @@ async function onRuntimeMessage(request, sender, sendResponse) {
     }
 
     if (request.changeProject) {
-        updateValue('projects', request.changeProject)
+        if (fromExtensionPage || canTabChangeProject(sender, request.changeProject, openedProjects)) {
+            updateValue('projects', request.changeProject)
+        } else {
+            console.warn('Вкладка пытается изменить чужой проект — отклонено', sender.url)
+        }
         return
     }
 
-    if (!openedProjects.has(sender.tab.id)) {
+    // Дальше — результаты голосования, они приходят только из вкладок
+    if (!sender.tab || !openedProjects.has(sender.tab.id)) {
         console.warn('A double attempt to complete the vote? chrome.runtime.onMessage', JSON.stringify(request), JSON.stringify(sender))
         return
     }
@@ -607,7 +624,7 @@ async function endVote(request, sender, project) {
     await scheduleProjectAlarm(project)
 
     // Планируем cleanup очереди и следующую проверку голосования
-    scheduleQueueCleanup(project, openedProjects, timeout, db, checkVote)
+    scheduleQueueCleanup(project, openedProjects, timeout, db, processVoteQueue)
 }
 
 
@@ -655,7 +672,7 @@ chrome.runtime.onInstalled.addListener(async function (details) {
         await openOptionsPage()
         chrome.runtime.sendMessage({installed: true})
     } else if (details.reason === 'update') {
-        checkVote()
+        processVoteQueue()
     }
 })
 

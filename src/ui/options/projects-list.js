@@ -281,11 +281,7 @@ function generateBtnListRating(rating, count) {
         label.setAttribute('data-resource', 'passageCaptcha')
         label.classList.add('callout', 'warn')
         label.textContent = chrome.i18n.getMessage('passageCaptcha')
-        const link = document.createElement('a')
-        link.classList.add('link')
-        link.target = 'blank_'
-        link.href = 'https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Guide-how-to-automate-the-passage-of-captcha-(reCAPTCHA-and-hCaptcha)'
-        link.textContent = chrome.i18n.getMessage('here')
+        const link = createExternalLink('https://github.com/Serega007RU/Auto-Vote-Rating/wiki/Guide-how-to-automate-the-passage-of-captcha-(reCAPTCHA-and-hCaptcha)', chrome.i18n.getMessage('here'))
         link.setAttribute('data-resource', 'here')
         label.append(link)
         ul.append(label)
@@ -511,7 +507,7 @@ async function updateProjectText(project) {
         const controlItems = el.querySelector('.controlItems')
         const accessButton = controlItems.querySelector('.access')
         if (project.error) {
-            conventPlainTextToLinks(project.error, errorElement)
+            renderTextWithLinks(project.error, errorElement)
             // Заявка на GitHub с уже заполненными сайтом, ошибкой и версией
             const report = document.createElement('a')
             report.className = 'report-link'
@@ -540,7 +536,7 @@ async function updateProjectText(project) {
             accessButton.remove()
         }
         if (project.warn) {
-            conventPlainTextToLinks(project.warn, warnElement)
+            renderTextWithLinks(project.warn, warnElement)
         }
         updateModalStats(project)
     }
@@ -550,33 +546,43 @@ async function updateProjectText(project) {
     }
 }
 
-function conventPlainTextToLinks(text, element) {
-    // noinspection RegExpRedundantEscape,RegExpDuplicateCharacterInClass,RegExpSimplifiable
-    if (text.match && text.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/igm)) {
-        // TODO функция не оптимизированная и может иметь косяки, другого способа я не нашёл как это сделать адекватно
-        // https://stackoverflow.com/a/60311728/11235240
-        // noinspection RegExpRedundantEscape,RegExpDuplicateCharacterInClass,RegExpUnnecessaryNonCapturingGroup
-        const error = text.match(/(?:http(s)?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&//=]*)|\s*\S+\s*/g)
-        for (const el of error) {
-            // noinspection RegExpSimplifiable,RegExpRedundantEscape,RegExpDuplicateCharacterInClass
-            if (el.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/igm)) {
-                const link = document.createElement('a')
-                link.classList.add('link')
-                link.target = 'blank_'
-                link.href = el
-                if (el.length > 64) {
-                    link.textContent = el.substring(0, 64) + '...'
-                } else {
-                    link.textContent = el
-                }
-                element.append(link)
-            } else {
-                element.append(el)
-            }
-        }
-    } else {
-        element.textContent = text
+// Ссылки в тексте ошибки или предупреждения. Текст приходит со стороннего сайта, поэтому только textContent
+const URL_IN_TEXT = /https?:\/\/[^\s<>"'«»]+/g
+const TRAILING_PUNCTUATION = /[.,;:!?)\]]+$/
+const MAX_LINK_TEXT_LENGTH = 64
+
+/**
+ * Ссылка на внешний сайт: новая вкладка без доступа к странице настроек (window.opener) и без Referer
+ * @param {string} href
+ * @param {string} text
+ * @returns {HTMLAnchorElement}
+ */
+function createExternalLink(href, text) {
+    const link = document.createElement('a')
+    link.classList.add('link')
+    link.href = href
+    link.target = '_blank'
+    link.rel = 'noopener noreferrer'
+    link.textContent = text
+    return link
+}
+
+/**
+ * Добавляет в элемент текст, превращая адреса http(s) в ссылки
+ * @param {string} text
+ * @param {Element} element
+ */
+function renderTextWithLinks(text, element) {
+    text = String(text)
+    let position = 0
+    for (const match of text.matchAll(URL_IN_TEXT)) {
+        // Точка или скобка в конце предложения — не часть адреса
+        const href = match[0].replace(TRAILING_PUNCTUATION, '')
+        const label = href.length > MAX_LINK_TEXT_LENGTH ? href.slice(0, MAX_LINK_TEXT_LENGTH) + '...' : href
+        element.append(text.slice(position, match.index), createExternalLink(href, label))
+        position = match.index + href.length
     }
+    element.append(text.slice(position))
 }
 
 function highlight(element) {

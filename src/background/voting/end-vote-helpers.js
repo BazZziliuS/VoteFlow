@@ -115,14 +115,14 @@ function applyTimeRandomization(project, time) {
 
 /**
  * Планирует cleanup очереди и следующую проверку голосования
- * Удаляет queued запись проекта и запускает checkVote через timeout
+ * Удаляет queued запись проекта и запускает processVoteQueue через timeout
  * @param {Object} project - Объект проекта
  * @param {Map} openedProjects - Map открытых проектов
  * @param {number} timeout - Время задержки перед cleanup (мс)
  * @param {Object} db - База данных
- * @param {Function} checkVote - Функция проверки голосования
+ * @param {Function} processVoteQueue - Функция проверки голосования
  */
-function scheduleQueueCleanup(project, openedProjects, timeout, db, checkVote) {
+function scheduleQueueCleanup(project, openedProjects, timeout, db, processVoteQueue) {
     async function removeQueue() {
         for (const [tab, value] of openedProjects) {
             if (tab.startsWith?.('queue_') && project.key === value.key) {
@@ -130,7 +130,7 @@ function scheduleQueueCleanup(project, openedProjects, timeout, db, checkVote) {
             }
         }
         db.put('other', openedProjects, 'openedProjects')
-        checkVote()
+        processVoteQueue()
     }
 
     setTimeout(() => {

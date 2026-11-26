@@ -56,5 +56,5 @@ console._collect = function (type, args) {
         }
     }
 
-    if (dbLogs) dbLogs.add('logs', log)
+    if (dbLogs) appendLog(dbLogs, log)
 }
