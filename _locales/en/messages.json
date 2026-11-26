@@ -346,14 +346,8 @@
   "disabledWarnCaptcha": {
     "message": "Disable notifications about the need to manually pass the captcha"
   },
-  "disabledWarnCaptchaTooltip": {
-    "message": "Disables notifications and logging that the captcha needs to be passed manually"
-  },
   "disabledClickCaptcha": {
     "message": "Don't click on \"I'm not a robot\""
-  },
-  "disabledClickCaptchaTooltip": {
-    "message": "The extension will not click on \"I am not a robot\" in reCAPTCHA or hCaptcha, this is necessary if your captcha is automatically solved"
   },
   "disabledDebug": {
     "message": "Debug"
@@ -370,10 +364,6 @@
   "disableCheckProjects": {
     "message": "Disable check-up",
     "description": "Checkbox. Disable check when adding a project"
-  },
-  "disableCheckProjectsTooltip": {
-    "message": "Disabling this check-up is not recommended, it can cause errors in the extension and it can break the auto-voting process, this setting disables check-up when adding a project, check-up for MCRate (As you know, you can vote there only for once per day) It also disables the VK authorization This setting is not saved when saving the configuration",
-    "description": "Tooltip. Disable check when adding a project"
   },
   "priority": {
     "message": "Add to priority",
@@ -426,45 +416,8 @@
     "message": "Export logs",
     "description": "Button. Export"
   },
-  "addedProjects": {
-    "message": "List of added projects",
-    "description": "Header. Added projects"
-  },
   "notAddedAll": {
     "message": "No projects yet"
-  },
-  "notAdded": {
-    "message": "You haven't added any projects to this voting page yet!",
-    "description": "Notification. You haven't added any projects"
-  },
-  "notAvailableInSilent": {
-    "message": "This is not available in silent mode by default!",
-    "description": "Notification. available in silent voting mode"
-  },
-  "supportDev": {
-    "message": "Support the developer",
-    "description": "Link (Express gratitude)"
-  },
-  "firstInstall": {
-    "message": "Thanks for installing the extension. For further work you should configure it first!"
-  },
-  "firstSettings": {
-    "message": "Generating default settings..."
-  },
-  "firstSettingsSave": {
-    "message": "Settings were successfully set by default and saved"
-  },
-  "settingsGen": {
-    "message": "Project settings were generated"
-  },
-  "settingsUpdate": {
-    "message": "Updating the default settings..."
-  },
-  "settingsUpdateEnd": {
-    "message": "Project settings were updated"
-  },
-  "settingsUpdateEnd2": {
-    "message": "Settings were successfully set by default and saved"
   },
   "confirmDisableErrors": {
     "message": "Are you sure you want to disable error notifications? If any problem when voting happens, the extension will try to vote again every 5 minutes. If you don't receive errors and don't keep track of them, the extension might endlessly try to vote. Be careful with this, you might get blocked for spamming requests"
@@ -492,9 +445,6 @@
   },
   "alreadyAdded": {
     "message": "This project is already added"
-  },
-  "oneProjectFairTop": {
-    "message": "You can only vote for one project on FairTop at once. In order to vote for multiple projects, do not allow FairTop.in to save cookies, google how to do it. Then disable check-up when adding a project in the advanced settings and try adding this project again. Be careful with the project ID: when adding a project with disabled check-up, extension will accept project even with a non-existent ID."
   },
   "oneProject": {
     "message": "On $project$, you can only vote for $count$ project at once",
@@ -568,28 +518,6 @@
   },
   "addSuccess": {
     "message": "Successfully added"
-  },
-  "cooldownChanged": {
-    "message": "You must restart the extension to apply changes. After restarting, open settings again. Restart the extension?"
-  },
-  "storageError": {
-    "message": "An error occurred while reading the config: $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
-  },
-  "saving": {
-    "message": "Saving..."
-  },
-  "storageErrorSave": {
-    "message": "An error occurred while saving settings: $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
   },
   "successSave": {
     "message": "Settings successfully saved"
@@ -668,21 +596,6 @@
   },
   "feedback": {
     "message": "If you have any questions or problems, feel free to contact us at "
-  },
-  "feedback2": {
-    "message": "or support at "
-  },
-  "feedback3": {
-    "message": "or contact me on "
-  },
-  "feedback4": {
-    "message": "or issues bug tracker on"
-  },
-  "dmDiscord": {
-    "message": "discord"
-  },
-  "dmChromeWebStore": {
-    "message": "Chrome Web Store"
   },
   "email": {
     "message": "Email"
@@ -781,9 +694,6 @@
   "projectID": {
     "message": "ID project"
   },
-  "firstAddSettings": {
-    "message": "Additional settings are generated"
-  },
   "secondBonus": {
     "message": "On $project$ you need to collect the reward as well, let's automate this?",
     "placeholders": {
@@ -792,19 +702,8 @@
       }
     }
   },
-  "redirectedSecondBonus": {
-    "message": "There was a redirect to $url$, but looks like you are not logged in, or there is another problem. Check this URL",
-    "placeholders": {
-      "url": {
-        "content": "$1"
-      }
-    }
-  },
   "dailyBonus": {
     "message": "Daily bonus"
-  },
-  "donate": {
-    "message": "https://paypal.me/serega007ru"
   },
   "countVote": {
     "message": "How many votes make per day"
@@ -814,21 +713,6 @@
   },
   "authSteam": {
     "message": "Requires Steam auth"
-  },
-  "privacyPass": {
-    "message": "Install the "
-  },
-  "privacyPass2": {
-    "message": " extension to get 5 free captcha passes for hCaptcha"
-  },
-  "privacyPass3": {
-    "message": "Or register on "
-  },
-  "privacyPass4": {
-    "message": " and follow the instructions. After set the cookies on hCaptcha, install any extension that can edit the cookies in the browser, for example "
-  },
-  "privacyPass5": {
-    "message": " and extend the validity of all cookies for the domain hcaptcha.com for a few years"
   },
   "this": {
     "message": "this"
@@ -862,9 +746,6 @@
   },
   "chooseListingURL": {
     "message": "Enter the listing URL or select from the list"
-  },
-  "idGame": {
-    "message": "Game ID"
   },
   "urlGame": {
     "message": "Game URL"
@@ -988,14 +869,6 @@
   "notificationsDisabled": {
     "message": "Notifications are disabled or the extension doesn't have access to them! You may miss important notifications from this extension about errors or warnings!"
   },
-  "errorAttemptVote": {
-    "message": "Exceeded the maximum number of voting attempts, $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
-  },
   "voteMode": {
     "message": "Force the voting mode to be set"
   },
@@ -1006,9 +879,6 @@
         "content": "$1"
       }
     }
-  },
-  "suspended": {
-    "message": "Extension suspended"
   },
   "errordb": {
     "message": "Error with the database $db$ $error$",
@@ -1061,9 +931,6 @@
   },
   "granted": {
     "message": "Granted"
-  },
-  "notgranted": {
-    "message": "Not granted"
   },
   "oldSettings": {
     "message": "The settings of the old version $old$ have been detected, I am updating them to the new version $new$",
@@ -1129,12 +996,6 @@
   "restarted": {
     "message": "The vote has been sent for restart"
   },
-  "disabledUseRemoteCode": {
-    "message": "Disable the use of remote code"
-  },
-  "disabledUseRemoteCodeTooltip": {
-    "message": "Some site owners are very actively struggling with this extension and trying to break it as much as possible. The extension now uses the remote code, which allows you not to update the extension and at the same time the code will always be up-to-date. If you disable the use of remote code, then you may encounter errors, we do not recommend that you do this. This option is more intended for the developer to debug local code."
-  },
   "rejectDelete": {
     "message": "Cannot be deleted while the voting is running, restart the extension if the voting is stuck"
   },
@@ -1186,9 +1047,6 @@
   },
   "projectRestarted": {
     "message": "Voting restarted by the user"
-  },
-  "restartInQueue": {
-    "message": "This project is in the voting queue, restart is not possible."
   },
   "save": {
     "message": "Save"

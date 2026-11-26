@@ -163,9 +163,6 @@
   "welcomeStep3Hint": {
     "message": "VoteFlow stimmt nach dem Zeitplan der Seite ab, die nächste Abstimmung steht im Tab „Projekte“"
   },
-  "switchAddMode": {
-    "message": "Seite aus Liste wählen"
-  },
   "switchAddModeHint": {
     "message": "Wenn der Link nicht erkannt wird, Seite und Projekt-ID manuell angeben"
   },
@@ -215,9 +212,6 @@
         "content": "$1"
       }
     }
-  },
-  "editTitle": {
-    "message": "Projekt bearbeiten"
   },
   "Custom": {
     "message": "Eigene Anfrage (Custom)"
@@ -346,13 +340,30 @@
   "disabledFocusedTab": {
     "message": "Tab Fokussiert"
   },
+  "disabledFocusedTabTooltip": {
+    "message": "Tab öffnen und automatisch zu ihm wechseln"
+  },
+  "disabledWarnCaptcha": {
+    "message": "Benachrichtigungen über manuell zu lösende Captchas deaktivieren"
+  },
+  "disabledClickCaptcha": {
+    "message": "Nicht auf „Ich bin kein Roboter“ klicken"
+  },
+  "disabledDebug": {
+    "message": "Debug-Modus"
+  },
+  "debugTooltip": {
+    "message": "Nur aktivieren, wenn der Entwickler Sie darum gebeten hat"
+  },
+  "disableCloseTabsOnSuccess": {
+    "message": "Tabs nach erfolgreicher Abstimmung nicht schließen"
+  },
+  "disableCloseTabsOnError": {
+    "message": "Tabs nach fehlgeschlagener Abstimmung nicht schließen"
+  },
   "disableCheckProjects": {
     "message": "Check-up deaktivieren",
     "description": "Checkbox. Disable check when adding a project"
-  },
-  "disableCheckProjectsTooltip": {
-    "message": "Diese Einstellung deaktiviert die Überprüfung beim Hinzufügen eines Projekts, die Überprüfung für MCRate (wie Sie wissen, können Sie dort nur einmal pro Tag abstimmen) und die VK-Autorisierung. Diese Einstellung wird beim Speichern der Konfiguration nicht gespeichert",
-    "description": "Tooltip. Disable check when adding a project"
   },
   "priority": {
     "message": "Priorität hinzufügen",
@@ -378,6 +389,9 @@
     "message": "Emulations Modus",
     "description": "Input. Mode."
   },
+  "cooldown": {
+    "message": "Pause zwischen Projekten auf derselben Bewertungsseite"
+  },
   "cooldownError": {
     "message": "Timeout in ms im Falle eines Fehlers"
   },
@@ -401,45 +415,8 @@
     "message": "Export logs",
     "description": "Button. Export"
   },
-  "addedProjects": {
-    "message": "Liste der hinzugefügten Projekte",
-    "description": "Header. Added projects"
-  },
   "notAddedAll": {
     "message": "Noch keine Projekte"
-  },
-  "notAdded": {
-    "message": "Sie haben noch keine Projekte zu dieser Abstimmungsseite hinzugefügt!",
-    "description": "Notification. You haven't added any projects"
-  },
-  "notAvailableInSilent": {
-    "message": "Diese Funktion ist im stillen Modus standardmäßig nicht verfügbar!",
-    "description": "Notification. available in silent voting mode"
-  },
-  "supportDev": {
-    "message": "Unterstützen Sie den Entwickler",
-    "description": "Link (Express gratitude)"
-  },
-  "firstInstall": {
-    "message": "Vielen Dank für die Installation der Erweiterung. Für die weitere Arbeit sollten Sie die Erweiterung zuerst konfigurieren!"
-  },
-  "firstSettings": {
-    "message": "Standardeinstellungen generieren..."
-  },
-  "firstSettingsSave": {
-    "message": "Einstellungen wurden erfolgreich als Standard eingestellt und gespeichert"
-  },
-  "settingsGen": {
-    "message": "Projekteinstellungen wurden generiert"
-  },
-  "settingsUpdate": {
-    "message": "Aktualisieren der Standardeinstellungen..."
-  },
-  "settingsUpdateEnd": {
-    "message": "Projekteinstellungen wurden aktualisiert"
-  },
-  "settingsUpdateEnd2": {
-    "message": "Einstellungen wurden erfolgreich als Standard eingestellt und gespeichert"
   },
   "confirmDisableErrors": {
     "message": "Sind Sie sicher, dass Sie die Fehlerbenachrichtigungen deaktivieren möchten? Wenn bei der Abstimmung ein Problem auftritt, wird die Erweiterung alle 5 Minuten erneut versuchen abzustimmen. Wenn Sie keine Fehlermeldungen erhalten und diese nicht im Auge behalten, könnte die Erweiterung endlos versuchen, abzustimmen. Seien Sie vorsichtig damit, Sie könnten wegen Spamming-Anfragen blockiert werden."
@@ -467,9 +444,6 @@
   },
   "alreadyAdded": {
     "message": "Dieses Projekt ist bereits hinzugefügt"
-  },
-  "oneProjectFairTop": {
-    "message": "Sie können immer nur für ein Projekt auf FairTop abstimmen. Um für mehrere Projekte abstimmen zu können, erlauben Sie FairTop.in nicht, Cookies zu speichern, googeln Sie, wie das geht. Deaktivieren Sie dann die Überprüfung beim Hinzufügen eines Projekts in den erweiterten Einstellungen und versuchen Sie, dieses Projekt erneut hinzuzufügen. Seien Sie vorsichtig mit der Projekt-ID: Wenn Sie ein Projekt mit deaktivierter Überprüfung hinzufügen, akzeptiert die Erweiterung das Projekt auch mit einer nicht existierenden ID."
   },
   "oneProject": {
     "message": "Auf $project$ kann man nur jeweils für $count$ Projekt stimmen",
@@ -544,28 +518,6 @@
   "addSuccess": {
     "message": "Erfolgreich hinzugefügt"
   },
-  "cooldownChanged": {
-    "message": "Sie müssen die Erweiterung neu starten, um die Änderungen zu übernehmen. Öffnen Sie nach dem Neustart erneut die Einstellungen. Neustart der Erweiterung?"
-  },
-  "storageError": {
-    "message": "Beim Lesen der Konfiguration ist ein Fehler aufgetreten: $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
-  },
-  "saving": {
-    "message": "Speichern..."
-  },
-  "storageErrorSave": {
-    "message": "Beim Speichern der Einstellungen ist ein Fehler aufgetreten: $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
-  },
   "successSave": {
     "message": "Einstellungen erfolgreich gespeichert"
   },
@@ -623,6 +575,9 @@
   "gameIDTooltip": {
     "message": " des Spiels kann z. B. über die Adressleiste der Projektseite abgerufen werden: "
   },
+  "listingIDTooltip": {
+    "message": " der Liste steht in der Adresszeile der Projektseite, zum Beispiel: "
+  },
   "inputProjectID": {
     "message": "ID eingeben"
   },
@@ -641,18 +596,6 @@
   "feedback": {
     "message": "Wenn Sie Fragen oder Probleme haben, können Sie sich an uns wenden unter "
   },
-  "feedback2": {
-    "message": "oder Unterstützung unter "
-  },
-  "feedback3": {
-    "message": "oder kontaktieren Sie mich unter "
-  },
-  "dmDiscord": {
-    "message": "discord"
-  },
-  "dmChromeWebStore": {
-    "message": "Chrome Web Store"
-  },
   "email": {
     "message": "Email"
   },
@@ -668,8 +611,24 @@
   "successAutoVote": {
     "message": "Erfolgreiches automatisches Abstimmen"
   },
+  "successAutoVoteWarn": {
+    "message": "Erfolgreich automatisch abgestimmt, $warn$",
+    "placeholders": {
+      "warn": {
+        "content": "$1"
+      }
+    }
+  },
   "alreadyVoted": {
     "message": "Sie haben bereits abgestimmt"
+  },
+  "alreadyVotedWarn": {
+    "message": "Sie haben bereits abgestimmt, $warn$",
+    "placeholders": {
+      "warn": {
+        "content": "$1"
+      }
+    }
   },
   "errorOpenTab": {
     "message": "Beim Öffnen des Tabs ist ein Fehler aufgetreten: $error$",
@@ -739,9 +698,6 @@
   "projectID": {
     "message": "ID project"
   },
-  "firstAddSettings": {
-    "message": "Zusätzliche Einstellungen werden generiert"
-  },
   "secondBonus": {
     "message": "Bei$project$ müssen Sie auch die Belohnung kassieren, können wir das automatisieren?",
     "placeholders": {
@@ -750,19 +706,8 @@
       }
     }
   },
-  "redirectedSecondBonus": {
-    "message": "Es gab eine Weiterleitung zu $url$, aber es sieht so aus, als ob Sie nicht eingeloggt sind, oder es gibt ein anderes Problem. Prüfen Sie diese URL",
-    "placeholders": {
-      "url": {
-        "content": "$1"
-      }
-    }
-  },
   "dailyBonus": {
     "message": "Täglicher Bonus"
-  },
-  "donate": {
-    "message": "https://paypal.me/serega007ru"
   },
   "countVote": {
     "message": "Wie viele Stimmen pro Tag machen"
@@ -772,21 +717,6 @@
   },
   "authSteam": {
     "message": "Erfordert Steam-Authentifizierung"
-  },
-  "privacyPass": {
-    "message": "Installieren Sie die "
-  },
-  "privacyPass2": {
-    "message": " Erweiterung, um 5 kostenlose Captcha-Pässe für hCaptcha zu erhalten"
-  },
-  "privacyPass3": {
-    "message": "Oder registrieren Sie sich auf "
-  },
-  "privacyPass4": {
-    "message": " und folgen Sie den Anweisungen. Nachdem Sie die Cookies auf hCaptcha gesetzt haben, installieren Sie eine beliebige Erweiterung, die die Cookies im Browser bearbeiten kann, zum Beispiel "
-  },
-  "privacyPass5": {
-    "message": " und verlängern Sie die Gültigkeit aller Cookies für die Domain hcaptcha.com um einige Jahre"
   },
   "this": {
     "message": "diese"
@@ -815,17 +745,17 @@
   "chooseLang": {
     "message": "Sprache/Region wählen"
   },
-  "chooseGame": {
-    "message": "Geben Sie die Spiel-ID ein oder wählen Sie aus der Liste"
-  },
   "chooseGameURL": {
     "message": "Geben Sie die URL des Spiels ein oder wählen Sie aus der Liste"
   },
-  "idGame": {
-    "message": "Spiel-ID"
+  "chooseListingURL": {
+    "message": "Geben Sie die URL der Liste ein oder wählen Sie aus der Liste"
   },
   "urlGame": {
     "message": "Spiel-URL"
+  },
+  "urlListing": {
+    "message": "URL der Liste"
   },
   "stats": {
     "message": "$project$ Statistiken",
@@ -880,8 +810,20 @@
   "timeoutHour": {
     "message": "Nach einer bestimmten Zeit (einmal pro Tag)"
   },
+  "timeoutWeek": {
+    "message": "Nach festgelegter Zeit (einmal pro Woche)"
+  },
+  "timeoutMonth": {
+    "message": "Nach festgelegter Zeit (einmal pro Monat)"
+  },
   "chooseHour": {
     "message": "Einstellen der Stunde"
+  },
+  "chooseWeek": {
+    "message": "Wochentag festlegen"
+  },
+  "chooseMonth": {
+    "message": "Tag des Monats festlegen"
   },
   "advSettings": {
     "message": "Erweitert"
@@ -931,14 +873,6 @@
   "notificationsDisabled": {
     "message": "Benachrichtigungen sind deaktiviert oder die Erweiterung hat keinen Zugriff auf sie! Sie könnten wichtige Benachrichtigungen dieser Erweiterung über Fehler oder Warnungen verpassen!"
   },
-  "errorAttemptVote": {
-    "message": "Überschreitung der maximalen Anzahl von Abstimmungsversuchen, $error$",
-    "placeholders": {
-      "error": {
-        "content": "$1"
-      }
-    }
-  },
   "voteMode": {
     "message": "Erzwingen der Einstellung des Abstimmungsmodus"
   },
@@ -949,9 +883,6 @@
         "content": "$1"
       }
     }
-  },
-  "suspended": {
-    "message": "Erweiterung ausgesetzt"
   },
   "errordb": {
     "message": "Fehler mit der Datenbank $db$ $error$",
@@ -1005,9 +936,6 @@
   "granted": {
     "message": "Gewährt"
   },
-  "notgranted": {
-    "message": "Nicht gewährt"
-  },
   "oldSettings": {
     "message": "Die Einstellungen der alten Version $old$ sind erkannt worden, ich aktualisiere sie auf die neue Version $new$",
     "placeholders": {
@@ -1056,6 +984,247 @@
   },
   "projectDeleted": {
     "message": "Das Projekt wurde vom Benutzer gelöscht"
+  },
+  "banAttention": {
+    "message": "Achtung! Auf dieser Seite wurden Konten wegen automatischer Abstimmung gesperrt. Nutzen Sie die automatische Abstimmung hier mit Vorsicht und achten Sie auf Benachrichtigungen und Fehler. Wenn Sie gesperrt wurden, erkennt die Seite die Automatisierung inzwischen — bitte melden Sie das dem Entwickler der Erweiterung"
+  },
+  "rewardAttention": {
+    "message": "Achtung! Mit diesen Einstellungen erhalten Sie keine Belohnung für die Abstimmung"
+  },
+  "closedTab": {
+    "message": "Sie haben anscheinend den Tab geschlossen, in dem die Erweiterung abgestimmt hat"
+  },
+  "restart": {
+    "message": "Abstimmung neu starten"
+  },
+  "restarted": {
+    "message": "Die Abstimmung wird neu gestartet"
+  },
+  "rejectDelete": {
+    "message": "Löschen ist während des Abstimmungsstarts nicht möglich. Starten Sie die Erweiterung neu, falls die Abstimmung hängt"
+  },
+  "expertMode": {
+    "message": "Ich bin ein erfahrener Benutzer"
+  },
+  "expertModeTooltip": {
+    "message": "Schaltet Feineinstellungen frei: Timeouts, Zeitpläne und Abstimmungsmodi der Projekte"
+  },
+  "link": {
+    "message": "Link zur Bewertungsseite"
+  },
+  "linkPlaceholder": {
+    "message": "Link zur Bewertungsseite hier einfügen"
+  },
+  "errorLink": {
+    "message": "$url$ wird von der Erweiterung nicht unterstützt. Bitte beachten Sie: Hier wird der Link zur Bewertungsseite (Monitoring) benötigt, nicht zur Website des Servers. Sie können auch den manuellen Modus ausprobieren (Schalter unten rechts)",
+    "placeholders": {
+      "url": {
+        "content": "$1"
+      }
+    }
+  },
+  "switchAddMode": {
+    "message": "Seite aus Liste wählen"
+  },
+  "storageUsed": {
+    "message": "Belegter Speicher: $value$ $unit$",
+    "placeholders": {
+      "value": {
+        "content": "$1"
+      },
+      "unit": {
+        "content": "$2"
+      }
+    }
+  },
+  "edit": {
+    "message": "Bearbeiten"
+  },
+  "confirmNow": {
+    "message": "Dieses Projekt stimmt gerade ab. Ein Neustart bricht die laufende Abstimmung ab. Trotzdem neu starten?"
+  },
+  "confirmQueue": {
+    "message": "In der Warteschlange stimmt gerade ein Projekt ab. Ein Neustart bricht die laufende Abstimmung ab. Trotzdem neu starten?"
+  },
+  "projectRestarted": {
+    "message": "Abstimmung vom Benutzer neu gestartet"
+  },
+  "canceledVote": {
+    "message": "Abstimmung vom Benutzer abgebrochen"
+  },
+  "save": {
+    "message": "Speichern"
+  },
+  "cancel": {
+    "message": "Abbrechen"
+  },
+  "editTitle": {
+    "message": "Projekt bearbeiten"
+  },
+  "operaAttention": {
+    "message": "Achtung! Sie verwenden den Browser Opera, dort hat die Erweiterung keinen Zugriff auf das Google-Captcha. Folgen Sie der Anleitung unten, um der Erweiterung den Zugriff zu erlauben"
+  },
+  "errorLinkParam": {
+    "message": "Aus dem angegebenen Link konnte der Parameter $param$ nicht ermittelt werden — vermutlich ist der Link unvollständig. Sie können auch den manuellen Modus ausprobieren (Schalter unten rechts)",
+    "placeholders": {
+      "param": {
+        "content": "$1"
+      }
+    }
+  },
+  "cooldownVote": {
+    "message": "Abstimmungs-Timeout in ms"
+  },
+  "timeoutTooltip": {
+    "message": "Wenn Sie auf einer Bewertungsseite für mehrere Projekte (Server) abstimmen, wartet die Erweiterung nach jeder Abstimmung die angegebene Zeit bis zum nächsten Projekt auf derselben Seite"
+  },
+  "timeoutErrorTooltip": {
+    "message": "Tritt beim Abstimmen ein Fehler auf, wartet die Erweiterung die angegebene Zeit bis zum nächsten Versuch"
+  },
+  "timeoutVoteTooltip": {
+    "message": "Dauert eine Abstimmung zu lange, startet die Erweiterung sie nach der angegebenen Zeit neu"
+  },
+  "disabledRestartOnTimeout": {
+    "message": "Abstimmung nicht neu starten, wenn sie zu lange dauert"
+  },
+  "monday": {
+    "message": "Montag"
+  },
+  "tuesday": {
+    "message": "Dienstag"
+  },
+  "wednesday": {
+    "message": "Mittwoch"
+  },
+  "thursday": {
+    "message": "Donnerstag"
+  },
+  "friday": {
+    "message": "Freitag"
+  },
+  "saturday": {
+    "message": "Samstag"
+  },
+  "sunday": {
+    "message": "Sonntag"
+  },
+  "notSupportedBrowser": {
+    "message": "Opera wird von der Erweiterung nicht unterstützt"
+  },
+  "notSupportedBrowserContent1": {
+    "message": "Ihr Browser wird von der Erweiterung nicht unterstützt. Bitte verwenden Sie einen anderen Chromium-basierten Browser (zum Beispiel Google Chrome, Microsoft Edge, Vivaldi oder Yandex Browser)"
+  },
+  "notSupportedBrowserContent2": {
+    "message": "Warum wird Opera nicht unterstützt? Dafür gibt es viele Gründe: keine Tab-Gruppen, kein Zugriff auf das Google-reCAPTCHA, keine File System Access API, kein Hintergrundbetrieb der Erweiterung bei geschlossenen Tabs, keine Aktivität auf addons.opera.com (Erweiterungen lassen sich dort nicht veröffentlichen) und viele Kleinigkeiten"
+  },
+  "deleteExtension": {
+    "message": "Erweiterung entfernen"
+  },
+  "limitedModeButton1": {
+    "message": "Ich möchte die Erweiterung trotz der Einschränkungen in Opera verwenden"
+  },
+  "areYouSure": {
+    "message": "Sind Sie sicher?"
+  },
+  "limitedModeContent": {
+    "message": "Bevor Sie die Erweiterung in Opera verwenden, sollten Sie wissen, dass sie nur eingeschränkt funktioniert:"
+  },
+  "limitedModeContent1": {
+    "message": "Von der Erweiterung geöffnete Tabs werden nicht gruppiert, und Sie erkennen nicht, welche Tabs die Erweiterung geöffnet hat. Greifen Sie nicht in die Abstimmung ein (außer wenn die Erweiterung Sie bittet, ein Captcha manuell zu lösen) — das kann zu Fehlern führen"
+  },
+  "limitedModeContent2": {
+    "message": "Ihr Browser arbeitet nicht im Hintergrund: Ist er zur Abstimmungszeit geschlossen (kein Tab geöffnet), beginnt die Abstimmung erst, wenn Sie den Browser starten"
+  },
+  "limitedModeContent3": {
+    "message": "Die Erweiterung hat keinen Zugriff auf das Google-Captcha. Sie müssen ihn manuell erlauben, sonst kann sie nicht auf „Ich bin kein Roboter“ klicken. Wie das geht, steht in dieser Anleitung: "
+  },
+  "limitedModeButton2": {
+    "message": "Ich habe alles gelesen, die Anleitung befolgt und verstehe, dass die Erweiterung eingeschränkt funktioniert"
+  },
+  "waitSeconds": {
+    "message": "Bitte $seconds$ Sekunden warten",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "confirmUninstallSelf": {
+    "message": "Wirklich entfernen? Alle Einstellungen der Erweiterung werden dauerhaft gelöscht."
+  },
+  "lagServiceWorker": {
+    "message": "Der Hintergrundprozess der Erweiterung (Service Worker) antwortet nicht — vermutlich hängt er. Erweiterung neu starten?"
+  },
+  "restartExtension": {
+    "message": "Erweiterung neu starten"
+  },
+  "confirmRestartExtension": {
+    "message": "Erweiterung neu starten? Danach werden die Einstellungen geschlossen und müssen manuell wieder geöffnet werden"
+  },
+  "requiredConfirmTOS": {
+    "message": "Die Seite verlangt, dass Sie etwas bestätigen"
+  },
+  "tooManyVoteAttempts": {
+    "message": "Zu viele Abstimmungsversuche hintereinander — anscheinend ist etwas kaputt. Bitte melden Sie diesen Fehler dem Entwickler der Erweiterung"
+  },
+  "access": {
+    "message": "Zugriff erlauben"
+  },
+  "alertFocusedTab": {
+    "message": "Hinweis! Diese Seite verlangt, dass der Tab der Erweiterung aktiv ist. Beim automatischen Abstimmen wechselt die Erweiterung selbst zu diesem Tab, was ablenken kann"
+  },
+  "nickWithSpace": {
+    "message": "Ihr Nickname enthält ein Leerzeichen"
+  },
+  "nickWithSpaceConfirm": {
+    "message": "Ihr Nickname enthält ein Leerzeichen. Trotzdem mit Leerzeichen hinzufügen?"
+  },
+  "notSupportedSiteRating": {
+    "message": "Für die angegebenen Parameter wird $rating$ anscheinend nicht unterstützt. Sind die Daten korrekt eingegeben?",
+    "placeholders": {
+      "rating": {
+        "content": "$1"
+      }
+    }
+  },
+  "usedTranslator": {
+    "message": "Anscheinend ist der integrierte Übersetzer des Browsers aktiv — er stört die Erweiterung, bitte deaktivieren Sie ihn. Ist er bereits deaktiviert, melden Sie das bitte dem Entwickler der Erweiterung"
+  },
+  "failParseUrlFastAdd": {
+    "message": "Bewertungsseite $rating$ nicht gefunden, bitte melden Sie diesen Fehler dem Betreiber von $site$",
+    "placeholders": {
+      "rating": {
+        "content": "$1"
+      },
+      "site": {
+        "content": "$2"
+      }
+    }
+  },
+  "captchaPassedDouble": {
+    "message": "Das Captcha wurde anscheinend zweimal gelöst. Möglicherweise wurde die Seite vor dem Lösen geladen oder es gab einen Fehler mit dem Captcha. Wenden Sie sich bitte an den Entwickler der Erweiterung"
+  },
+  "notReadyInject": {
+    "message": "Der Tab hat anscheinend zu laden begonnen, bevor die Erweiterung bereit war — das kann zu Abstimmungsfehlern führen"
+  },
+  "siteError": {
+    "message": "Die Seite hat einen Fehler gemeldet: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "disabledSite": {
+    "message": "Von der Erweiterung vorübergehend deaktiviert. Grund: $reason$",
+    "placeholders": {
+      "reason": {
+        "content": "$1"
+      }
+    }
+  },
+  "never": {
+    "message": "Nie"
   },
   "votingStopped": {
     "message": "Automatisches Abstimmen wurde gestoppt, um Ihr Konto nicht zu gefährden: stimmen Sie auf der Seite manuell ab. Fortsetzen über „Neu starten“ beim Projekt"

@@ -202,7 +202,8 @@ for (const [domain, config] of Object.entries(allProjects)) {
 }
 
 // 5. Ключи локализации
-const locales = Object.fromEntries(['ru', 'en'].map(l => [l, JSON.parse(read(`_locales/${l}/messages.json`))]))
+const LOCALES = fs.readdirSync(path.join(root, '_locales'))
+const locales = Object.fromEntries(LOCALES.map(l => [l, JSON.parse(read(`_locales/${l}/messages.json`))]))
 const usedKeys = new Map()
 const addKey = (key, where) => {
     if (!usedKeys.has(key)) usedKeys.set(key, where)
@@ -222,6 +223,31 @@ for (const [key, where] of usedKeys) {
             else errors.push(`_locales/${lang}: нет ключа «${key}» (используется в ${where})`)
         }
     }
+}
+
+// 5б. Все языки полные: те же ключи, что в ru, и описаны все $плейсхолдеры$ —
+// иначе пользователь увидит английский текст или пустое место вместо подстановки
+{
+    const reference = locales.ru
+    for (const [lang, messages] of Object.entries(locales)) {
+        const missing = Object.keys(reference).filter(key => !messages[key])
+        const extra = Object.keys(messages).filter(key => !reference[key])
+        if (missing.length) errors.push(`_locales/${lang}: нет перевода ${missing.length} строк: ${missing.join(', ')}`)
+        if (extra.length) errors.push(`_locales/${lang}: ключи, которых нет в ru: ${extra.join(', ')}`)
+        for (const [key, {message, placeholders = {}}] of Object.entries(messages)) {
+            for (const [, name] of message.matchAll(/\$([a-zA-Z_][\w]*)\$/g)) {
+                if (!placeholders[name.toLowerCase()] && !placeholders[name]) {
+                    errors.push(`_locales/${lang}: «${key}» — плейсхолдер $${name}$ не описан в placeholders`)
+                }
+            }
+        }
+    }
+
+    // Ключ, название которого не встречается ни в одном файле кода, не может быть показан.
+    // Ищем само имя: ключи бывают динамическими (имя поля сообщения скрипта сайта)
+    const allCode = [...sourceFiles, ...htmlPages.map(page => 'src/ui/' + page), 'manifest.json'].map(read).join('\n')
+    const unusedKeys = Object.keys(reference).filter(key => !new RegExp(`[^\w]${key}[^\w]`).test(allCode))
+    if (unusedKeys.length) errors.push(`_locales: ключи нигде не используются — удалите их: ${unusedKeys.join(', ')}`)
 }
 
 for (const w of warnings) console.warn('⚠ ' + w)
