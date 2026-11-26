@@ -40,6 +40,22 @@ function exampleProject(domain, config) {
     return project
 }
 
+// Признаки страницы «домен продаётся / припаркован»: такой сайт отвечает 200, но рейтинга на нём больше нет
+const PARKED_PAGE =
+    /domain(?: name)? (?:is |may be )?for sale|buy this domain|parked domain|is parked|domain parking|this domain is for sale|lander\.parity\.domains|namepros\.com\/parked|sedoparking|afternic|dan\.com\/buy/i
+
+function isParkedPage(html) {
+    return PARKED_PAGE.test(html.slice(0, 50000))
+}
+
+async function readText(response) {
+    try {
+        return await response.text()
+    } catch {
+        return ''
+    }
+}
+
 async function checkSite(domain, config) {
     const url = config.pageURL(exampleProject(domain, config))
     const started = Date.now()
@@ -50,8 +66,9 @@ async function checkSite(domain, config) {
         const expected = [domain, config.URLMain?.(), getDomain(url)].filter(Boolean)
         const server = response.headers.get('server') || ''
         let status
-        if (!expected.includes(finalDomain)) status = 'redirect'
-        else if (response.ok) status = 'ok'
+        if (!expected.includes(finalDomain))
+            status = /namepros|sedo|dan\.com|afternic|parking/i.test(finalDomain) ? 'parked' : 'redirect'
+        else if (response.ok) status = isParkedPage(await readText(response)) ? 'parked' : 'ok'
         else if ([403, 429, 503].includes(response.status) && /cloudflare|ddos-guard|qrator/i.test(server))
             status = 'protected'
         else if (response.status === 404 || response.status === 410) {
@@ -60,10 +77,12 @@ async function checkSite(domain, config) {
                 headers: HEADERS,
                 signal: AbortSignal.timeout(TIMEOUT),
             }).catch(() => null)
-            status =
-                home && (home.ok || [403, 503].includes(home.status)) && getDomain(home.url) === finalDomain
-                    ? 'stale-example'
-                    : 'not-found'
+            if (home?.ok && isParkedPage(await readText(home))) status = 'parked'
+            else
+                status =
+                    home && (home.ok || [403, 503].includes(home.status)) && getDomain(home.url) === finalDomain
+                        ? 'stale-example'
+                        : 'not-found'
         } else status = 'http-error'
         return {domain, url, status, code: response.status, finalUrl: response.url, ms}
     } catch (error) {
@@ -94,6 +113,7 @@ async function main() {
     process.stderr.write('\n')
 
     const order = [
+        'parked',
         'dns',
         'not-found',
         'redirect',
@@ -105,6 +125,7 @@ async function main() {
         'ok',
     ]
     const titles = {
+        parked: 'Домен продаётся или припаркован — сайт закрыт',
         dns: 'Домен не существует (DNS)',
         'not-found': 'Не найдены ни проект, ни главная страница (404/410)',
         'stale-example': 'Сайт жив, но пример проекта в exampleURL() устарел (404)',
@@ -128,6 +149,41 @@ async function main() {
 
     const jsonIndex = process.argv.indexOf('--json')
     if (jsonIndex > 0) fs.writeFileSync(process.argv[jsonIndex + 1], JSON.stringify(results, null, 2))
+    const markdownIndex = process.argv.indexOf('--markdown')
+    if (markdownIndex > 0) fs.writeFileSync(process.argv[markdownIndex + 1], markdownReport(results, order, titles))
 }
 
-main()
+// Отчёт для задачи «Состояние сайтов» на GitHub (.github/workflows/sites.yml)
+function markdownReport(results, order, titles) {
+    const needsAttention = [
+        'parked',
+        'dns',
+        'not-found',
+        'redirect',
+        'timeout',
+        'network',
+        'http-error',
+        'stale-example',
+    ]
+    const lines = [
+        `Проверка ${new Date().toISOString().slice(0, 10)}: ${results.length} сайтов, работает ${results.filter(r => r.status === 'ok').length}, ` +
+            `за защитой от ботов ${results.filter(r => r.status === 'protected').length}.`,
+        '',
+        'Один сбой ещё не значит, что сайт закрыт: перед удалением перепроверьте вручную. Как удалять — в CONTRIBUTING.md («Новый сайт»).',
+    ]
+    for (const status of order.filter(s => needsAttention.includes(s))) {
+        const group = results.filter(r => r.status === status).sort((a, b) => a.domain.localeCompare(b.domain))
+        if (!group.length) continue
+        lines.push('', `### ${titles[status]}: ${group.length}`, '')
+        for (const r of group) {
+            const detail = r.error || `${r.code}${r.finalUrl && r.finalUrl !== r.url ? ' → ' + r.finalUrl : ''}`
+            lines.push(`- **${r.domain}** — \`${detail.replace(/`/g, "'").slice(0, 160)}\``)
+        }
+    }
+    if (!results.some(r => needsAttention.includes(r.status))) lines.push('', 'Проблем не найдено.')
+    return lines.join('\n') + '\n'
+}
+
+if (require.main === module) main()
+
+module.exports = {isParkedPage, markdownReport}

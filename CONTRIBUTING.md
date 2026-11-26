@@ -23,7 +23,7 @@ npm run check # линтер, целостность, журнал измене�
 | `npm run format` / `npm run format:check` | Prettier: оформление кода (отступ 4, без точек с запятой, одинарные кавычки, ширина 120) |
 | `npm test` | Unit-тесты: конфигурации всех сайтов, расчёт времени голосования, `parseCooldown`, миграции, правила коммитов |
 | `npm run test:ui` | Тест страницы настроек в headless Chrome |
-| `npm run sites` | Проверка доступности сайтов-рейтингов |
+| `npm run sites` | Проверка сайтов-рейтингов: закрытые, сменившие адреса, устаревшие примеры (то же раз в неделю делает GitHub Actions — задача «Состояние сайтов») |
 | `npm run changelog` | Пересобрать `CHANGELOG.md` из `docs/releases/*.md` |
 | `npm run readme` | Пересобрать список сайтов в README из `projects.js` |
 | `npm run vendor` | Пересобрать `libs/` из пакетов npm (после обновления idb или linkedom) |

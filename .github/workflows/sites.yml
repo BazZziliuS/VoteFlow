@@ -1,0 +1,48 @@
+name: Site health
+
+# Раз в неделю открывает пример проекта на каждом сайте-рейтинге и обновляет одну задачу
+# «Состояние сайтов» с метками site-health: какие сайты закрыты, сменили адреса или не отвечают.
+# Только чтение публичных страниц (scripts/check-sites.js), голосов не отправляет.
+on:
+  schedule:
+    - cron: '0 6 * * 1' # понедельник, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: site-health
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Check all sites
+        run: node scripts/check-sites.js --markdown report.md
+
+      - name: Update the «Состояние сайтов» issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            cat report.md
+            echo
+            echo "_Обновлено автоматически: [запуск](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). Проверка идёт с серверов GitHub — часть сайтов может отвечать им иначе, чем пользователям._"
+          } > body.md
+          gh label create site-health --color FBCA04 --description "Автоматическая проверка сайтов-рейтингов" --force
+          number=$(gh issue list --label site-health --state open --limit 1 --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file body.md
+            echo "Обновлена задача #$number"
+          else
+            gh issue create --title "Состояние сайтов" --label site-health --body-file body.md
+          fi
