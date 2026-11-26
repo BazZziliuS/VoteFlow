@@ -156,3 +156,57 @@ function shouldNotifyError(request) {
     }
     return true
 }
+
+/**
+ * Применяет результат голосования к проекту и статистике: время следующей попытки, ошибка или
+ * предупреждение, счётчики. Без побочных действий — уведомление, лог и сохранение делает endVote
+ * @param {Object} project - Проект (изменяется)
+ * @param {Object} request - Сообщение скрипта сайта: successfully, later, message, stopVoting…
+ * @param {Object} context
+ * @param {Object} context.settings - Настройки расширения
+ * @param {Object} context.allProjects - Конфигурация сайтов
+ * @param {Object} context.generalStats - Общая статистика (изменяется)
+ * @param {Object} context.todayStats - Статистика за сегодня (изменяется)
+ * @param {Object} context.chrome - Для chrome.i18n
+ * @returns {{outcome: 'success'|'later'|'error'|'stopped', message: string, level: 'info'|'warn'|'error', notify: boolean}}
+ */
+function applyVoteResult(project, request, {settings, allProjects, generalStats, todayStats, chrome}) {
+    if (request.successfully || request.later != null) {
+        project.time = applyTimeRandomization(project, calculateNextVoteTime(project, request, allProjects))
+        delete project.error
+        delete project.warn
+
+        const isSuccess = Boolean(request.successfully)
+        // Строка вместо true — предупреждение сайта, которое стоит показать рядом с проектом
+        const siteWarning = isSuccess ? request.successfully : request.later
+        if (typeof siteWarning === 'string') project.warn = siteWarning
+
+        if (isSuccess) {
+            updateSuccessStats(project, generalStats, todayStats)
+            return {outcome: 'success', message: formatSuccessMessage(request, chrome), level: 'info', notify: true}
+        }
+        updateLaterStats(project, generalStats, todayStats)
+        return {outcome: 'later', message: formatLaterMessage(request, chrome), level: project.warn ? 'warn' : 'info', notify: true}
+    }
+
+    const error = formatErrorMessage(request, chrome)
+    project.error = error
+    updateErrorStats(project, generalStats, todayStats)
+
+    if (request.stopVoting) {
+        // Сайт запрещает автоматизацию: повторные попытки только приблизят блокировку аккаунта.
+        // Проект ждёт, пока пользователь не перезапустит его сам
+        project.time = Infinity
+        return {outcome: 'stopped', message: error + '. ' + chrome.i18n.getMessage('votingStopped'), level: 'error', notify: true}
+    }
+
+    const retryDelay = applyRandomization(calculateErrorCooldown(request, project, settings), project)
+    project.time = Date.now() + retryDelay
+    const retryMinutes = (Math.round(retryDelay / 1000 / 60 * 100) / 100).toString()
+    return {
+        outcome: 'error',
+        message: error + '. ' + chrome.i18n.getMessage('errorNextVote', retryMinutes),
+        level: 'error',
+        notify: shouldNotifyError(request),
+    }
+}

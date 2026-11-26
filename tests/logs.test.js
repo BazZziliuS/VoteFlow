@@ -17,11 +17,10 @@ function fakeLogsDb(count) {
 }
 
 const IDBKeyRange = {upperBound: upper => ({upper})}
-// Константы верхнего уровня (const) не попадают в контекст vm — читаем их из исходника
-const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../src/shared/database/db-init.js'), 'utf8')
-const constant = name => Number(source.match(new RegExp('const ' + name + ' = (\\d+)'))[1])
-const MAX_LOG_ENTRIES = constant('MAX_LOG_ENTRIES')
-const LOG_TRIM_INTERVAL = constant('LOG_TRIM_INTERVAL')
+// const верхнего уровня не становятся свойствами контекста vm — loadScripts отдаёт их через get()
+const limits = loadScripts(['src/shared/database/db-init.js'], {IDBKeyRange})
+const MAX_LOG_ENTRIES = limits.get('MAX_LOG_ENTRIES')
+const LOG_TRIM_INTERVAL = limits.get('LOG_TRIM_INTERVAL')
 
 test('trimLogs оставляет последние записи и удаляет самые старые', async () => {
     const ctx = loadScripts(['src/shared/database/db-init.js'], {IDBKeyRange})

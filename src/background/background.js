@@ -547,74 +547,12 @@ async function endVote(request, sender, project) {
     // Повторно достаём project так как за время отправки отчёта или использования удалённого кода он мог измениться
     project = await db.get('projects', project.key)
 
-    //Если усё успешно
-    let sendMessage
-    if (request.successfully || request.later != null) {
-        // Вычисляем время следующего голосования
-        const time = calculateNextVoteTime(project, request, allProjects)
-
-        // Применяем рандомизацию
-        project.time = applyTimeRandomization(project, time)
-
-        delete project.error
-        delete project.warn
-
-        if (request.successfully) {
-            // Обновляем статистику успеха
-            updateSuccessStats(project, generalStats, todayStats)
-
-            // Форматируем и отправляем сообщение
-            sendMessage = formatSuccessMessage(request, chrome)
-            if (typeof request.successfully === 'string') {
-                project.warn = request.successfully
-            }
-            sendNotification(getProjectPrefix(project, false), sendMessage, 'info', 'openProject_' + project.key)
-        } else {
-            // Обновляем статистику later
-            updateLaterStats(project, generalStats, todayStats)
-
-            // Форматируем и отправляем сообщение
-            sendMessage = formatLaterMessage(request, chrome)
-            if (typeof request.later === 'string') {
-                project.warn = request.later
-            }
-            sendNotification(getProjectPrefix(project, false), sendMessage, project.warn ? 'warn' : 'info', 'openProject_' + project.key)
-        }
-        console.log(getProjectPrefix(project, true), sendMessage + ', ' + chrome.i18n.getMessage('timeStamp') + ' ' + project.time)
-        //Если ошибка
-    } else {
-        // Форматируем сообщение об ошибке
-        const message = formatErrorMessage(request, chrome)
-
-        if (request.stopVoting) {
-            // Сайт запрещает автоматизацию: повторные попытки только приблизят блокировку аккаунта.
-            // Проект ждёт, пока пользователь не перезапустит его сам (кнопка «Перезапустить»)
-            project.time = Infinity
-            project.error = message
-            sendMessage = message + '. ' + chrome.i18n.getMessage('votingStopped')
-        } else {
-            // Вычисляем cooldown для retry
-            const retryCoolDown = calculateErrorCooldown(request, project, settings)
-
-            // Применяем рандомизацию к cooldown
-            const finalCooldown = applyRandomization(retryCoolDown, project)
-
-            // Устанавливаем время следующей попытки
-            project.time = Date.now() + finalCooldown
-            project.error = message
-
-            // Форматируем финальное сообщение
-            sendMessage = message + '. ' + chrome.i18n.getMessage('errorNextVote', (Math.round(finalCooldown / 1000 / 60 * 100) / 100).toString())
-        }
-
-        // Логируем и отправляем уведомление
-        console.error(getProjectPrefix(project, true), sendMessage + ', ' + chrome.i18n.getMessage('timeStamp') + ' ' + project.time)
-        if (shouldNotifyError(request)) {
-            sendNotification(getProjectPrefix(project, false), sendMessage, 'error', 'openProject_' + project.key)
-        }
-
-        // Обновляем статистику ошибок
-        updateErrorStats(project, generalStats, todayStats)
+    const result = applyVoteResult(project, request, {settings, allProjects, generalStats, todayStats, chrome})
+    const logLine = getProjectPrefix(project, true) + ' ' + result.message + ', ' + chrome.i18n.getMessage('timeStamp') + ' ' + project.time
+    if (result.level === 'error') console.error(logLine)
+    else console.log(logLine)
+    if (result.notify) {
+        sendNotification(getProjectPrefix(project, false), result.message, result.level, 'openProject_' + project.key)
     }
 
     // Сохраняем статистику и проект
