@@ -1,5 +1,6 @@
-// VoteFlow — страница настроек, модуль 6/7: Настройки расширения, тайм-ауты, импорт/экспорт, логи
-// Модули подключаются в options.html в порядке: init, notifications, modals, projects-list, project-form, settings, app
+// VoteFlow — страница настроек, модуль 9/10: Настройки расширения, тайм-ауты, импорт/экспорт, логи
+// Модули подключаются в options.html в порядке: init, notifications, modals, projects-list, project-form,
+// project-add, project-import, project-link, settings, app
 // Это обычные скрипты с общей глобальной областью; код верхнего уровня может вызывать
 // только функции из этого же файла или из модулей, подключённых раньше
 

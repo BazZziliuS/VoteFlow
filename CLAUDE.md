@@ -46,8 +46,11 @@ Folders are split by **where the code runs** (details: docs/ARCHITECTURE.md):
 │       ├── styles/
 │       └── options/         # options page logic as classic scripts sharing one global scope,
 │                            # loaded in this order: init, notifications, modals, projects-list,
-│                            # project-form, settings, app. Top-level code may only call functions
-│                            # from the same file or from modules loaded earlier
+│                            # project-form (form fields, «Добавить»), project-add (checks, permissions,
+│                            # bonuses), project-import (fastAdd from a server page, Custom),
+│                            # project-link (link/rating detection, supported sites), settings, app.
+│                            # Top-level code may only call functions from the same file or from modules
+│                            # loaded earlier
 ├── scripts/                 # check-manifest, check-sites, build, changelog, release, commit-msg
 ├── tests/                   # node --test unit tests, tests/ui/smoke.js
 └── docs/                    # ARCHITECTURE.md, releases/
