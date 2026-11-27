@@ -489,8 +489,11 @@ async function voteFreeCase(first) {
 
 // Wheel Fortune Selectors
 const WHEEL_SELECTORS = {
-    spinButton: 'button.wheel-button, button[class*="wheel"], button[class*="spin"]',
-    cooldownTimer: '.wheel-fortune__wheel-timer-lost, .wheel-timer, .cooldown, [class*="timer"], [class*="cooldown"]',
+    spinButton: 'button.wheel-fortune__wheel-btn, button.wheel-button, button[class*="wheel"], button[class*="spin"]',
+    // Только таймер колеса: в шапке страницы есть .wheel-header__timer «Осталось 6 д. …» (конец акции),
+    // а в попапе — .cohort-popup__timer; широкий [class*="timer"] подхватывал их вместо кулдауна
+    cooldownTimer: '.wheel-fortune__wheel-timer-lost',
+    attempts: '[data-wheel-attempts], .wheel-fortune__wheel-attempts',
     notification: '.notification, .alert, .toast',
     successMessage: '.success, [class*="success"]',
     errorMessage: '.error, [class*="error"]',
@@ -533,9 +536,12 @@ function getCooldownFromPage() {
 
 // Button Finding
 function findSpinButton() {
-    // Try specific selectors first
-    let button = document.querySelector(WHEEL_SELECTORS.spinButton)
-    if (button) return button
+    // Селекторы по приоритету: список через запятую вернул бы первый по порядку в DOM
+    let button = null
+    for (const selector of WHEEL_SELECTORS.spinButton.split(',')) {
+        button = document.querySelector(selector.trim())
+        if (button) return button
+    }
 
     // Try to find button by text content
     const buttons = document.querySelectorAll('button')
@@ -606,6 +612,15 @@ async function voteWheelFortune(first) {
     if (buttonCooldown) {
         console.log('[Wheel Fortune] Cooldown found in button text:', spinButton.textContent.trim())
         sendCooldown(buttonCooldown)
+        return
+    }
+
+    // «Попыток: 0» — крутить нечего, ждём сброса
+    const attemptsText = document.querySelector(WHEEL_SELECTORS.attempts)?.textContent || ''
+    const attemptsMatch = attemptsText.match(/(\d+)/)
+    if (attemptsMatch && Number(attemptsMatch[1]) === 0) {
+        console.log('[Wheel Fortune] No attempts left:', attemptsText.trim())
+        sendCooldown(getCooldownFromPage())
         return
     }
 

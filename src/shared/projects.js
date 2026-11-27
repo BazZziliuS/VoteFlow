@@ -1322,14 +1322,14 @@ const allProjects = {
     'loliland.net': {},
     'magicrust.gg': {
         pageURL: project =>
-            project.id === 'wheel fortune' ? 'https://magicrust.gg/ru/wheel-fortune' : 'https://magicrust.gg/ru',
+            project.id === 'wheel fortune' ? 'https://magicrust.gg/ru/wheel-fortune-v2' : 'https://magicrust.gg/ru',
         voteURL: project =>
-            project.id === 'wheel fortune' ? 'https://magicrust.gg/ru/wheel-fortune' : 'https://magicrust.gg/ru',
+            project.id === 'wheel fortune' ? 'https://magicrust.gg/ru/wheel-fortune-v2' : 'https://magicrust.gg/ru',
         projectName: (_doc, project) =>
             project.id === 'wheel fortune' ? 'Колесо фортуны' : 'Бесплатный ежедневный кейс',
         exampleURL: () => ['https://magicrust.gg/ru', '', ''],
         parseURL: url => {
-            // Determine task type based on URL path
+            // Колесо удачи: /ru/wheel-fortune-v2 (кнопка «Крутить» на главной), старая /ru/wheel-fortune отдаёт 403
             if (url.pathname.includes('/wheel-fortune')) {
                 return {id: 'wheel fortune'}
             }
@@ -1351,7 +1351,7 @@ const allProjects = {
         projectName: (_doc, project) => (project.id === 'promo code' ? 'Активация промокода' : 'Колесо фортуны'),
         exampleURL: () => ['https://bloodrust.com/wheel', '', ''],
         parseURL: url => {
-            // Determine task type based on URL path
+            // Колесо удачи: /ru/wheel-fortune-v2 (кнопка «Крутить» на главной), старая /ru/wheel-fortune отдаёт 403
             if (url.pathname.includes('/home')) {
                 return {id: 'promo code'}
             }
